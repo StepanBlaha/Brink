@@ -5,6 +5,8 @@ import { site } from "@/site";
 import { JsonLd } from "@/components/JsonLd";
 import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
+import { Stats } from "@/components/Stats";
+import { SeeItForReal } from "@/components/SeeItForReal";
 import { PrivacySection } from "@/components/PrivacySection";
 import { Faq } from "@/components/Faq";
 import { DownloadSection } from "@/components/DownloadSection";
@@ -24,7 +26,9 @@ export default function HomePage() {
     <>
       <JsonLd data={homeJsonLd} />
       <Hero />
+      <Stats />
       <Features />
+      <SeeItForReal />
       <PrivacySection />
       <Faq />
       <DownloadSection />

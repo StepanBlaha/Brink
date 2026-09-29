@@ -67,10 +67,14 @@ The code module is still named `NotionDock`. Existing installs keep their data b
 ```sh
 cd website
 npm install
-npm run dev        # http://localhost:3000/Brink/
-npm run build      # static export to website/out (basePath /Brink)
+npm run dev        # http://localhost:3000/
+npm run build      # static export to website/out, served from the root
 npm run lint && npm run typecheck
 ```
+
+The site is built with Next.js, CSS Modules, Motion (`motion/react`) and Locomotive Scroll v5 (smooth scroll and parallax; both switch off under `prefers-reduced-motion`).
+
+**Base path.** By default the site is served at the root (`/`), so local dev and local builds work at `http://localhost:3000/`. A GitHub project Pages site has to live under `/Brink`, so `.github/workflows/pages.yml` builds with `NEXT_PUBLIC_BASE_PATH=/Brink`. That variable feeds `basePath` and `assetPrefix` in `next.config.ts` and the `asset()` helper in `src/site.ts`. To test the Pages build locally: `NEXT_PUBLIC_BASE_PATH=/Brink npm run build`. When you move to a custom domain, drop the variable (the base path becomes empty) and set `NEXT_PUBLIC_SITE_URL` to the new public URL (it defaults to `https://stepanblaha.github.io/Brink` and drives canonical, Open Graph, sitemap and JSON-LD URLs).
 
 Pushes to `main` build and publish `website/out` to `gh-pages` via `.github/workflows/pages.yml`. Media lives in `website/public/assets/media/`.
 

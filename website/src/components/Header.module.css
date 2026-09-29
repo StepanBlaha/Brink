@@ -1,5 +1,5 @@
 .head {
-  position: sticky; top: 0; z-index: 50; background: rgba(0, 0, 0, 0.72);
+  position: sticky; top: 0; z-index: 50; will-change: transform; background: rgba(0, 0, 0, 0.72);
   backdrop-filter: saturate(180%) blur(18px); -webkit-backdrop-filter: saturate(180%) blur(18px);
   border-bottom: 1px solid var(--line);
 }
@@ -11,4 +11,8 @@
 .nav .cta:hover { background: var(--accent-hover); }
 @media (max-width: 640px) {
   .nav a:not(.cta) { display: none; }
+}
+.progress {
+  position: fixed; inset: 0 0 auto 0; height: 2px; z-index: 60; background: var(--accent);
+  transform-origin: 0 50%; pointer-events: none; box-shadow: 0 0 10px rgba(10, 132, 255, 0.7);
 }

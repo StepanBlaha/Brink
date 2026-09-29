@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "locomotive-scroll": "^5.0.1",
     "marked": "^18.0.14",
+    "motion": "^13.4.6",
     "next": "^16.3.7",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"

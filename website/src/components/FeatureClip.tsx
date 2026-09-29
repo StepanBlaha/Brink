@@ -1,11 +1,13 @@
 import { ClipVideo, type ClipVideoProps } from "./ClipVideo";
-import { Reveal } from "./Reveal";
-import styles from "./FeatureClip.module.css";
+import { MediaReveal } from "./MediaReveal";
+import { Parallax } from "./Parallax";
 
 export function FeatureClip(props: ClipVideoProps) {
   return (
-    <Reveal as="figure" className={styles.media}>
-      <ClipVideo {...props} />
-    </Reveal>
+    <Parallax speed={0.05}>
+      <MediaReveal>
+        <ClipVideo {...props} />
+      </MediaReveal>
+    </Parallax>
   );
 }

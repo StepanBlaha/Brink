@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Reveal } from "./Reveal";
+import { FeatureCard } from "./FeatureCard";
 import styles from "./FeatureGrid.module.css";
 
 interface Cell {
@@ -23,13 +24,13 @@ export function FeatureGrid() {
   return (
     <section className={styles.section}>
       <div className="wrap">
-        <Reveal className={styles.grid}>
+        <Reveal className={styles.grid} stagger={0.07}>
           {cells.map((c, i) => (
-            <div key={i} className={`${styles.cell} ${c.wide ? styles.wide : ""}`}>
+            <FeatureCard key={i} wide={c.wide}>
               <div className={styles.ic} aria-hidden="true">{c.icon}</div>
               <h3>{c.title}</h3>
               <p>{c.body}</p>
-            </div>
+            </FeatureCard>
           ))}
         </Reveal>
       </div>

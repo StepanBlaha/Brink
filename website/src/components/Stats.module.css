@@ -1,0 +1,6 @@
+.section { padding: 0 0 clamp(48px, 7vw, 88px); }
+.list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.item { border-top: 1px solid var(--line); padding-top: 16px; display: block; }
+.item b { display: block; font-size: clamp(2rem, 4.4vw, 3.1rem); letter-spacing: -0.04em; line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums; }
+.item > span { display: block; margin-top: 8px; font-size: 0.86rem; color: var(--fg2); line-height: 1.4; }
+@media (max-width: 720px) { .list { grid-template-columns: 1fr 1fr; } }

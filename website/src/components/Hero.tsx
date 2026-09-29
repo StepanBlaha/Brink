@@ -1,35 +1,40 @@
-import Image from "next/image";
-import { asset, site } from "@/site";
-import { HeroVideo } from "./HeroVideo";
+import { site } from "@/site";
+import { HeroGlow } from "./HeroGlow";
+import { MagneticLink } from "./MagneticLink";
+import { Parallax } from "./Parallax";
+import { Reveal } from "./Reveal";
+import { SplitText } from "./SplitText";
+import { NotchDemo } from "./notch/NotchDemo";
 import styles from "./Hero.module.css";
+
+const LEDE =
+  "A quiet black notch on your screen edge. Hover to peek at your Notion pages and tasks, click to check things off, press a hotkey to capture. A menu bar app for your Notion pages that stays out of your way.";
 
 export function Hero() {
   return (
-    <section className={styles.hero}>
+    <section id="hero" className={styles.hero}>
+      <Parallax speed={-0.12} className={styles.glowWrap}>
+        <div className={styles.glow} aria-hidden="true" />
+      </Parallax>
+      <HeroGlow />
       <div className={`wrap ${styles.grid}`}>
         <div className={styles.copy}>
-          <Image
-            className={styles.icon}
-            src={asset("assets/icon-512.png")}
-            width={84}
-            height={84}
-            alt="Brink app icon: a black notch on a screen edge with a blue checkbox"
-            priority
-            unoptimized
-          />
           <h1>
-            Brink<span>{site.tagline}</span>
+            <SplitText text="Brink" />
+            <SplitText text={site.tagline} delay={0.25} className={styles.tag} />
           </h1>
           <p className={`lede ${styles.lede}`}>
-            A quiet black notch on your screen edge. Hover to peek at your Notion pages and tasks, click to check things off, press a hotkey to capture. A menu bar app for your Notion pages that stays out of your way.
+            <SplitText text={LEDE} delay={0.5} step={0.012} />
           </p>
-          <div className={styles.cta}>
-            <a className="btn" href={site.downloadUrl}>Download for Mac &middot; {site.price}</a>
+          <Reveal className={styles.cta} delay={0.9}>
+            <MagneticLink className="btn" href={site.downloadUrl}>Download for Mac &middot; {site.price}</MagneticLink>
             <a className="btn ghost" href="#features">See how it works</a>
-          </div>
-          <p className={styles.works}>Works with Notion &middot; macOS 14+</p>
+          </Reveal>
+          <Reveal as="p" className={styles.works} delay={1}>Works with Notion &middot; macOS 14+</Reveal>
         </div>
-        <HeroVideo />
+        <Reveal delay={0.35} y={30}>
+          <NotchDemo />
+        </Reveal>
       </div>
     </section>
   );

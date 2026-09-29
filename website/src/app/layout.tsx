@@ -5,6 +5,9 @@ import { siteIcons } from "@/lib/metadata";
 import { SkipLink } from "@/components/SkipLink";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { MotionRoot } from "@/components/MotionRoot";
+import { SmoothScroll } from "@/components/SmoothScroll";
+import "locomotive-scroll/dist/locomotive-scroll.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,10 +29,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <SkipLink />
-        <Header />
-        <main id="main">{children}</main>
-        <Footer />
+        <noscript>
+          <style>{"[data-reveal]{opacity:1!important;transform:none!important}"}</style>
+        </noscript>
+        <MotionRoot>
+          <SmoothScroll>
+            <SkipLink />
+            <Header />
+            <main id="main">{children}</main>
+            <Footer />
+          </SmoothScroll>
+        </MotionRoot>
       </body>
     </html>
   );

@@ -1,21 +1,14 @@
 import { faq } from "@/lib/faq";
-import { Reveal } from "./Reveal";
 import { SectionHead } from "./SectionHead";
-import styles from "./Faq.module.css";
+import { FaqAccordion } from "./FaqAccordion";
 
+/** The visible FAQ and the FAQPage JSON-LD both come from src/lib/faq.tsx. */
 export function Faq() {
   return (
     <section id="faq">
       <div className="wrap">
         <SectionHead eyebrow="FAQ" title="Questions, answered." />
-        <Reveal className={styles.faq}>
-          {faq.map((item) => (
-            <details key={item.question}>
-              <summary>{item.question}</summary>
-              <p>{item.content}</p>
-            </details>
-          ))}
-        </Reveal>
+        <FaqAccordion items={faq.map(({ question, content }) => ({ question, content }))} />
       </div>
     </section>
   );

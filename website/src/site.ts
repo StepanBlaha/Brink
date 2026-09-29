@@ -1,8 +1,10 @@
 /** Single source of truth for every URL, contact and tagline on the site. */
 export const site = {
   name: "Brink",
-  baseUrl: "https://stepanblaha.github.io/Brink",
-  basePath: "/Brink",
+  /** Public URL used for canonical/og/sitemap. Override with NEXT_PUBLIC_SITE_URL. */
+  baseUrl: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://stepanblaha.github.io/Brink").replace(/\/+$/, ""),
+  /** Path prefix the site is served under. Empty at the root; "/Brink" on GitHub project Pages. */
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH ?? "",
   contactEmail: "stepa15.b@gmail.com",
   downloadUrl: "https://github.com/StepanBlaha/Brink/releases/latest",
   repoUrl: "https://github.com/StepanBlaha/Brink",

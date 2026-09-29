@@ -1,24 +1,16 @@
-.hero { padding: clamp(48px, 8vw, 96px) 0 0; position: relative; overflow: hidden; }
-.hero::before {
-  content: ""; position: absolute; right: -20%; top: -10%; width: 70vw; height: 70vw;
-  max-width: 900px; max-height: 900px; pointer-events: none;
+.hero { padding: clamp(48px, 8vw, 96px) 0 clamp(24px, 4vw, 48px); position: relative; overflow: clip; }
+.glowWrap { position: absolute; inset: 0; pointer-events: none; }
+.glow {
+  position: absolute; right: -20%; top: -10%; width: 70vw; height: 70vw; max-width: 900px; max-height: 900px;
   background: radial-gradient(closest-side, rgba(10, 132, 255, 0.22), transparent);
 }
+.spot { position: absolute; inset: 0; pointer-events: none; }
 .grid {
-  position: relative; display: grid; grid-template-columns: 1.05fr 1fr;
+  position: relative; display: grid; grid-template-columns: 1fr 1.05fr;
   gap: clamp(24px, 5vw, 72px); align-items: center;
 }
-.copy > * { animation: up 0.9s var(--ease) both; }
-.copy > :nth-child(2) { animation-delay: 0.08s; }
-.copy > :nth-child(3) { animation-delay: 0.16s; }
-.copy > :nth-child(4) { animation-delay: 0.24s; }
-.icon { width: 84px; height: 84px; margin-bottom: 26px; filter: drop-shadow(0 14px 34px rgba(10, 132, 255, 0.35)); }
-.copy h1 span {
-  display: block; font-size: 0.34em; letter-spacing: -0.03em; font-weight: 600;
-  color: var(--fg2); margin-top: 0.35em;
-}
+.tag { display: block; font-size: 0.34em; letter-spacing: -0.03em; font-weight: 600; color: var(--fg2); margin-top: 0.35em; }
 .lede { margin: 26px 0 34px; }
 .cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
 .works { font-size: 0.88rem; color: var(--fg3); margin-top: 22px; }
-@keyframes up { from { opacity: 0; transform: translateY(20px); } }
 @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
