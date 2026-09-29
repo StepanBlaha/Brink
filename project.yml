@@ -1,0 +1,156 @@
+name: Brink
+options:
+  bundleIdPrefix: cz.stepanblaha
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    DEVELOPMENT_TEAM: FW5CYB98R7
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "5.0"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    MARKETING_VERSION: 0.9.0  # keep in sync with VERSION (a test enforces it)
+    CURRENT_PROJECT_VERSION: "1"
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    DEAD_CODE_STRIPPING: YES
+
+targets:
+  NotionKit:
+    type: framework
+    platform: macOS
+    sources:
+      - path: Sources/NotionKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: cz.stepanblaha.notiondock.kit
+        GENERATE_INFOPLIST_FILE: YES
+        SKIP_INSTALL: YES
+        DEFINES_MODULE: YES
+
+  Brink:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources/NotionDock
+      - path: Resources/Assets.xcassets
+      - path: legal
+        buildPhase: resources
+    dependencies:
+      - target: NotionKit
+      - target: BrinkWidget
+      - target: BrinkShare
+      - sdk: WidgetKit.framework
+    info:
+      path: Config/Brink-Info.plist
+      properties:
+        CFBundleName: Brink
+        CFBundleDisplayName: Brink
+        CFBundleExecutable: $(EXECUTABLE_NAME)
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        CFBundlePackageType: APPL
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleIconName: AppIcon
+        NSHumanReadableCopyright: "© 2026 Stepan Blaha. Not affiliated with Notion Labs, Inc."
+        LSUIElement: true
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        CFBundleURLTypes:
+          - CFBundleURLName: cz.stepanblaha.brink
+            CFBundleURLSchemes: [brink]
+    settings:
+      base:
+        PRODUCT_NAME: Brink
+        PRODUCT_MODULE_NAME: NotionDock
+        PRODUCT_BUNDLE_IDENTIFIER: cz.stepanblaha.notiondock
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_ENTITLEMENTS: Config/Brink.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
+
+  BrinkWidget:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: Sources/BrinkWidget
+      - path: Sources/NotionKit/Shared
+    dependencies:
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+      - sdk: AppIntents.framework
+    info:
+      path: Config/BrinkWidget-Info.plist
+      properties:
+        CFBundleDisplayName: Brink Pins
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSHumanReadableCopyright: "© 2026 Stepan Blaha. Not affiliated with Notion Labs, Inc."
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_NAME: BrinkWidget
+        PRODUCT_BUNDLE_IDENTIFIER: cz.stepanblaha.notiondock.widget
+        CODE_SIGN_ENTITLEMENTS: Config/BrinkWidget.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+        SKIP_INSTALL: YES
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks"
+
+  BrinkShare:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: Sources/BrinkShare
+      - path: Sources/NotionKit/Shared
+    info:
+      path: Config/BrinkShare-Info.plist
+      properties:
+        CFBundleDisplayName: Send to Brink
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSHumanReadableCopyright: "© 2026 Stepan Blaha. Not affiliated with Notion Labs, Inc."
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShareViewController
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+              NSExtensionActivationSupportsWebPageWithMaxCount: 1
+              NSExtensionActivationSupportsText: true
+    settings:
+      base:
+        PRODUCT_NAME: BrinkShare
+        PRODUCT_BUNDLE_IDENTIFIER: cz.stepanblaha.notiondock.share
+        CODE_SIGN_ENTITLEMENTS: Config/BrinkShare.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+        SKIP_INSTALL: YES
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks"
+
+  NotionKitTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests/NotionKitTests
+    dependencies:
+      - target: NotionKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: cz.stepanblaha.notiondock.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  Brink:
+    build:
+      targets:
+        Brink: all
+        NotionKit: all
+        BrinkWidget: all
+        BrinkShare: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - NotionKitTests
+    archive:
+      config: Release

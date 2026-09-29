@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brink: a menu bar and notch app for your Notion pages on Mac</title>
+<meta name="description" content="Brink is a black notch on your Mac's screen edge that keeps your Notion pages and tasks one hover away. Quick capture, a Notion-style editor, widgets and badges. macOS 14+.">
+<link rel="canonical" href="https://brink.example/">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Brink">
+<meta property="og:title" content="Brink: Your pages, on the edge.">
+<meta property="og:description" content="A black notch on your Mac's screen edge that keeps your Notion pages and tasks one hover away.">
+<meta property="og:url" content="https://brink.example/">
+<meta property="og:image" content="https://brink.example/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Brink: a notch on the screen edge showing a to-do list">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Brink: Your pages, on the edge.">
+<meta name="twitter:description" content="A black notch on your Mac's screen edge that keeps your Notion pages and tasks one hover away.">
+<meta name="twitter:image" content="https://brink.example/assets/og.png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/page.css">
+<link rel="stylesheet" href="css/mockup.css">
+<script>document.documentElement.className="js"</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"SoftwareApplication","name":"Brink","operatingSystem":"macOS 14+","applicationCategory":"ProductivityApplication","description":"A notch on the Mac screen edge that keeps your Notion pages and tasks one hover away.","url":"https://brink.example/","image":"https://brink.example/assets/icon-512.png","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","description":"TODO: pricing to be decided"},"publisher":{"@id":"https://brink.example/#person"}},
+{"@type":"Person","@id":"https://brink.example/#person","name":"Stepan Blaha","url":"https://brink.example/"},
+{"@type":"Organization","@id":"https://brink.example/#org","name":"Brink","url":"https://brink.example/","logo":"https://brink.example/assets/icon-512.png","founder":{"@id":"https://brink.example/#person"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Is Brink an official Notion app?","acceptedAnswer":{"@type":"Answer","text":"No. Brink is an independent app and is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc. It works with Notion through the public Notion API."}},
+{"@type":"Question","name":"What do I need to run Brink?","acceptedAnswer":{"@type":"Answer","text":"A Mac running macOS 14 or later and a Notion internal integration token. You create the integration yourself in Notion and share the pages you want with it."}},
+{"@type":"Question","name":"Does Brink work offline?","acceptedAnswer":{"@type":"Answer","text":"Yes, for what you have already opened. Pages are cached so the panel opens instantly, and edits made offline are queued and synced when you are back online."}},
+{"@type":"Question","name":"Where does my data go?","acceptedAnswer":{"@type":"Answer","text":"Only between your Mac and Notion. Your token lives in the macOS Keychain. Brink has no server, no analytics and no tracking."}},
+{"@type":"Question","name":"How much does Brink cost?","acceptedAnswer":{"@type":"Answer","text":"Pricing has not been decided yet."}},
+{"@type":"Question","name":"Does it work on a notched MacBook or an external display?","acceptedAnswer":{"@type":"Answer","text":"Yes. You choose the edge (left, right or top) and which display the notch lives on."}},
+{"@type":"Question","name":"Can I add tasks without opening Notion?","acceptedAnswer":{"@type":"Answer","text":"Yes. Press Option-Shift-Space anywhere for quick capture, with natural dates in English and Czech."}},
+{"@type":"Question","name":"How do I remove Brink's access?","acceptedAnswer":{"@type":"Answer","text":"Remove the token in Brink's settings, or remove the integration in Notion. Brink loses access immediately."}}
+]}]}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head"><div class="wrap">
+  <a class="brand" href="./"><img src="assets/icon-256.png" alt="" width="28" height="28">Brink</a>
+  <nav class="nav" aria-label="Main">
+    <a href="#features">Features</a><a href="#privacy">Privacy</a><a href="#faq">FAQ</a><a href="press.html">Press</a>
+    <a class="nav-cta" href="#download">Download</a>
+  </nav>
+</div></header>
+<main id="main">
+<section class="hero"><div class="wrap">
+  <div>
+    <img class="hero-icon tag-load" src="assets/icon-512.png" width="84" height="84" alt="Brink app icon: a black notch on a screen edge with a blue checkbox">
+    <h1 class="tag-load">Brink<span>Your pages, on the edge.</span></h1>
+    <p class="lede tag-load">A quiet black notch on your screen edge. Hover to peek at your Notion pages and tasks, click to check things off, press a hotkey to capture. A menu bar app for your Notion pages that stays out of your way.</p>
+    <div class="cta-row tag-load">
+      <!-- TODO: point this at the notarized DMG / Mac App Store link before launch -->
+      <a class="btn" href="#download">Download for Mac</a>
+      <a class="btn ghost" href="#features">See how it works</a>
+    </div>
+    <p class="works tag-load">Works with Notion &middot; macOS 14+</p>
+  </div>
+  <div class="mock" role="img" aria-label="Animation: a small black pill on the screen edge grows into a strip of icons, then a panel with a to-do list where a checkbox gets ticked.">
+    <div class="screen" aria-hidden="true">
+      <div class="menubar"></div>
+      <div class="fake"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="bezel"></div>
+      <svg class="cursor" viewBox="0 0 16 16"><path d="M2 1l11 6.2-4.8 1.3L6.6 13.6z" fill="#fff" stroke="#000" stroke-width="1" stroke-linejoin="round"/></svg>
+      <div class="notch">
+        <div class="strip"><b>&#9745;</b><b>&#9993;</b><b>&#9733;</b><b>&#9776;</b></div>
+        <div class="panel">
+          <h4>Today<small>3 open</small></h4>
+          <div class="todo t1"><span class="box"><svg viewBox="0 0 17 17"><path d="M4.5 8.8l2.8 2.8 5.2-6"/></svg></span><span class="lbl">Send the invoice</span><em class="due">Today</em></div>
+          <div class="todo"><span class="box"></span><span>Book dentist</span><em class="due">Tue</em></div>
+          <div class="todo"><span class="box"></span><span>Read the draft</span><em class="due">Fri</em></div>
+          <div class="todo done"><span class="box"><svg viewBox="0 0 17 17"><path d="M4.5 8.8l2.8 2.8 5.2-6"/></svg></span><span>Water the plants</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="mock-cap">Resting pill, hover strip, expanded panel. One shape.</p>
+  </div>
+</div></section>
+
+<section id="features"><div class="wrap">
+  <div class="sec-head rv">
+    <span class="eyebrow">Features</span>
+    <h2>Everything within one hover.</h2>
+    <p class="lede">Brink is a notch app for Mac that turns the edge of your screen into a fast lane to the Notion pages and tasks you actually use.</p>
+  </div>
+
+  <div class="split">
+    <div class="rv">
+      <span class="eyebrow">Hover peek</span>
+      <h2>See it without opening it.</h2>
+      <p class="lede">Rest your cursor on the notch and a strip of your pinned pages unfolds. Peek at the next tasks, glance at a badge, and move on. Resting pill, strip and panel are one morphing shape with a liquid spring, and opening and closing mirror each other.</p>
+    </div>
+    <div class="card rv" aria-label="Example of a peek">
+      <div class="row"><span class="chip">Today</span><b>Send the invoice</b></div>
+      <div class="row"><span class="chip">Fri</span><b>Read the draft</b></div>
+      <div class="row"><span class="chip ok">Done</span><b>Water the plants</b></div>
+    </div>
+  </div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap split flip">
+  <div class="card rv">
+    <div class="row"><kbd>&#8997;&#8679;Space</kbd><b>Quick capture</b></div>
+    <div class="row"><span class="muted">&ldquo;Call mum tomorrow 5pm&rdquo;</span></div>
+    <div class="row"><span class="muted">&ldquo;Zavolat mamce z&iacute;tra v 17:00&rdquo;</span></div>
+    <div class="row"><span class="chip ok">Added to Buylist &#10003;</span></div>
+  </div>
+  <div class="rv">
+    <span class="eyebrow">Notion quick capture</span>
+    <h2>Capture in under three seconds.</h2>
+    <p class="lede">Press <kbd>&#8997;&#8679;Space</kbd> from any app, type, hit return. Natural dates work in English and Czech, so &ldquo;friday&rdquo; and &ldquo;p&aacute;tek&rdquo; both land on the right day. Perfect for Notion tasks on Mac without the Notion round trip.</p>
+  </div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+  <div class="grid g3 rv">
+    <div class="cell wide"><div class="ic" aria-hidden="true">&#9998;</div><h3>Notion-style editor with slash menu</h3><p>Pages render white on black and edit like a single Markdown document where each line is one block. Type <kbd>/</kbd> for headings, to-dos, toggles, callouts and more. Find in page with <kbd>&#8984;F</kbd>.</p></div>
+    <div class="cell"><div class="ic" aria-hidden="true">&#9679;</div><h3>Badges &amp; live pill</h3><p>See what is due today on the pill itself. Badges update quietly in the background.</p></div>
+    <div class="cell"><div class="ic" aria-hidden="true">&#9776;</div><h3>Menu-bar mini-list</h3><p>Prefer the top of the screen? A compact list lives in the menu bar too, a proper menu bar app for your Notion pages when you want one.</p></div>
+    <div class="cell"><div class="ic" aria-hidden="true">&#9635;</div><h3>Desktop widget</h3><p>A Notion widget for Mac: pin your task list to the desktop or Notification Center.</p></div>
+    <div class="cell"><div class="ic" aria-hidden="true">&#8599;</div><h3>Send to Brink</h3><p>A share extension in every app. Send a link, selection or file straight to a page or database.</p></div>
+    <div class="cell"><div class="ic" aria-hidden="true">&#8984;</div><h3>Hotkeys</h3><p>Global shortcuts for quick capture and for opening your last pin. Rebind them in Settings.</p></div>
+    <div class="cell wide"><div class="ic" aria-hidden="true">&#9783;</div><h3>Groups &amp; saved views</h3><p>Group pins into folders that unfold on the strip. Pin a filtered and sorted database view, such as &ldquo;My open tasks by due date&rdquo;, and check things off without opening the full database.</p></div>
+  </div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap split">
+  <div class="rv">
+    <span class="eyebrow">Customization</span>
+    <h2>Make the notch yours.</h2>
+    <p class="lede">Brink is calm by default and flexible when you want it.</p>
+    <div class="opts" aria-label="Customization options">
+      <span>Edge: left, right or top</span><span>Display</span><span>Pill style</span><span>Small / Medium / Large</span>
+      <span><i class="swatch" style="background:#0a84ff"></i>Accent color</span><span>Sounds</span><span>Launch at login</span><span>Auto-hide</span>
+    </div>
+  </div>
+  <div class="card rv">
+    <div class="row"><b>Edge</b><span class="chip" style="margin-left:auto">Right</span></div>
+    <div class="row"><b>Display</b><span class="muted" style="margin-left:auto">Built-in</span></div>
+    <div class="row"><b>Size</b><span class="muted" style="margin-left:auto">Medium</span></div>
+    <div class="row"><b>Accent</b><span style="margin-left:auto"><i class="swatch" style="background:#0a84ff"></i><i class="swatch" style="background:#30d158"></i><i class="swatch" style="background:#ff9f0a"></i><i class="swatch" style="background:#bf5af2"></i></span></div>
+    <div class="row"><b>Sounds</b><span class="muted" style="margin-left:auto">On</span></div>
+  </div>
+</div></section>
+
+<section id="privacy" class="privacy"><div class="wrap">
+  <span class="eyebrow">Privacy</span>
+  <h2 class="rv">Your data stays between your Mac and Notion. No tracking.</h2>
+  <p class="lede rv">Your token lives in the macOS Keychain. Brink has no server of its own, no analytics, no ads and no telemetry. It talks to the Notion API and nothing else.</p>
+  <a class="btn ghost rv" href="privacy.html">Read the privacy policy</a>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <div class="sec-head rv"><span class="eyebrow">FAQ</span><h2>Questions, answered.</h2></div>
+  <div class="faq rv">
+    <details><summary>Is Brink an official Notion app?</summary><p>No. Brink is an independent app and is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc. It works with Notion through the public Notion API.</p></details>
+    <details><summary>What do I need to run it?</summary><p>A Mac running macOS 14 or later, and a Notion internal integration. You create the integration yourself in Notion, paste its token into Brink, and share the pages you want with it. Not seeing a page? Share it with your integration in Notion.</p></details>
+    <details><summary>Does it work offline?</summary><p>Yes, for what you have already opened. Pages are cached so the panel opens instantly, and edits made offline are queued and synced when you are back online.</p></details>
+    <details><summary>Where does my data go?</summary><p>Only between your Mac and Notion. The token is stored in the macOS Keychain, and there is no server, analytics or tracking.</p></details>
+    <details><summary>How much does it cost?</summary><p>Pricing is not decided yet. Check back here or in the press kit.</p></details>
+    <details><summary>Does it work on external displays and notched MacBooks?</summary><p>Yes. Choose the edge (left, right or top) and the display in Settings. On a MacBook with a camera notch, Brink sits on the edge you pick, not over the camera.</p></details>
+    <details><summary>Can I add tasks without opening Notion?</summary><p>Yes. Press <kbd>&#8997;&#8679;Space</kbd> anywhere, type your task with a natural date such as &ldquo;tomorrow 5pm&rdquo;, and it is saved to the database you chose.</p></details>
+    <details><summary>How do I remove Brink&rsquo;s access?</summary><p>Choose Remove token in Brink&rsquo;s settings, or remove the integration in Notion under Settings &rarr; Connections. Brink loses access immediately.</p></details>
+  </div>
+</div></section>
+
+<section id="download" class="dl"><div class="wrap">
+  <img src="assets/icon-256.png" width="96" height="96" alt="" style="margin:0 auto 24px">
+  <h2>Put your pages on the edge.</h2>
+  <p class="lede" style="margin:0 auto 30px">macOS 14 or later. Pricing to be announced.</p>
+  <!-- TODO: real download link (notarized DMG or Mac App Store) and final pricing -->
+  <a class="btn" href="#download">Download for Mac</a>
+  <p class="works">Works with Notion &middot; Version 0.9.0</p>
+</div></section>
+</main>
+
+<footer class="site-foot"><div class="wrap">
+  <div class="cols">
+    <a class="brand" href="./"><img src="assets/icon-256.png" alt="" width="28" height="28">Brink</a>
+    <nav aria-label="Footer"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="acknowledgements.html">Acknowledgements</a><a href="press.html">Press kit</a></nav>
+  </div>
+  <p class="disclaimer">Brink is an independent app and is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc. &ldquo;Notion&rdquo; is a trademark of Notion Labs, Inc.</p>
+  <p class="small">&copy; 2026 Stepan Blaha</p>
+</div></footer>
+<script src="js/main.js" defer></script>
+</body>
+</html>
