@@ -1,8 +1,8 @@
 #!/bin/bash
 # Turns a demo recording (scripts/record-demo.sh) into the marketing media:
 #   marketing/screenshots/*.png            App Store Mac screenshots, 2880x1800, captioned
-#   website/assets/media/hero.{mp4,webm}   20–30 s loop, 1600 px, no audio (+ hero-poster.jpg)
-#   website/assets/media/{peek-tick,editor,capture}.{mp4,gif}   5–8 s feature clips
+#   website/public/assets/media/hero.{mp4,webm}   20–30 s loop, 1600 px, no audio (+ hero-poster.jpg)
+#   website/public/assets/media/{peek-tick,editor,capture}.{mp4,gif}   5–8 s feature clips
 # Usage: scripts/make-demo-media.sh <work folder with raw.mov, times.txt, shots/>
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -10,7 +10,7 @@ WORK="${1:?work folder}"
 FF=/opt/homebrew/bin/ffmpeg
 FFPROBE=/opt/homebrew/bin/ffprobe
 SHOTS=marketing/screenshots
-MEDIA=website/assets/media
+MEDIA=website/public/assets/media
 mkdir -p "$SHOTS" "$MEDIA"
 [ -s "$WORK/raw.mov" ] || { echo "missing $WORK/raw.mov" >&2; exit 1; }
 

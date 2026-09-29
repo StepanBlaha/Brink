@@ -1,0 +1,5 @@
+.dl { text-align: center; border-top: 1px solid var(--line); }
+.dl h2 { margin-bottom: 18px; }
+.icon { margin: 0 auto 24px; }
+.lede { margin: 0 auto 30px; }
+.works { font-size: 0.88rem; color: var(--fg3); margin-top: 22px; }

@@ -1,0 +1,10 @@
+.video, .still {
+  display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover;
+  background: #111; border: 1px solid var(--line); border-radius: 18px;
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+}
+.still { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .video { display: none; }
+  .still { display: block; }
+}

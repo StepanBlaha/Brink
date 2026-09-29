@@ -3,7 +3,7 @@ name: Deploy website
 on:
   push:
     branches: [main]
-    paths: ["website/**", ".github/workflows/pages.yml"]
+    paths: ["website/**", "legal/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 
 permissions:
@@ -18,10 +18,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Publish website/ to the gh-pages branch
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+      - name: Build static site
+        working-directory: website
+        run: |
+          npm ci
+          npm run build
+      - name: Publish website/out to the gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./website
-          exclude_assets: "tools/**,*.sh,*.py,site.config.json"
+          publish_dir: ./website/out
           force_orphan: true

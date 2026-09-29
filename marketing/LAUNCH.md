@@ -62,10 +62,10 @@ Brink is an independent app and is not affiliated with, endorsed by, or sponsore
 Check the subreddit's self-promotion rules first (often a weekly thread or flair is required). Use the same body, lead with the problem (checking tasks without opening Notion) and state clearly that it is a third-party Mac app that uses the public API.
 
 ## Checklist before going public
-- [ ] **Domain.** Register one that does not contain "Notion". Set `baseUrl` in `website/site.config.json`, run `website/apply-config.sh`. Confirm og.png, canonical and sitemap URLs.
+- [ ] **Domain.** Register one that does not contain "Notion". Set `baseUrl` (and `basePath` in `website/next.config.ts`) in `website/src/site.ts`. Confirm og.png, canonical and sitemap URLs.
 - [ ] **Trademark search.** USPTO, EUIPO and UPV CZ, class 9 (software), plus class 42. A quick web check on 2026-09-29 found no Mac app named Brink; "Brink's" is an unrelated security company. Consider legal advice.
 - [ ] **Rename internals.** Bundle ID `cz.stepanblaha.notiondock` and the NotionDock storage folders still carry the old name; rename only before the first public release (see branding/BRAND.md). Update the legal docs that mention them.
-- [ ] **Contact email.** Replace `stepa15.b@gmail.com` (website index/press, legal/PRIVACY.md "Contact") and re-run `python3 website/build-legal.py`.
+- [ ] **Contact email.** Replace `stepa15.b@gmail.com` (`website/src/site.ts`, legal/PRIVACY.md "Contact"); legal pages rebuild from `legal/*.md` automatically.
 - [ ] **Signing and notarization.** Developer ID signing, hardened runtime, notarized and stapled DMG (or App Store build). Test on a clean Mac.
 - [ ] **Download link.** Replace the `#download` placeholders on the site (hero, download section, nav) and the JSON-LD offer.
 - [x] **Pricing.** Free (GitHub Releases).

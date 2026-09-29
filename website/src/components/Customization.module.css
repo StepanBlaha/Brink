@@ -1,0 +1,12 @@
+.opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.opts span { border: 1px solid var(--line); border-radius: 99px; padding: 5px 14px; font-size: 0.88rem; color: var(--fg2); }
+.swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.card { background: var(--raised); border: 1px solid var(--line); border-radius: 20px; padding: 22px; font-size: 0.92rem; }
+.row { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); color: var(--fg2); }
+.row:last-child { border: 0; }
+.row b { color: #fff; font-weight: 500; }
+.end { margin-left: auto; color: var(--fg2); }
+.chip {
+  margin-left: auto; font-size: 0.72rem; font-weight: 600; padding: 2px 9px; border-radius: 99px;
+  background: rgba(10, 132, 255, 0.18); color: var(--accent-text); white-space: nowrap;
+}

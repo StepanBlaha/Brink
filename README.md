@@ -3,7 +3,7 @@
 <h1 align="center">Brink</h1>
 <p align="center"><b>Your pages, on the edge.</b><br>A quiet notch on the edge of your Mac's screen that keeps your Notion pages and tasks one hover away.</p>
 
-<p align="center"><img src="website/assets/media/peek-tick.gif" width="720" alt="Hovering the Brink notch shows a peek of a grocery list; one item gets ticked off in place"></p>
+<p align="center"><img src="website/public/assets/media/peek-tick.gif" width="720" alt="Hovering the Brink notch shows a peek of a grocery list; one item gets ticked off in place"></p>
 
 > Brink is an independent app. It is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc. "Notion" is a trademark of Notion Labs, Inc.
 
@@ -20,7 +20,7 @@
 
 ![The Launch plan page open in the notch panel, with headings, to-dos and a callout](marketing/screenshots/03-editor.png)
 
-More in [`marketing/screenshots/`](marketing/screenshots/) and [`website/assets/media/`](website/assets/media/) (editor and quick-capture clips). All media are recorded in demo mode with sample data: `./scripts/record-demo.sh` (see [Demo recordings](#demo-recordings)).
+More in [`marketing/screenshots/`](marketing/screenshots/) and [`website/public/assets/media/`](website/public/assets/media/) (editor and quick-capture clips). All media are recorded in demo mode with sample data: `./scripts/record-demo.sh` (see [Demo recordings](#demo-recordings)).
 
 ## Requirements
 
@@ -58,9 +58,21 @@ swift test
 | `Tests/NotionKitTests/` | 190+ tests, including a fake Notion server for end-to-end sync |
 | `branding/` | Brand guide, app icon and its generator |
 | `legal/`, `LICENSE` | Privacy policy, terms, third-party notices |
-| `website/`, `marketing/` | Landing page, SEO, press kit, App Store and launch copy |
+| `website/`, `marketing/` | Next.js (App Router, CSS Modules) static site for GitHub Pages: landing page, SEO, press kit, legal pages rendered from `legal/*.md`; App Store and launch copy. Config in `website/src/site.ts`. `website-legacy/` is the old static HTML kept for reference |
 
 The code module is still named `NotionDock`. Existing installs keep their data because the bundle id and storage paths stayed the same. Rename it only before a first public release.
+
+## Website
+
+```sh
+cd website
+npm install
+npm run dev        # http://localhost:3000/Brink/
+npm run build      # static export to website/out (basePath /Brink)
+npm run lint && npm run typecheck
+```
+
+Pushes to `main` build and publish `website/out` to `gh-pages` via `.github/workflows/pages.yml`. Media lives in `website/public/assets/media/`.
 
 ## Privacy
 

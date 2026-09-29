@@ -1,0 +1,6 @@
+.brand {
+  display: flex; align-items: center; gap: 10px; color: #fff;
+  text-decoration: none; font-weight: 650; letter-spacing: -0.02em;
+}
+.brand:hover { color: #fff; }
+.brand img { width: 28px; height: 28px; }

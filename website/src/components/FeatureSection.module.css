@@ -1,0 +1,10 @@
+.tight { padding-top: 0; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 5vw, 72px); align-items: center; }
+.flip .text { order: 2; }
+.text code {
+  font-family: var(--mono); font-size: 0.88em; color: #fff;
+}
+@media (max-width: 860px) {
+  .split { grid-template-columns: 1fr; }
+  .flip .text { order: 0; }
+}

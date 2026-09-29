@@ -1,0 +1,6 @@
+.foot { border-top: 1px solid var(--line); padding: 48px 0 64px; color: var(--fg2); font-size: 0.88rem; }
+.cols { display: flex; flex-wrap: wrap; gap: 24px 48px; justify-content: space-between; margin-bottom: 28px; }
+.links { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+.foot a { color: var(--fg2); }
+.foot a:hover { color: #fff; }
+.disclaimer { max-width: 46em; color: var(--fg3); font-size: 0.82rem; }

@@ -1,0 +1,11 @@
+.prose { max-width: 44rem; padding: clamp(48px, 8vw, 96px) 0; }
+.wide { max-width: none; }
+.prose h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); margin-bottom: 12px; }
+.prose h2 { font-size: 1.5rem; margin: 2.2em 0 0.6em; }
+.prose p, .prose li { color: #d6d6da; }
+.prose li { margin-bottom: 0.5em; }
+.prose table { border-collapse: collapse; width: 100%; font-size: 0.9rem; margin: 1.2em 0; display: block; overflow-x: auto; }
+.prose th, .prose td { text-align: left; padding: 10px 14px; border: 1px solid var(--line); vertical-align: top; }
+.prose th { background: var(--raised); }
+.prose code { background: var(--raised); padding: 2px 6px; border-radius: 6px; word-break: break-word; }
+.prose em { color: var(--fg2); }

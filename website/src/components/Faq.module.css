@@ -1,0 +1,13 @@
+.faq { max-width: 46rem; }
+.faq details { border-bottom: 1px solid var(--line); padding: 4px 0; }
+.faq summary {
+  cursor: pointer; list-style: none; padding: 18px 32px 18px 0; font-weight: 600;
+  font-size: 1.05rem; position: relative;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: "+"; position: absolute; right: 4px; top: 14px; font-size: 1.5rem;
+  color: var(--accent-text); transition: transform 0.3s;
+}
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details p { color: var(--fg2); padding-bottom: 12px; }
