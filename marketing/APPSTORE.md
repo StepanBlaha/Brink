@@ -88,10 +88,10 @@ All "None" / "No": cartoon or fantasy violence, realistic violence, sexual conte
 - Answer every data-type question "No" and set the label to **Data Not Collected**. Tracking: **No**.
 
 ## URLs (placeholders)
-- Support URL: https://brink.example/ (TODO: add a support page or mailto-backed form)
-- Marketing URL: https://brink.example/
-- Privacy Policy URL: https://brink.example/privacy.html
-- Support email: TODO-contact@brink.example
+- Support URL: https://github.com/StepanBlaha/Brink/issues
+- Marketing URL: https://stepanblaha.github.io/Brink/
+- Privacy Policy URL: https://stepanblaha.github.io/Brink/privacy.html
+- Support email: stepa15.b@gmail.com
 - Copyright: 2026 Stepan Blaha
 
 ## Review notes (suggested)

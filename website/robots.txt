@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://brink.example/sitemap.xml
+Sitemap: https://stepanblaha.github.io/Brink/sitemap.xml

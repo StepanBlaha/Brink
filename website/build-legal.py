@@ -5,7 +5,7 @@ import re, html, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent
 LEGAL = ROOT.parent / "legal"
-BASE = "https://brink.example"  # replaced by apply-config.sh
+BASE = "https://stepanblaha.github.io/Brink"  # replaced by apply-config.sh
 PAGES = [
     ("PRIVACY.md", "privacy.html", "Privacy Policy", "Brink's privacy policy: your data stays between your Mac and Notion. No analytics, no tracking, no server."),
     ("TERMS.md", "terms.html", "Terms of Use", "The terms of use for Brink, an independent Mac app that works with Notion."),

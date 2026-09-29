@@ -54,7 +54,7 @@ It is a black notch on the edge of the screen (left, right or top). Hover to pee
 
 Native SwiftUI/AppKit, no tracking, no server: your data goes between your Mac and Notion only. Requires macOS 14+ and a Notion internal integration.
 
-Pricing is not decided yet. Feedback very welcome. [link]
+It's free. Feedback very welcome: https://stepanblaha.github.io/Brink/
 
 Brink is an independent app and is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc.
 ```
@@ -65,10 +65,10 @@ Check the subreddit's self-promotion rules first (often a weekly thread or flair
 - [ ] **Domain.** Register one that does not contain "Notion". Set `baseUrl` in `website/site.config.json`, run `website/apply-config.sh`. Confirm og.png, canonical and sitemap URLs.
 - [ ] **Trademark search.** USPTO, EUIPO and UPV CZ, class 9 (software), plus class 42. A quick web check on 2026-09-29 found no Mac app named Brink; "Brink's" is an unrelated security company. Consider legal advice.
 - [ ] **Rename internals.** Bundle ID `cz.stepanblaha.notiondock` and the NotionDock storage folders still carry the old name; rename only before the first public release (see branding/BRAND.md). Update the legal docs that mention them.
-- [ ] **Contact email.** Replace `TODO-contact@brink.example` (website index/press, legal/PRIVACY.md "Contact") and re-run `python3 website/build-legal.py`.
+- [ ] **Contact email.** Replace `stepa15.b@gmail.com` (website index/press, legal/PRIVACY.md "Contact") and re-run `python3 website/build-legal.py`.
 - [ ] **Signing and notarization.** Developer ID signing, hardened runtime, notarized and stapled DMG (or App Store build). Test on a clean Mac.
 - [ ] **Download link.** Replace the `#download` placeholders on the site (hero, download section, nav) and the JSON-LD offer.
-- [ ] **Pricing.** Decide; update the FAQ, JSON-LD `offers`, press facts and App Store price tier.
+- [x] **Pricing.** Free (GitHub Releases).
 - [ ] **Notion brand rules.** "Works with Notion" only in plain text and secondary to Brink. Use the official "Made for Notion" badge only if Notion's guidelines and program allow it; unmodified, secondary placement. No Notion logo in the icon, screenshots or social avatars. Keep the non-affiliation line on the site, store listing and every post.
 - [ ] **App Store.** Screenshots (2880x1800), review notes with a demo integration token, App Privacy label "Data Not Collected", support URL live.
 - [ ] **Assets.** Record the hover-peek loop (10 to 15 s), capture screenshots without personal data.

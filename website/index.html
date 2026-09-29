@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Brink: a menu bar and notch app for your Notion pages on Mac</title>
 <meta name="description" content="Brink is a black notch on your Mac's screen edge that keeps your Notion pages and tasks one hover away. Quick capture, a Notion-style editor, widgets and badges. macOS 14+.">
-<link rel="canonical" href="https://brink.example/">
+<link rel="canonical" href="https://stepanblaha.github.io/Brink/">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Brink">
 <meta property="og:title" content="Brink: Your pages, on the edge.">
 <meta property="og:description" content="A black notch on your Mac's screen edge that keeps your Notion pages and tasks one hover away.">
-<meta property="og:url" content="https://brink.example/">
-<meta property="og:image" content="https://brink.example/assets/og.png">
+<meta property="og:url" content="https://stepanblaha.github.io/Brink/">
+<meta property="og:image" content="https://stepanblaha.github.io/Brink/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Brink: a notch on the screen edge showing a to-do list">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Brink: Your pages, on the edge.">
 <meta name="twitter:description" content="A black notch on your Mac's screen edge that keeps your Notion pages and tasks one hover away.">
-<meta name="twitter:image" content="https://brink.example/assets/og.png">
+<meta name="twitter:image" content="https://stepanblaha.github.io/Brink/assets/og.png">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -31,15 +31,15 @@
 <script>document.documentElement.className="js"</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
-{"@type":"SoftwareApplication","name":"Brink","operatingSystem":"macOS 14+","applicationCategory":"ProductivityApplication","description":"A notch on the Mac screen edge that keeps your Notion pages and tasks one hover away.","url":"https://brink.example/","image":"https://brink.example/assets/icon-512.png","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","description":"TODO: pricing to be decided"},"publisher":{"@id":"https://brink.example/#person"}},
-{"@type":"Person","@id":"https://brink.example/#person","name":"Stepan Blaha","url":"https://brink.example/"},
-{"@type":"Organization","@id":"https://brink.example/#org","name":"Brink","url":"https://brink.example/","logo":"https://brink.example/assets/icon-512.png","founder":{"@id":"https://brink.example/#person"}},
+{"@type":"SoftwareApplication","name":"Brink","operatingSystem":"macOS 14+","applicationCategory":"ProductivityApplication","description":"A notch on the Mac screen edge that keeps your Notion pages and tasks one hover away.","url":"https://stepanblaha.github.io/Brink/","image":"https://stepanblaha.github.io/Brink/assets/icon-512.png","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","description":"Free"},"publisher":{"@id":"https://stepanblaha.github.io/Brink/#person"}},
+{"@type":"Person","@id":"https://stepanblaha.github.io/Brink/#person","name":"Stepan Blaha","url":"https://stepanblaha.github.io/Brink/"},
+{"@type":"Organization","@id":"https://stepanblaha.github.io/Brink/#org","name":"Brink","url":"https://stepanblaha.github.io/Brink/","logo":"https://stepanblaha.github.io/Brink/assets/icon-512.png","founder":{"@id":"https://stepanblaha.github.io/Brink/#person"}},
 {"@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"Is Brink an official Notion app?","acceptedAnswer":{"@type":"Answer","text":"No. Brink is an independent app and is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc. It works with Notion through the public Notion API."}},
 {"@type":"Question","name":"What do I need to run Brink?","acceptedAnswer":{"@type":"Answer","text":"A Mac running macOS 14 or later and a Notion internal integration token. You create the integration yourself in Notion and share the pages you want with it."}},
 {"@type":"Question","name":"Does Brink work offline?","acceptedAnswer":{"@type":"Answer","text":"Yes, for what you have already opened. Pages are cached so the panel opens instantly, and edits made offline are queued and synced when you are back online."}},
 {"@type":"Question","name":"Where does my data go?","acceptedAnswer":{"@type":"Answer","text":"Only between your Mac and Notion. Your token lives in the macOS Keychain. Brink has no server, no analytics and no tracking."}},
-{"@type":"Question","name":"How much does Brink cost?","acceptedAnswer":{"@type":"Answer","text":"Pricing has not been decided yet."}},
+{"@type":"Question","name":"How much does Brink cost?","acceptedAnswer":{"@type":"Answer","text":"Brink is free. Download the latest version from GitHub Releases."}},
 {"@type":"Question","name":"Does it work on a notched MacBook or an external display?","acceptedAnswer":{"@type":"Answer","text":"Yes. You choose the edge (left, right or top) and which display the notch lives on."}},
 {"@type":"Question","name":"Can I add tasks without opening Notion?","acceptedAnswer":{"@type":"Answer","text":"Yes. Press Option-Shift-Space anywhere for quick capture, with natural dates in English and Czech."}},
 {"@type":"Question","name":"How do I remove Brink's access?","acceptedAnswer":{"@type":"Answer","text":"Remove the token in Brink's settings, or remove the integration in Notion. Brink loses access immediately."}}
@@ -52,7 +52,7 @@
   <a class="brand" href="./"><img src="assets/icon-256.png" alt="" width="28" height="28">Brink</a>
   <nav class="nav" aria-label="Main">
     <a href="#features">Features</a><a href="#privacy">Privacy</a><a href="#faq">FAQ</a><a href="press.html">Press</a>
-    <a class="nav-cta" href="#download">Download</a>
+    <a class="nav-cta" href="https://github.com/StepanBlaha/Brink/releases/latest">Download</a>
   </nav>
 </div></header>
 <main id="main">
@@ -62,8 +62,7 @@
     <h1 class="tag-load">Brink<span>Your pages, on the edge.</span></h1>
     <p class="lede tag-load">A quiet black notch on your screen edge. Hover to peek at your Notion pages and tasks, click to check things off, press a hotkey to capture. A menu bar app for your Notion pages that stays out of your way.</p>
     <div class="cta-row tag-load">
-      <!-- TODO: point this at the notarized DMG / Mac App Store link before launch -->
-      <a class="btn" href="#download">Download for Mac</a>
+      <a class="btn" href="https://github.com/StepanBlaha/Brink/releases/latest">Download for Mac · Free</a>
       <a class="btn ghost" href="#features">See how it works</a>
     </div>
     <p class="works tag-load">Works with Notion &middot; macOS 14+</p>
@@ -169,7 +168,7 @@
     <details><summary>What do I need to run it?</summary><p>A Mac running macOS 14 or later, and a Notion internal integration. You create the integration yourself in Notion, paste its token into Brink, and share the pages you want with it. Not seeing a page? Share it with your integration in Notion.</p></details>
     <details><summary>Does it work offline?</summary><p>Yes, for what you have already opened. Pages are cached so the panel opens instantly, and edits made offline are queued and synced when you are back online.</p></details>
     <details><summary>Where does my data go?</summary><p>Only between your Mac and Notion. The token is stored in the macOS Keychain, and there is no server, analytics or tracking.</p></details>
-    <details><summary>How much does it cost?</summary><p>Pricing is not decided yet. Check back here or in the press kit.</p></details>
+    <details><summary>How much does it cost?</summary><p>Brink is free. Download the latest version from <a href="https://github.com/StepanBlaha/Brink/releases/latest">GitHub Releases</a>.</p></details>
     <details><summary>Does it work on external displays and notched MacBooks?</summary><p>Yes. Choose the edge (left, right or top) and the display in Settings. On a MacBook with a camera notch, Brink sits on the edge you pick, not over the camera.</p></details>
     <details><summary>Can I add tasks without opening Notion?</summary><p>Yes. Press <kbd>&#8997;&#8679;Space</kbd> anywhere, type your task with a natural date such as &ldquo;tomorrow 5pm&rdquo;, and it is saved to the database you chose.</p></details>
     <details><summary>How do I remove Brink&rsquo;s access?</summary><p>Choose Remove token in Brink&rsquo;s settings, or remove the integration in Notion under Settings &rarr; Connections. Brink loses access immediately.</p></details>
@@ -179,9 +178,8 @@
 <section id="download" class="dl"><div class="wrap">
   <img src="assets/icon-256.png" width="96" height="96" alt="" style="margin:0 auto 24px">
   <h2>Put your pages on the edge.</h2>
-  <p class="lede" style="margin:0 auto 30px">macOS 14 or later. Pricing to be announced.</p>
-  <!-- TODO: real download link (notarized DMG or Mac App Store) and final pricing -->
-  <a class="btn" href="#download">Download for Mac</a>
+  <p class="lede" style="margin:0 auto 30px">Free. macOS 14 or later. First launch: right-click Brink → Open (the app is not notarized yet).</p>
+  <a class="btn" href="https://github.com/StepanBlaha/Brink/releases/latest">Download for Mac · Free</a>
   <p class="works">Works with Notion &middot; Version 0.9.0</p>
 </div></section>
 </main>

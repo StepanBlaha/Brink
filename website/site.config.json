@@ -1,6 +1,7 @@
 {
-  "_todo": "Set baseUrl to the real domain, then run ./apply-config.sh (replaces the placeholder in html/xml/txt/json/webmanifest).",
-  "placeholder": "https://brink.example",
-  "baseUrl": "https://brink.example",
-  "contactEmail": "TODO-contact@brink.example"
+  "placeholder": "https://stepanblaha.github.io/Brink",
+  "baseUrl": "https://stepanblaha.github.io/Brink",
+  "contactEmail": "stepa15.b@gmail.com",
+  "downloadUrl": "https://github.com/StepanBlaha/Brink/releases/latest",
+  "price": "Free"
 }

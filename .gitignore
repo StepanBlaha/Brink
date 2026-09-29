@@ -7,3 +7,4 @@ DerivedData/
 .DS_Store
 *.xcuserstate
 xcuserdata/
+dist/

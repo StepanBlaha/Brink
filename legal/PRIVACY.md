@@ -37,4 +37,4 @@ Updates to this policy will be dated above and shipped with the app.
 
 ## Contact
 
-Stepan Blaha. Add a contact email before any public release.
+Stepan Blaha: stepa15.b@gmail.com. Issues and questions are also welcome at https://github.com/StepanBlaha/Brink/issues
