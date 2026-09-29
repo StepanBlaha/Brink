@@ -9,6 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var menuBar: MenuBarController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        DemoMode.bootstrap()
         NSApp.setActivationPolicy(.accessory)
         MainMenu.install()
         let appModel = AppModel()
@@ -16,9 +17,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         dockController = DockController(appModel: appModel)
         AppWindows.shared.onSettings = { [weak self] in self?.dockController?.showSettings() }
         CaptureBootstrap.start(appModel: appModel)
-        SharedSnapshotWriter.start(appModel: appModel)
-        SharedInboxProcessor.start(appModel: appModel)
+        if !DemoMode.isActive {
+            // Demo mode must not feed fake data to the real widget or consume the real inbox.
+            SharedSnapshotWriter.start(appModel: appModel)
+            SharedInboxProcessor.start(appModel: appModel)
+        }
         setUpStatusItem()
+        if DemoMode.isActive, let dockController, let menuBar {
+            DemoDirector.start(dock: dockController, menuBar: menuBar)
+            return
+        }
         NotificationCenter.default.addObserver(forName: .showWelcomeRequested, object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.showWelcome() }
         }

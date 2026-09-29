@@ -23,12 +23,20 @@ final class AppModel {
     var connectionStatus: ConnectionStatus = .idle
 
     init() {
+        if DemoMode.isActive {
+            // Demo mode: an in-process fake Notion; the Keychain is never read or written.
+            client = NotionClient(tokenProvider: { "demo-token" }, session: DemoNotionServer.session)
+            hasToken = true
+            DemoMode.seedPins(into: pinStore)
+            return
+        }
         let tokenStore = tokenStore
         client = NotionClient(tokenProvider: { tokenStore.load() })
         hasToken = tokenStore.load() != nil
     }
 
     func saveToken(_ token: String) {
+        guard !DemoMode.isActive else { return }
         let trimmed = token.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         do {
@@ -41,6 +49,7 @@ final class AppModel {
     }
 
     func removeToken() {
+        guard !DemoMode.isActive else { return }
         tokenStore.delete()
         hasToken = false
         connectionStatus = .idle

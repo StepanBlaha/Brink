@@ -31,6 +31,7 @@ struct NotchRootView: View {
     let onKeepOpen: (PinItem) -> Void
     let isKeptOpen: (PinItem) -> Bool
     let onChangeIcon: (PinItem) -> Void
+    var onEditView: (PinItem) -> Void = { _ in }
     let onCheckPeekItem: (String, String) -> Void
     let onTogglePin: () -> Void
     let onClosePanel: () -> Void
@@ -199,6 +200,7 @@ struct NotchRootView: View {
                 onKeepOpen: onKeepOpen,
                 isKeptOpen: isKeptOpen,
                 onChangeIcon: onChangeIcon,
+                onEditView: onEditView,
                 onPeek: onPeek,
                 onReorder: onReorder,
                 groups: groups,
@@ -237,6 +239,7 @@ struct NotchRootView: View {
                 onKeepOpen: onKeepOpen,
                 isKeptOpen: isKeptOpen,
                 onChangeIcon: onChangeIcon,
+                onEditView: onEditView,
                 animateAppearance: false,
                 onReorder: onReorder,
                 groups: groups,

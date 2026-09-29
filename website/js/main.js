@@ -12,3 +12,14 @@
   }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
   els.forEach(function (e) { io.observe(e); });
 })();
+
+// Demo videos: with reduced motion the CSS shows the poster instead; also stop playback so
+// the hidden video does not keep downloading and decoding.
+(function () {
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.media video').forEach(function (v) {
+    v.removeAttribute('autoplay');
+    v.preload = 'none';
+    v.pause();
+  });
+})();

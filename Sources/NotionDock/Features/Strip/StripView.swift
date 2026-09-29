@@ -12,6 +12,7 @@ struct StripView: View {
     var onKeepOpen: ((PinItem) -> Void)? = nil
     var isKeptOpen: ((PinItem) -> Bool)? = nil
     var onChangeIcon: ((PinItem) -> Void)? = nil
+    var onEditView: ((PinItem) -> Void)? = nil
     /// Hover peek (only supplied by the primary strip): reports the hovered pin + icon frame
     /// after a 0.5s dwell, or `nil` when the hover ends.
     var onPeek: ((PinItem?, CGRect) -> Void)? = nil
@@ -81,6 +82,9 @@ struct StripView: View {
         }
         if let onChangeIcon {
             Button("Change Icon…") { onChangeIcon(pin) }
+        }
+        if pin.isDatabase, let onEditView {
+            Button("Edit View…") { onEditView(pin) }
         }
         if let onMoveToGroup, !groups.isEmpty {
             Menu("Move to group") {

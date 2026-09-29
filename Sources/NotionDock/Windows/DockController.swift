@@ -134,7 +134,7 @@ final class DockController {
     // MARK: - Pin mapping
 
     private func mapPinItem(_ pin: Pin) -> PinItem {
-        PinItem(id: pin.id, title: pin.title, icon: iconDisplay(for: pin))
+        PinItem(id: pin.id, title: pin.title, icon: iconDisplay(for: pin), isDatabase: pin.kind == .dataSource)
     }
 
     /// A pin's `customIcon` override wins; otherwise fall back to the Notion-derived icon
@@ -228,6 +228,9 @@ final class DockController {
             },
             onChangeIcon: { [weak self] pinItem in
                 self?.presentIconPicker(for: pinItem)
+            },
+            onEditView: { [weak self] pinItem in
+                self?.presentEditView(for: pinItem)
             },
             onCheckPeekItem: { [weak self] pinID, itemID in
                 self?.checkSummaryItem(pinID: pinID, itemID: itemID)
@@ -547,17 +550,56 @@ final class DockController {
             },
             onCancel: { [weak self] in
                 self?.collapse(force: true)
-            }
+            },
+            saveLabel: appModel.pinStore.pins.contains { $0.notionId == result.id } ? "Pin as new view" : "Pin database"
         )
         addFlowContent = AnyView(view)
         refreshContent()
     }
 
     private func finishPinningDatabase(result: SearchResult, config: DatabaseConfig) {
-        let pin = Pin(notionId: result.id, kind: .dataSource, title: result.title.isEmpty ? "Untitled" : result.title, icon: PinIcon(result.icon), order: 0, config: config)
+        let baseTitle = result.title.isEmpty ? "Untitled" : result.title
+        let pinTitle = (config.viewName?.isEmpty == false) ? "\(baseTitle) \u{00B7} \(config.viewName!)" : baseTitle
+        let pin = Pin(notionId: result.id, kind: .dataSource, title: pinTitle, icon: PinIcon(result.icon), order: 0, config: config)
         appModel.pinStore.add(pin)
         refreshAfterPinsChanged()
         collapse(force: true)
+    }
+
+    // MARK: - Edit view
+
+    private func presentEditView(for pinItem: PinItem) {
+        guard let backingPin = pin(withPinItemID: pinItem.id), backingPin.kind == .dataSource, let config = backingPin.config else { return }
+        let client = appModel.client
+        let baseTitle = backingPin.title.components(separatedBy: " \u{00B7} ").first ?? backingPin.title
+        let view = DatabaseSetupView(
+            title: baseTitle,
+            icon: .none,
+            loadSchema: { try await client.retrieveDataSource(backingPin.notionId) },
+            onSave: { [weak self] newConfig in
+                guard let self else { return }
+                var updated = backingPin
+                updated.config = newConfig
+                if let name = newConfig.viewName, !name.isEmpty {
+                    updated.title = "\(baseTitle) \u{00B7} \(name)"
+                } else {
+                    updated.title = baseTitle
+                }
+                self.appModel.pinStore.update(updated)
+                self.databaseModels[backingPin.id]?.stopPolling()
+                self.databaseModels[backingPin.id] = nil
+                self.refreshAfterPinsChanged()
+                self.collapse(force: true)
+            },
+            onCancel: { [weak self] in
+                self?.collapse(force: true)
+            },
+            initialConfig: config,
+            saveLabel: "Save view"
+        )
+        selectedPinID = nil
+        addFlowContent = AnyView(view)
+        setPhase(.expanded)
     }
 
     // MARK: - Icon picker
@@ -977,5 +1019,76 @@ final class DockController {
     private var isMouseOverAuxiliaryWindow: Bool {
         let location = NSEvent.mouseLocation
         return NSApp.windows.contains { $0.isVisible && Self.isAuxiliary($0) && $0.frame.contains(location) }
+    }
+}
+
+// MARK: - Demo
+// Hooks for `Features/Demo/DemoDirector` (scripted marketing recordings, demo mode only). They
+// drive the same state changes a real hover/click would, without needing the real mouse.
+extension DockController {
+    var demoPanel: NSWindow { panel }
+    var demoPhase: NotchPhase { phase }
+
+    func demoSetPhase(_ newPhase: NotchPhase) {
+        if newPhase != .expanded { addFlowContent = nil }
+        setPhase(newPhase)
+    }
+
+    /// Window-local (top-left origin) frame of a pin's strip icon; mirrors `openPinRequested`.
+    func demoIconFrame(pinID: String) -> CGRect? {
+        guard let index = pins.firstIndex(where: { $0.id == pinID }) else { return nil }
+        let m = Theme.Notch.self
+        let stripTop = windowSize.height / 2 - m.stripMetrics(pinCount: pins.count).length / 2
+        let switcher = m.iconSize + m.iconSpacing + 6 * Settings.shared.size.metricsScale
+        let mid = stripTop + m.stripPadding + switcher + CGFloat(index) * (m.iconSize + m.iconSpacing) + m.iconSize / 2
+        let midX = layout.bodyRect(for: .strip).midX
+        return CGRect(x: midX - m.iconSize / 2, y: mid - m.iconSize / 2, width: m.iconSize, height: m.iconSize)
+    }
+
+    /// Window-local (top-left origin) point → global AppKit screen point.
+    func demoScreenPoint(_ local: CGPoint) -> CGPoint {
+        CGPoint(x: panel.frame.minX + local.x, y: panel.frame.maxY - local.y)
+    }
+
+    /// Where the resting pill sits on screen.
+    var demoRestingPoint: CGPoint {
+        let rect = layout.bodyRect(for: .resting)
+        return demoScreenPoint(CGPoint(x: rect.midX, y: rect.midY))
+    }
+
+    /// Screen rect of `phase`'s shape body (for aiming the fake cursor at panel contents).
+    func demoScreenRect(for phase: NotchPhase) -> CGRect {
+        let rect = layout.bodyRect(for: phase)
+        return CGRect(x: panel.frame.minX + rect.minX, y: panel.frame.maxY - rect.maxY, width: rect.width, height: rect.height)
+    }
+
+    /// Screen rect of the hover-peek card for `itemCount` rows.
+    func demoPeekScreenRect(itemCount: Int) -> CGRect {
+        let rect = layout.peekRect(peekFrame: notchState.peekFrame, itemCount: itemCount)
+        return CGRect(x: panel.frame.minX + rect.minX, y: panel.frame.maxY - rect.maxY, width: rect.width, height: rect.height)
+    }
+
+    func demoShowPeek(pinID: String?) {
+        guard let pinID, let frame = demoIconFrame(pinID: pinID) else {
+            notchState.peekPinID = nil
+            return
+        }
+        notchState.peekFrame = frame
+        notchState.peekPinID = pinID
+    }
+
+    func demoOpen(pinID: String) {
+        guard let item = pins.first(where: { $0.id == pinID }) else { return }
+        addFlowContent = nil
+        refreshContent()
+        open(pinItem: item, iconFrameGlobal: demoIconFrame(pinID: pinID))
+    }
+
+    func demoTextView(pinID: String) -> EditorTextView? {
+        pageModels[pinID]?.document.textView as? EditorTextView
+    }
+
+    func demoDatabaseModel(pinID: String) -> DatabaseViewModel? {
+        databaseModels[pinID]
     }
 }

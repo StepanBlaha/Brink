@@ -33,6 +33,17 @@ final class MenuBarController: NSObject {
     func toggle() {
         if popover.isShown { popover.performClose(nil); return }
         guard let button else { return }
+        show(relativeTo: button)
+    }
+
+    /// Demo mode: the popover anchored to the backdrop's fake menu-bar icon instead.
+    func showForDemo(anchor: NSView) { show(relativeTo: anchor) }
+    func closeForDemo() { popover.performClose(nil) }
+    func expandForDemo(pinID: String) {
+        withAnimation(Theme.Motion.contents) { model?.toggleExpanded(pinID) }
+    }
+
+    private func show(relativeTo button: NSView) {
         let model = MiniListModel(appModel: appModel)
         self.model = model
         let view = MiniListView(model: model, onOpenInNotch: { [weak self] id in

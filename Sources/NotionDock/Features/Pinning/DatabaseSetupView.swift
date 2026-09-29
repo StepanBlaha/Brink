@@ -9,6 +9,9 @@ struct DatabaseSetupView: View {
     let loadSchema: () async throws -> DataSourceSchema
     let onSave: (DatabaseConfig) -> Void
     let onCancel: () -> Void
+    /// When editing an existing pin's view: prefills every field from this config.
+    var initialConfig: DatabaseConfig? = nil
+    var saveLabel: String = "Pin database"
 
     @State private var schema: DataSourceSchema?
     @State private var isLoading = true
@@ -17,6 +20,12 @@ struct DatabaseSetupView: View {
     @State private var donePropertyID: String?
     @State private var doneStatusValue: String?
     @State private var datePropertyID: String?
+
+    @State private var viewOptionsExpanded = false
+    @State private var viewName = ""
+    @State private var filters: [ViewFilter] = []
+    @State private var sorts: [ViewSort] = []
+    @State private var showDone = false
 
     private var doneCandidates: [PropertySchema] {
         (schema?.properties ?? []).filter { $0.type == "checkbox" || $0.type == "status" }
@@ -86,6 +95,37 @@ struct DatabaseSetupView: View {
     }
 
     private var form: some View {
+        ScrollView {
+            formContent
+        }
+        .scrollIndicators(.hidden)
+    }
+
+    private var viewOptions: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Button {
+                withAnimation(Theme.Motion.list) { viewOptionsExpanded.toggle() }
+            } label: {
+                HStack(spacing: 5) {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 9, weight: .semibold))
+                        .rotationEffect(.degrees(viewOptionsExpanded ? 90 : 0))
+                    Text("View options")
+                        .font(Theme.Font.small)
+                    Spacer(minLength: 0)
+                }
+                .foregroundStyle(Theme.Color.secondaryText)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.notion)
+            if viewOptionsExpanded, let schema {
+                ViewBuilderSection(schema: schema, viewName: $viewName, filters: $filters, sorts: $sorts, showDone: $showDone)
+                    .transition(Theme.Motion.rowTransition)
+            }
+        }
+    }
+
+    private var formContent: some View {
         VStack(alignment: .leading, spacing: 18) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Which property means done?")
@@ -98,7 +138,10 @@ struct DatabaseSetupView: View {
                     }
                 }
                 .labelsHidden()
-                .onChange(of: donePropertyID) { _, _ in doneStatusValue = nil }
+                .onChange(of: donePropertyID) { _, newID in
+                    let initial = schema?.properties.first { $0.name == initialConfig?.doneProperty }
+                    doneStatusValue = (newID != nil && newID == initial?.id) ? initialConfig?.doneValue : nil
+                }
             }
 
             if let doneProperty, doneProperty.type == "status" {
@@ -135,9 +178,9 @@ struct DatabaseSetupView: View {
                     .foregroundStyle(Theme.Color.secondaryText)
             }
 
-            Spacer(minLength: 0)
+            viewOptions
 
-            Button("Pin database") { save() }
+            Button(saveLabel) { save() }
                 .buttonStyle(.notion)
                 .padding(.horizontal, 12).padding(.vertical, 7)
                 .frame(maxWidth: .infinity)
@@ -153,11 +196,24 @@ struct DatabaseSetupView: View {
         do {
             let loaded = try await loadSchema()
             schema = loaded
+            prefill(from: loaded)
             isLoading = false
         } catch {
             errorMessage = (error as? LocalizedError)?.errorDescription ?? "Failed to load database."
             isLoading = false
         }
+    }
+
+    private func prefill(from schema: DataSourceSchema) {
+        guard let c = initialConfig else { return }
+        donePropertyID = schema.properties.first { $0.name == c.doneProperty && ($0.type == "checkbox" || $0.type == "status") }?.id
+        doneStatusValue = c.doneValue
+        datePropertyID = c.dateProperty.flatMap { name in schema.properties.first { $0.name == name && $0.type == "date" }?.id }
+        viewName = c.viewName ?? ""
+        filters = c.filters ?? []
+        sorts = c.sorts ?? []
+        showDone = c.showDone
+        viewOptionsExpanded = false
     }
 
     private func save() {
@@ -168,7 +224,10 @@ struct DatabaseSetupView: View {
             doneKind: kind,
             doneValue: kind == .status ? doneStatusValue : nil,
             dateProperty: dateProperty?.name,
-            showDone: false
+            showDone: showDone,
+            filters: filters.isEmpty ? nil : filters,
+            sorts: sorts.isEmpty ? nil : sorts,
+            viewName: viewName.trimmingCharacters(in: .whitespaces).isEmpty ? nil : viewName.trimmingCharacters(in: .whitespaces)
         )
         onSave(config)
     }

@@ -119,6 +119,11 @@ struct PinSearchView: View {
             Spacer(minLength: 4)
 
             if isPinned {
+                if result.kind == .dataSource {
+                    Text("Pin as new view")
+                        .font(Theme.Font.caption)
+                        .foregroundStyle(Theme.Color.accent)
+                }
                 Image(systemName: "checkmark")
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(Theme.Color.secondaryText)

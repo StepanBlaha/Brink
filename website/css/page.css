@@ -64,3 +64,10 @@
 .dl-list img{background:#111;border-radius:12px}
 dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:10px 28px;margin:0}
 dl.facts dt{color:var(--fg3)}dl.facts dd{margin:0}
+/* Demo recordings (made in demo mode with sample data by scripts/record-demo.sh) */
+.media{margin:0;min-width:0}
+.media video,.media .still{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;background:#111;border:1px solid var(--line);border-radius:18px;box-shadow:0 30px 80px -30px rgba(0,0,0,.9)}
+.media .still{display:none}
+.hero-media{animation:up .9s .2s cubic-bezier(.2,.8,.2,1) both}
+.mock-cap{margin-top:16px;text-align:center;font-size:.82rem;color:var(--fg3)}
+@media(prefers-reduced-motion:reduce){.media video{display:none}.media .still{display:block}.hero-media{animation:none}}

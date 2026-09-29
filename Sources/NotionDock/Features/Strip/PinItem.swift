@@ -12,6 +12,8 @@ struct PinItem: Identifiable, Equatable {
     let id: String
     let title: String
     let icon: PinIconDisplay
+    /// True for database pins (they get the "Edit View…" context-menu item).
+    var isDatabase: Bool = false
 }
 
 /// Display model for the strip's group switcher.

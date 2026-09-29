@@ -3,6 +3,8 @@
 <h1 align="center">Brink</h1>
 <p align="center"><b>Your pages, on the edge.</b><br>A quiet notch on the edge of your Mac's screen that keeps your Notion pages and tasks one hover away.</p>
 
+<p align="center"><img src="website/assets/media/peek-tick.gif" width="720" alt="Hovering the Brink notch shows a peek of a grocery list; one item gets ticked off in place"></p>
+
 > Brink is an independent app. It is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc. "Notion" is a trademark of Notion Labs, Inc.
 
 ## What it does
@@ -13,6 +15,12 @@
 - **Capture from anywhere.** ⌥⇧Space opens quick capture, which understands dates in English and Czech ("zítra", "friday 5pm"). ⌥⌘V appends the clipboard, and "Send to Brink" works from the Share menu.
 - **Glance without opening.** Hover a pin to see its next items and tick them in place. There's also a menu-bar mini-list and a desktop widget with interactive checkboxes.
 - **Make it yours.** Choose the edge and display, the pill style, size, accent color, a per-pin panel size, sounds, rebindable hotkeys, groups and custom pin icons.
+
+## Screenshots
+
+![The Launch plan page open in the notch panel, with headings, to-dos and a callout](marketing/screenshots/03-editor.png)
+
+More in [`marketing/screenshots/`](marketing/screenshots/) and [`website/assets/media/`](website/assets/media/) (editor and quick-capture clips). All media are recorded in demo mode with sample data: `./scripts/record-demo.sh` (see [Demo recordings](#demo-recordings)).
 
 ## Requirements
 
@@ -33,6 +41,10 @@ For a quick SwiftPM build without the extensions, and for tests:
 ./scripts/run.sh
 swift test
 ```
+
+### Demo recordings
+
+`./scripts/record-demo.sh` builds the app, writes the trigger file `~/Library/Application Support/NotionDock/demo-mode.json` and launches Brink in demo mode: a fake in-process Notion with sample pages, a temporary storage folder (your pins, cache, Keychain token and preferences are left alone), a wallpaper backdrop and a scripted fake cursor. It records the screen and writes the App Store screenshots and website videos (`scripts/make-demo-media.sh`). It needs Screen Recording permission for your terminal; don't touch the mouse while it runs (about a minute). Code: `Sources/NotionDock/Features/Demo/`.
 
 `project.yml` generates `Brink.xcodeproj`. Signing is Automatic and works with a free Apple ID team. The app group is `<TEAM>.cz.stepanblaha.brink`.
 

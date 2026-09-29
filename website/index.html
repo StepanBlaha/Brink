@@ -27,7 +27,6 @@
 <link rel="manifest" href="site.webmanifest">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/page.css">
-<link rel="stylesheet" href="css/mockup.css">
 <script>document.documentElement.className="js"</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
@@ -67,25 +66,15 @@
     </div>
     <p class="works tag-load">Works with Notion &middot; macOS 14+</p>
   </div>
-  <div class="mock" role="img" aria-label="Animation: a small black pill on the screen edge grows into a strip of icons, then a panel with a to-do list where a checkbox gets ticked.">
-    <div class="screen" aria-hidden="true">
-      <div class="menubar"></div>
-      <div class="fake"><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="bezel"></div>
-      <svg class="cursor" viewBox="0 0 16 16"><path d="M2 1l11 6.2-4.8 1.3L6.6 13.6z" fill="#fff" stroke="#000" stroke-width="1" stroke-linejoin="round"/></svg>
-      <div class="notch">
-        <div class="strip"><b>&#9745;</b><b>&#9993;</b><b>&#9733;</b><b>&#9776;</b></div>
-        <div class="panel">
-          <h4>Today<small>3 open</small></h4>
-          <div class="todo t1"><span class="box"><svg viewBox="0 0 17 17"><path d="M4.5 8.8l2.8 2.8 5.2-6"/></svg></span><span class="lbl">Send the invoice</span><em class="due">Today</em></div>
-          <div class="todo"><span class="box"></span><span>Book dentist</span><em class="due">Tue</em></div>
-          <div class="todo"><span class="box"></span><span>Read the draft</span><em class="due">Fri</em></div>
-          <div class="todo done"><span class="box"><svg viewBox="0 0 17 17"><path d="M4.5 8.8l2.8 2.8 5.2-6"/></svg></span><span>Water the plants</span></div>
-        </div>
-      </div>
-    </div>
-    <p class="mock-cap">Resting pill, hover strip, expanded panel. One shape.</p>
-  </div>
+  <figure class="media hero-media">
+    <video autoplay muted loop playsinline preload="metadata" poster="assets/media/hero-poster.jpg" width="1600" height="1000"
+      aria-label="Screen recording: the black pill on the right screen edge unfolds into a strip of pinned pages, a hover peek ticks off a grocery item, a page is edited with Markdown and the slash menu, quick capture adds a task for tomorrow at 5 pm, and the menu-bar list opens.">
+      <source src="assets/media/hero.webm" type="video/webm">
+      <source src="assets/media/hero.mp4" type="video/mp4">
+    </video>
+    <img class="still" src="assets/media/hero-poster.jpg" width="1600" height="1000" alt="The Brink notch on the right screen edge, unfolded into a strip of pinned pages with a hover peek of a grocery list.">
+    <figcaption class="mock-cap">Resting pill, hover strip, expanded panel. One shape.</figcaption>
+  </figure>
 </div></section>
 
 <section id="features"><div class="wrap">
@@ -101,26 +90,44 @@
       <h2>See it without opening it.</h2>
       <p class="lede">Rest your cursor on the notch and a strip of your pinned pages unfolds. Peek at the next tasks, glance at a badge, and move on. Resting pill, strip and panel are one morphing shape with a liquid spring, and opening and closing mirror each other.</p>
     </div>
-    <div class="card rv" aria-label="Example of a peek">
-      <div class="row"><span class="chip">Today</span><b>Send the invoice</b></div>
-      <div class="row"><span class="chip">Fri</span><b>Read the draft</b></div>
-      <div class="row"><span class="chip ok">Done</span><b>Water the plants</b></div>
-    </div>
+    <figure class="media rv">
+      <video autoplay muted loop playsinline preload="metadata" poster="assets/media/peek-tick-poster.jpg" width="1200" height="750"
+        aria-label="Screen recording: hovering the notch shows a peek of the Groceries page, and Oat milk gets ticked off without opening the page.">
+        <source src="assets/media/peek-tick.mp4" type="video/mp4">
+      </video>
+      <img class="still" src="assets/media/peek-tick-poster.jpg" width="1200" height="750" alt="A hover peek card listing grocery items next to the notch strip.">
+    </figure>
   </div>
 </div></section>
 
 <section style="padding-top:0"><div class="wrap split flip">
-  <div class="card rv">
-    <div class="row"><kbd>&#8997;&#8679;Space</kbd><b>Quick capture</b></div>
-    <div class="row"><span class="muted">&ldquo;Call mum tomorrow 5pm&rdquo;</span></div>
-    <div class="row"><span class="muted">&ldquo;Zavolat mamce z&iacute;tra v 17:00&rdquo;</span></div>
-    <div class="row"><span class="chip ok">Added to Buylist &#10003;</span></div>
-  </div>
+  <figure class="media rv">
+    <video autoplay muted loop playsinline preload="metadata" poster="assets/media/capture-poster.jpg" width="1200" height="750"
+      aria-label="Screen recording: Option-Shift-Space opens quick capture, &ldquo;Call Anna tomorrow 5pm&rdquo; shows a Tomorrow 17:00 date chip, and return adds it to the Sprint database.">
+      <source src="assets/media/capture.mp4" type="video/mp4">
+    </video>
+    <img class="still" src="assets/media/capture-poster.jpg" width="1200" height="750" alt="The quick-capture box with the text Call Anna tomorrow 5pm and a Tomorrow 17:00 date chip.">
+  </figure>
   <div class="rv">
     <span class="eyebrow">Notion quick capture</span>
     <h2>Capture in under three seconds.</h2>
     <p class="lede">Press <kbd>&#8997;&#8679;Space</kbd> from any app, type, hit return. Natural dates work in English and Czech, so &ldquo;friday&rdquo; and &ldquo;p&aacute;tek&rdquo; both land on the right day. Perfect for Notion tasks on Mac without the Notion round trip.</p>
   </div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap split">
+  <div class="rv">
+    <span class="eyebrow">Editor</span>
+    <h2>A Notion-style editor, one hover away.</h2>
+    <p class="lede">Type Markdown and it turns into real blocks as you go: <code>[]</code> becomes a checkbox, <code>##</code> a heading, <code>**bold**</code> bold. Press <kbd>/</kbd> for the block menu.</p>
+  </div>
+  <figure class="media rv">
+    <video autoplay muted loop playsinline preload="metadata" poster="assets/media/editor-poster.jpg" width="1200" height="750"
+      aria-label="Screen recording: typing Markdown in the Launch plan page creates a to-do, a heading and bold text, then the slash menu filters to To-do.">
+      <source src="assets/media/editor.mp4" type="video/mp4">
+    </video>
+    <img class="still" src="assets/media/editor-poster.jpg" width="1200" height="750" alt="The Launch plan page open in the notch panel with headings, to-dos and a callout.">
+  </figure>
 </div></section>
 
 <section style="padding-top:0"><div class="wrap">
