@@ -136,3 +136,25 @@ final class ImageAttachmentCell: NSTextAttachmentCell {
         }
     }
 }
+
+/// The editor's layout manager. A selected picture shows its own accent ring, so the square
+/// selection highlight behind it (which peeked out past the rounded corners and under the
+/// picture) is skipped for ranges that hold only pictures and line breaks.
+final class EditorLayoutManager: NSLayoutManager {
+    override func fillBackgroundRectArray(_ rectArray: UnsafePointer<NSRect>, count rectCount: Int, forCharacterRange charRange: NSRange, color: NSColor) {
+        if Self.onlyPictures(charRange, in: textStorage) { return }
+        super.fillBackgroundRectArray(rectArray, count: rectCount, forCharacterRange: charRange, color: color)
+    }
+
+    private static func onlyPictures(_ range: NSRange, in storage: NSTextStorage?) -> Bool {
+        guard let storage, range.length > 0, NSMaxRange(range) <= storage.length else { return false }
+        let ns = storage.string as NSString
+        var sawPicture = false
+        for i in range.location..<NSMaxRange(range) {
+            if ns.character(at: i) == 0x0A { continue }
+            guard (storage.attribute(.attachment, at: i, effectiveRange: nil) as? NSTextAttachment)?.attachmentCell is ImageAttachmentCell else { return false }
+            sawPicture = true
+        }
+        return sawPicture
+    }
+}

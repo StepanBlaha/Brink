@@ -10,7 +10,10 @@ enum BrinkStyle {
 
 struct PinWidgetView: View {
     let entry: PinWidgetEntry
-    @Environment(\.widgetFamily) private var family
+    /// Offscreen renders (tests) can't set `widgetFamily`, which is read-only.
+    var familyOverride: WidgetFamily?
+    @Environment(\.widgetFamily) private var environmentFamily
+    private var family: WidgetFamily { familyOverride ?? environmentFamily }
 
     private var limit: Int {
         switch family {
@@ -54,6 +57,8 @@ struct PinWidgetView: View {
             if entry.dueToday > 0 {
                 Text("\(entry.dueToday) today")
                     .font(.system(size: 10, weight: .semibold))
+                    .lineLimit(1)
+                    .fixedSize() // never wraps to "3 / today" in the small family
                     .padding(.horizontal, 6).padding(.vertical, 2)
                     .background(Capsule().fill(BrinkStyle.accent.opacity(0.25)))
                     .foregroundStyle(BrinkStyle.accent)

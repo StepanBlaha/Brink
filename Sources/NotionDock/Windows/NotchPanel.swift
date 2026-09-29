@@ -47,7 +47,13 @@ final class NotchPanel: NSPanel {
         if let hosting = contentView as? NSHostingView<Content> {
             hosting.rootView = view
         } else {
-            contentView = NSHostingView(rootView: view)
+            let hosting = NSHostingView(rootView: view)
+            // The window's frame is owned by DockController. By default the hosting view
+            // resizes its window to the SwiftUI content's size (top-left pinned on shrink,
+            // bottom-left on grow): the first render at `windowSize == .zero` shrank the
+            // window to nothing and the next grew it upward, parking it off screen at launch.
+            hosting.sizingOptions = []
+            contentView = hosting
         }
     }
 }

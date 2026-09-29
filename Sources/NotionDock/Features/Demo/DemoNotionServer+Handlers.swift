@@ -27,6 +27,7 @@ extension DemoNotionServer {
                 let type = child["type"] as? String ?? "paragraph"
                 var box = child[type] as? [String: Any] ?? [:]
                 if box["rich_text"] != nil { box["rich_text"] = responseRichText(box["rich_text"]) }
+                if type == "image" { box = attachUpload(box) }
                 blocks[newID] = ["object": "block", "id": newID, "type": type, type: box]
                 list.insert(newID, at: min(index, list.count))
                 index += 1

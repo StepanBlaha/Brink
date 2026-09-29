@@ -80,6 +80,19 @@ struct WindowCustomizationTests {
         #expect(side == CGRect(x: 1100, y: 130, width: 400, height: 640))
     }
 
+    /// Regression: the expanded panel's flares were not budgeted, so a max-size top panel next to
+    /// the hardware notch ran its trailing flare off the screen edge.
+    @Test func maxLengthKeepsFlaresInside() {
+        // Right of a hardware notch: window 1020 wide, shape starts at 368.
+        let leading = NotchGeometry.maxLength(windowLength: 1020, anchor: 368, leading: true, flare: 24)
+        #expect(leading == 620)
+        #expect(368 + leading + 24 <= 1020)
+        // Centered (top merged, or a side edge): symmetric room on both sides.
+        #expect(NotchGeometry.maxLength(windowLength: 879, anchor: 439.5, leading: false, flare: 24) == 815)
+        #expect(NotchGeometry.maxLength(windowLength: 1000, anchor: 100, leading: false, flare: 20) == 144)
+        #expect(NotchGeometry.maxLength(windowLength: 40, anchor: 20, leading: false, flare: 24) == 0)
+    }
+
     @Test func displayPreference() {
         let screens = [ScreenInfo(name: "Built-in", frame: CGRect(x: 0, y: 0, width: 1500, height: 900)),
                        ScreenInfo(name: "LG", frame: CGRect(x: 1500, y: 0, width: 2560, height: 1440)),

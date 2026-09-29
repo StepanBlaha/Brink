@@ -39,12 +39,16 @@ final class DemoDirector {
         log("start panel \(panelWindow.frame) visibleFrame \(screen.visibleFrame)")
         NSApp.activate(ignoringOtherApps: true)
         startRaiser()
-        dock.edgeDidChange()
-        log("after reposition panel \(panelWindow.frame)")
         cursor.install(on: screen, at: at(0.42, 0.42))
         cursor.setVisible(false)
         await DemoUI.sleep(0.5)
         log("after 0.5s panel \(panelWindow.frame)")
+        if DemoMode.trigger.script == "probe" {
+            DemoMode.mark("ready")
+            await runProbe()
+            DemoMode.finish()
+            return
+        }
         await warmUp()
         log("screen \(screen.frame) panel \(panelWindow.frame) level \(panelWindow.level.rawValue) visible \(panelWindow.isVisible) resting \(dock.demoRestingPoint) icon \(String(describing: dock.demoIconFrame(pinID: DemoContent.groceriesPinID)))")
         for w in NSApp.windows { log("window \(type(of: w)) \(w.frame) level \(w.level.rawValue) visible \(w.isVisible) alpha \(w.alphaValue)") }

@@ -30,6 +30,10 @@ public enum SharedContainer {
         return (value as? [String])?.contains(appGroupID) ?? false
     }
 
+    /// Whether the shared files can be used: a signed build with the group, or an override
+    /// directory (tests, and demo mode's private stand-in for the group container).
+    public static var isUsable: Bool { overrideDirectory != nil || isEntitled }
+
     public static func postInboxNotification() {
         let center = CFNotificationCenterGetDarwinNotifyCenter()
         CFNotificationCenterPostNotification(center, CFNotificationName(inboxNotificationName as CFString), nil, nil, true)

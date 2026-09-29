@@ -318,7 +318,7 @@ final class DockController {
     private func resolveScreen() -> NSScreen? {
         let screens = NSScreen.screens
         let infos = screens.map { ScreenInfo(name: $0.localizedName, frame: $0.frame) }
-        guard let index = Settings.shared.displayPreference.resolve(screens: infos, mouse: NSEvent.mouseLocation) else { return nil }
+        guard let index = Settings.shared.displayPreference.resolve(screens: infos, mouse: DemoMode.mouseLocation) else { return nil }
         return screens[index]
     }
 
@@ -348,7 +348,9 @@ final class DockController {
             if Settings.shared.mergeWithHardwareNotch {
                 anchorX = (hw.minX + hw.maxX) / 2
                 topInset = hw.height
-                mergedWidth = hw.maxX - hw.minX
+                // 1 pt wider than the auxiliary areas' gap: the housing's mask sits half a point
+                // off those (whole-point) areas, and a sliver of it showed past the outline.
+                mergedWidth = hw.maxX - hw.minX + 1
             } else {
                 anchorX = hw.maxX + 12
                 anchorLeading = true
@@ -361,7 +363,8 @@ final class DockController {
             size = CGSize(width: min(PanelSizeLimits.maxWidth, visible.width), height: visible.height)
         case .top:
             let strip = Theme.Notch.stripMetrics(pinCount: activePins.count).length + 2 * Theme.Notch.stripFlare
-            size = CGSize(width: min(frame.width, max(PanelSizeLimits.maxWidth + 120, strip + 80)), height: frame.height)
+            // From the screen's top down to the Dock (visible bottom): the panel never covers it.
+            size = CGSize(width: min(frame.width, max(PanelSizeLimits.maxWidth + 120, strip + 80)), height: frame.maxY - visible.minY)
         }
         let windowFrame = NotchGeometry.windowFrame(edge: edge.kind, frame: frame, visible: visible, size: size, topAnchorX: anchorX, topLeading: anchorLeading)
         windowSize = size
@@ -417,13 +420,17 @@ final class DockController {
     private func handleResize(_ handle: ResizeHandle, _ event: ResizeEvent) {
         guard phase == .expanded, let pinID = selectedPinID else { return }
         switch event {
-        case .began:
-            resizeSession = ResizeSession(handle: handle, startMouse: NSEvent.mouseLocation, startSize: layout.expandedSize)
+        case .began(let translation):
+            // Where the press was: the gesture reports only after its minimum distance, which
+            // would otherwise leave the edge a few points behind the cursor for the whole drag.
+            let mouse = DemoMode.mouseLocation
+            let start = CGPoint(x: mouse.x - translation.width, y: mouse.y + translation.height)
+            resizeSession = ResizeSession(handle: handle, startMouse: start, startSize: layout.expandedSize)
             notchState.isResizing = true
             panel.ignoresMouseEvents = false
         case .changed:
             guard let session = resizeSession else { return }
-            let mouse = NSEvent.mouseLocation
+            let mouse = DemoMode.mouseLocation
             let dx = mouse.x - session.startMouse.x
             let dy = session.startMouse.y - mouse.y  // screen y grows upward
             var size = session.startSize
@@ -438,7 +445,9 @@ final class DockController {
                 if corner { size.height += (second ? dy : -dy) * 2 }
             case .top:
                 size.height += dy
-                if corner { size.width += (second ? dx : -dx) * (anchorLeading ? 1 : 2) }
+                // Beside a hardware notch the leading end is fixed: only the trailing corner
+                // changes the width (the leading one would move the opposite end).
+                if corner, !(anchorLeading && !second) { size.width += (second ? dx : -dx) * (anchorLeading ? 1 : 2) }
             }
             liveExpandedSize = size
             notchState.layout = makeLayout()
@@ -657,9 +666,10 @@ final class DockController {
     }
 
     private func clampedExpandedCenter(for iconMid: CGFloat) -> CGFloat {
-        let length = makeLayout().metrics(for: .expanded).length
-        let half = length / 2
-        guard windowSize.height > length else { return windowSize.height / 2 }
+        let metrics = makeLayout().metrics(for: .expanded)
+        // Keep the body and its flares (plus the margin `maxPanelSize` leaves) inside the window.
+        let half = metrics.length / 2 + metrics.flare + 8
+        guard windowSize.height > 2 * half else { return windowSize.height / 2 }
         return min(max(iconMid, half), windowSize.height - half)
     }
 
@@ -821,7 +831,7 @@ final class DockController {
     /// Window-local point (top-left origin, matching `EdgeNotchShape`'s coordinate space)
     /// for the current global mouse location.
     private func currentLocalMousePoint() -> CGPoint {
-        let screenPoint = NSEvent.mouseLocation
+        let screenPoint = DemoMode.mouseLocation
         let local = panel.convertPoint(fromScreen: screenPoint)
         return CGPoint(x: local.x, y: windowSize.height - local.y)
     }
@@ -1017,7 +1027,7 @@ final class DockController {
     }
 
     private var isMouseOverAuxiliaryWindow: Bool {
-        let location = NSEvent.mouseLocation
+        let location = DemoMode.mouseLocation
         return NSApp.windows.contains { $0.isVisible && Self.isAuxiliary($0) && $0.frame.contains(location) }
     }
 }
@@ -1038,10 +1048,15 @@ extension DockController {
     func demoIconFrame(pinID: String) -> CGRect? {
         guard let index = pins.firstIndex(where: { $0.id == pinID }) else { return nil }
         let m = Theme.Notch.self
-        let stripTop = windowSize.height / 2 - m.stripMetrics(pinCount: pins.count).length / 2
+        let strip = layout.bodyRect(for: .strip)
         let switcher = m.iconSize + m.iconSpacing + 6 * Settings.shared.size.metricsScale
-        let mid = stripTop + m.stripPadding + switcher + CGFloat(index) * (m.iconSize + m.iconSpacing) + m.iconSize / 2
-        let midX = layout.bodyRect(for: .strip).midX
+        let offset = m.stripPadding + switcher + CGFloat(index) * (m.iconSize + m.iconSpacing) + m.iconSize / 2
+        if Settings.shared.edge == .top {
+            let midY = topInset + (strip.height - topInset) / 2
+            return CGRect(x: strip.minX + offset - m.iconSize / 2, y: midY - m.iconSize / 2, width: m.iconSize, height: m.iconSize)
+        }
+        let mid = strip.minY + offset
+        let midX = strip.midX
         return CGRect(x: midX - m.iconSize / 2, y: mid - m.iconSize / 2, width: m.iconSize, height: m.iconSize)
     }
 
@@ -1090,5 +1105,30 @@ extension DockController {
 
     func demoDatabaseModel(pinID: String) -> DatabaseViewModel? {
         databaseModels[pinID]
+    }
+}
+
+// MARK: - Demo probe
+extension DockController {
+    /// The expanded panel's body rect, window-local (top-left origin).
+    var demoExpandedBody: CGRect { layout.bodyRect(for: .expanded) }
+
+    /// One-line-per-fact state for the probe harness.
+    func demoStateDump() -> String {
+        let screen = currentScreen
+        func screenRect(_ r: CGRect) -> CGRect {
+            CGRect(x: panel.frame.minX + r.minX, y: panel.frame.maxY - r.maxY, width: r.width, height: r.height)
+        }
+        var lines = [
+            "phase \(phase) selected \(selectedPinID ?? "-") edge \(Settings.shared.edge.rawValue) merge \(Settings.shared.mergeWithHardwareNotch)",
+            "panel \(panel.frame) windowSize \(windowSize) ignoresMouse \(panel.ignoresMouseEvents)",
+            "screen \(screen?.frame ?? .zero) visible \(screen?.visibleFrame ?? .zero) safeTop \(screen?.safeAreaInsets.top ?? 0)",
+            "anchor \(layoutAnchor) leading \(anchorLeading) topInset \(topInset) mergedWidth \(mergedWidth.map { "\($0)" } ?? "nil")",
+            "expandedSize \(layout.expandedSize) max \(layout.maxPanelSize) stored \(selectedPinID.flatMap { panelSizes.hasSize(for: $0) ? "yes" : "no" } ?? "-")",
+        ]
+        for p in [NotchPhase.resting, .strip, .expanded] {
+            lines.append("\(p) body \(screenRect(layout.bodyRect(for: p))) bounding \(screenRect(layout.boundingRect(for: p, metrics: layout.metrics(for: p)))) hot \(screenRect(hotRect(for: p)))")
+        }
+        return lines.joined(separator: "\n")
     }
 }

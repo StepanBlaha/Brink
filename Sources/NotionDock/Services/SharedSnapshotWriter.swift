@@ -19,7 +19,7 @@ final class SharedSnapshotWriter {
     static func start(appModel: AppModel) { shared.start(appModel: appModel) }
 
     private func start(appModel: AppModel) {
-        guard self.appModel == nil, SharedContainer.isEntitled else { return }
+        guard self.appModel == nil, SharedContainer.isUsable else { return }
         self.appModel = appModel
         track()
         observers.append(NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in

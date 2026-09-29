@@ -15,6 +15,10 @@ enum DemoMode {
     }
 
     private(set) static var isActive = false
+    /// Demo-only stand-in for the pointer (synthetic drags, parking the real mouse's influence).
+    static var mouseOverride: CGPoint?
+    /// The pointer as the dock sees it: the override in demo mode, else the real mouse.
+    static var mouseLocation: CGPoint { (isActive ? mouseOverride : nil) ?? NSEvent.mouseLocation }
     private(set) static var trigger = Trigger()
     private static var savedDefaults: [String: Any]?
 
@@ -26,6 +30,13 @@ enum DemoMode {
 
     static let storageDirectory = FileManager.default.temporaryDirectory
         .appendingPathComponent("BrinkDemo-\(ProcessInfo.processInfo.processIdentifier)", isDirectory: true)
+
+    /// Demo mode's stand-in for the app-group container (snapshot + inbox), never the real one.
+    static var sharedDirectory: URL {
+        let url = storageDirectory.appendingPathComponent("shared", isDirectory: true)
+        try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
+    }
 
     private static var bundleID: String { Bundle.main.bundleIdentifier ?? "cz.stepanblaha.notiondock" }
     private static var defaultsBackupFile: URL {
@@ -45,7 +56,9 @@ enum DemoMode {
         let domain = UserDefaults.standard.persistentDomain(forName: bundleID) ?? [:]
         savedDefaults = domain
         (domain as NSDictionary).write(to: defaultsBackupFile, atomically: true)
-        UserDefaults.standard.setVolatileDomain(demoDefaults, forName: UserDefaults.argumentDomain)
+        // Optional `"defaults": {...}` in the trigger overrides the demo's look (probe runs).
+        let overrides = ((try? JSONSerialization.jsonObject(with: data)) as? [String: Any])?["defaults"] as? [String: Any] ?? [:]
+        UserDefaults.standard.setVolatileDomain(demoDefaults.merging(overrides) { $1 }, forName: UserDefaults.argumentDomain)
 
         NotificationCenter.default.addObserver(forName: NSApplication.willTerminateNotification, object: nil, queue: .main) { _ in
             MainActor.assumeIsolated { cleanUp() }
@@ -65,6 +78,8 @@ enum DemoMode {
             "badgeMode": "open",
             "pillProgressMode": "off",
             "onboardingCompleted": true,
+            // The user's real group id must not leak into the demo (or its widget snapshot).
+            "activeGroupID": "",
             "NotionDock.quickCapture.lastPinID": DemoContent.sprintPinID,
             "lastOpenedPinID": DemoContent.launchPinID,
         ]

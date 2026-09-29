@@ -9,7 +9,9 @@ enum ResizeHandle {
     case cornerA, cornerB
 }
 
-enum ResizeEvent { case began, changed, ended }
+/// `began` carries the drag's translation so far (SwiftUI global space, y down): the gesture
+/// only starts after `minimumDistance`, and the controller backs that out of its start point.
+enum ResizeEvent { case began(translation: CGSize), changed, ended }
 
 /// Invisible resize hit areas on the expanded panel's far edge (6pt) and far corners. The
 /// drag itself is measured by `DockController` from the global mouse position (the window
@@ -97,8 +99,8 @@ private struct Grip: View {
             .onDisappear { inside = false; dragging = false; syncCursor() }
             .gesture(
                 DragGesture(minimumDistance: 2, coordinateSpace: .global)
-                    .onChanged { _ in
-                        if !dragging { dragging = true; syncCursor(); onResize(handle, .began) }
+                    .onChanged { value in
+                        if !dragging { dragging = true; syncCursor(); onResize(handle, .began(translation: value.translation)) }
                         onResize(handle, .changed)
                     }
                     .onEnded { _ in

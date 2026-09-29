@@ -274,7 +274,7 @@ final class Settings {
         mergeWithHardwareNotch = defaults.bool(forKey: "mergeWithHardwareNotch")
         accentPreset = AccentPreset(rawValue: defaults.string(forKey: accentPresetKey) ?? "") ?? .blue
         size = DockSize(rawValue: defaults.string(forKey: sizeKey) ?? "") ?? .medium
-        activeGroupID = defaults.string(forKey: activeGroupIDKey)
+        activeGroupID = defaults.string(forKey: activeGroupIDKey).flatMap { $0.isEmpty ? nil : $0 }
         badgeMode = BadgeMode(rawValue: defaults.string(forKey: "badgeMode") ?? "") ?? .open
         pillProgressMode = PillProgressMode(rawValue: defaults.string(forKey: "pillProgressMode") ?? "") ?? .off
         soundsEnabled = defaults.object(forKey: "soundsEnabled") as? Bool ?? true

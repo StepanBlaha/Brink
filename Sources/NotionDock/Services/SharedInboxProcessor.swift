@@ -16,7 +16,7 @@ final class SharedInboxProcessor {
     static func start(appModel: AppModel) { shared.start(appModel: appModel) }
 
     private func start(appModel: AppModel) {
-        guard self.appModel == nil, SharedContainer.isEntitled else { return }
+        guard self.appModel == nil, SharedContainer.isUsable else { return }
         self.appModel = appModel
         let center = CFNotificationCenterGetDarwinNotifyCenter()
         CFNotificationCenterAddObserver(center, nil, { _, _, _, _, _ in

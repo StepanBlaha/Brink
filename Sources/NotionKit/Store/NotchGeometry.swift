@@ -36,6 +36,15 @@ public enum NotchGeometry {
         leading ? anchor + length / 2 : anchor
     }
 
+    /// Longest shape (body length, flares excluded) that fits along the edge inside a window
+    /// `windowLength` long, with its flares (`flare` each side) and a `margin` kept inside too.
+    /// Side edges and centered top shapes are symmetric about `anchor`; a `leading` top shape
+    /// starts at `anchor` and grows toward the window's trailing end.
+    public static func maxLength(windowLength: CGFloat, anchor: CGFloat, leading: Bool, flare: CGFloat, margin: CGFloat = 8) -> CGFloat {
+        if leading { return max(0, windowLength - anchor - flare - margin) }
+        return max(0, 2 * (min(anchor, windowLength - anchor) - flare - margin))
+    }
+
     /// Screen frame (AppKit, bottom-left origin) of the notch window. Side edges use
     /// `visible` and are vertically centered; the top edge uses the full `frame` (above the
     /// menu bar) and is positioned so `topAnchorX` (screen x) lies inside the window.

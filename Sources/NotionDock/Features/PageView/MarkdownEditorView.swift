@@ -16,7 +16,7 @@ struct MarkdownEditorView: NSViewRepresentable {
     var makeFirstResponderOnAppear: Bool = true
 
     func makeNSView(context: Context) -> NSScrollView {
-        let layoutManager = NSLayoutManager()
+        let layoutManager = EditorLayoutManager()
         document.storage.addLayoutManager(layoutManager)
         let container = NSTextContainer(size: NSSize(width: 0, height: CGFloat.greatestFiniteMagnitude))
         container.widthTracksTextView = true

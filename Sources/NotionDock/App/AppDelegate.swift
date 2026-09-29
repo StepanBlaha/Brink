@@ -17,11 +17,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         dockController = DockController(appModel: appModel)
         AppWindows.shared.onSettings = { [weak self] in self?.dockController?.showSettings() }
         CaptureBootstrap.start(appModel: appModel)
-        if !DemoMode.isActive {
-            // Demo mode must not feed fake data to the real widget or consume the real inbox.
-            SharedSnapshotWriter.start(appModel: appModel)
-            SharedInboxProcessor.start(appModel: appModel)
-        }
+        // Demo mode must not feed fake data to the real widget or consume the real inbox: it
+        // gets a private stand-in for the app-group folder inside its temporary storage.
+        if DemoMode.isActive { SharedContainer.overrideDirectory = DemoMode.sharedDirectory }
+        SharedSnapshotWriter.start(appModel: appModel)
+        SharedInboxProcessor.start(appModel: appModel)
         setUpStatusItem()
         if DemoMode.isActive, let dockController, let menuBar {
             DemoDirector.start(dock: dockController, menuBar: menuBar)

@@ -60,14 +60,11 @@ extension NotchLayout {
     var maxPanelSize: CGSize {
         let sideways = edge != .top
         let depthRoom = (sideways ? windowSize.width : windowSize.height) - topInset
-        let lengthRoom: CGFloat
-        if sideways {
-            lengthRoom = windowSize.height - 16
-        } else if anchorLeading {
-            lengthRoom = windowSize.width - anchor - 8
-        } else {
-            lengthRoom = 2 * min(anchor, windowSize.width - anchor) - 16
-        }
+        // The flares must stay inside the window too (a clipped flare looks broken).
+        let flare = Theme.Notch.expandedFlare
+        let lengthRoom = sideways
+            ? NotchGeometry.maxLength(windowLength: windowSize.height, anchor: windowSize.height / 2, leading: false, flare: flare)
+            : NotchGeometry.maxLength(windowLength: windowSize.width, anchor: anchor, leading: anchorLeading, flare: flare)
         return sideways ? CGSize(width: depthRoom, height: lengthRoom) : CGSize(width: lengthRoom, height: depthRoom)
     }
 }

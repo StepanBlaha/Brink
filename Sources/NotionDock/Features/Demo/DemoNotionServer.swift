@@ -4,7 +4,7 @@ import Foundation
 /// a URLProtocol, seeded from `DemoContent`. Demo mode's `NotionClient` uses `session`, so no
 /// request ever leaves the Mac and no real token is involved.
 final class DemoNotionServer: URLProtocol, @unchecked Sendable {
-    private static let lock = NSLock()
+    static let lock = NSLock()
     nonisolated(unsafe) static var blocks: [String: [String: Any]] = [:]
     nonisolated(unsafe) static var children: [String: [String]] = [:]
     nonisolated(unsafe) static var rows: [String: [String: Any]] = [:]
@@ -81,7 +81,11 @@ final class DemoNotionServer: URLProtocol, @unchecked Sendable {
         }
         let json = bodyData.flatMap { try? JSONSerialization.jsonObject(with: $0) } as? [String: Any]
         Self.lock.lock()
-        let (status, response) = Self.handle(method: method, path: path, body: json)
+        Self.record(method: method, path: path, body: json)
+        let (status, response) = path.hasPrefix("/v1/file_uploads")
+            ? Self.handleUploads(id: path.split(separator: "/").dropFirst(2).first.map(String.init) ?? "",
+                                 sub: path.split(separator: "/").dropFirst(3).first.map(String.init) ?? "", body: json, raw: bodyData)
+            : Self.handle(method: method, path: path, body: json)
         Self.lock.unlock()
 
         let data = (try? JSONSerialization.data(withJSONObject: response)) ?? Data()
