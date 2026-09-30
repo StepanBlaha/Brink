@@ -301,7 +301,7 @@ A napiš mi:
 • jestli bys ho používal dál
 
 Díky moc 🖤
-Stepan
+Štěpán
 ```
 **EN:** the same text, translated:
 ```
@@ -317,7 +317,7 @@ Could you install it completely on your own, without my help?
 Then tell me: where you got stuck, what you liked most, what's missing, and whether you'd keep using it.
 
 Thanks a lot 🖤
-Stepan
+Štěpán
 ```
 
 ### 8.2 Launch-day message to friends and family (WhatsApp / Messenger / Discord)
@@ -340,7 +340,7 @@ Subject: A free Mac notch for Notion tasks (made it, thought of your audience)
 
 Hi [name],
 
-I'm Stepan, an indie developer. I built Brink, a free and open-source Mac app that puts your Notion pages and tasks in a small notch on the screen edge: hover to peek and tick tasks, a Notion-style editor in a panel, quick capture with a hotkey, a Today view and reminders.
+I'm Štěpán, a front-end developer from Prague. I built Brink, a free and open-source Mac app that puts your Notion pages and tasks in a small notch on the screen edge: hover to peek and tick tasks, a Notion-style editor in a panel, quick capture with a hotkey, a Today view and reminders.
 
 Your videos on [specific video/topic] are why I thought it could fit your audience. Here's a 20-second demo: [link to reel or hero video]
 Site: https://brinknotch.site
@@ -348,7 +348,7 @@ Site: https://brinknotch.site
 No pressure at all. If you try it, I'd love your honest take, and I'm happy to answer questions or add a feature your viewers ask for.
 
 Thanks,
-Stepan
+Štěpán
 (Brink is independent, not affiliated with Notion.)
 ```
 **Tips:** personalize the first line, keep it short, attach the video, and follow up once after 5–7 days.
@@ -371,10 +371,10 @@ Aplikace je nativní (Swift), zdarma, s otevřeným kódem (MIT) a bez sledován
 Rád odpovím na dotazy nebo poskytnu rozhovor.
 
 S pozdravem
-Stepan Blaha
+Štěpán Bláha
 stepa15.b@gmail.com
 ```
-(Add the diacritics to your name, e.g. Štěpán Bláha, if that's how you write it.)
+
 
 ---
 
