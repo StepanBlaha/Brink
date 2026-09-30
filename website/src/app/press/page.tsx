@@ -10,7 +10,7 @@ import { Colors } from "@/components/press/Colors";
 import { Facts } from "@/components/press/Facts";
 
 export const metadata = pageMetadata({
-  title: "Brink press kit: name, icon, colors and facts",
+  title: "Press kit: name, icon, colors and facts",
   description: "Brink press kit: how to write the name, taglines, short and long descriptions, icon downloads, color palette and app facts.",
   path: "press/",
   ogTitle: "Brink press kit",
@@ -21,7 +21,7 @@ export default function PressPage() {
   return (
     <>
       <JsonLd data={pressJsonLd} />
-      <Prose title="Press kit" wide>
+      <Prose title="Press kit" wide crumb={{ name: "Press kit", path: "press/" }}>
         <p className="lede">
           Everything you need to write about Brink. For anything else, email{" "}
           <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.

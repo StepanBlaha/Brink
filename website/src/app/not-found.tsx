@@ -1,13 +1,13 @@
 import Link from "next/link";
-import { pageMetadata } from "@/lib/metadata";
+import type { Metadata } from "next";
 import { Prose } from "@/components/Prose";
 
-export const metadata = pageMetadata({
+/** No canonical here: the same document is served for every missing URL. */
+export const metadata: Metadata = {
   title: "Page not found",
   description: "This page does not exist.",
-  path: "404.html",
-  noindex: true,
-});
+  robots: { index: false },
+};
 
 export default function NotFound() {
   return (

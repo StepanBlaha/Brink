@@ -17,7 +17,7 @@ Brink is a Mac app that shows your Notion pages and tasks in a notch at the edge
 ## Where your data goes
 
 - Brink talks **only to the Notion API** (`api.notion.com`) and to the image and file URLs Notion returns for your own pages.
-- It sends your token and your page content there to read and save your pages, under [Notion's privacy policy](https://www.notion.com/notion/privacy).
+- It sends your token and your page content there to read and save your pages, under [Notion's privacy policy](https://www.notion.so/notion/Privacy-Policy-3468d120cf614d4c9014c09f6adc9091).
 - **No analytics, tracking, advertising, crash reporting or telemetry.** Brink has no server of its own, so nothing is sent to its developer.
 - **Diagnostic logs:** Brink writes local diagnostic logs to the macOS unified log (subsystem `cz.stepanblaha.notiondock`). They can include block IDs and error messages, but never your token. They stay on your Mac unless you choose to share them.
 

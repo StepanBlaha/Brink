@@ -2,7 +2,7 @@
 # Turns a demo recording (scripts/record-demo.sh) into the marketing media:
 #   marketing/screenshots/*.png            App Store Mac screenshots, 2880x1800, captioned
 #   website/public/assets/media/hero.{mp4,webm}   20–30 s loop, 1600 px, no audio (+ hero-poster.jpg)
-#   website/public/assets/media/{peek-tick,editor,capture}.{mp4,gif}   5–8 s feature clips
+#   website/public/assets/media/{peek-tick,editor,capture}.mp4, marketing/media/*.gif   5–8 s feature clips
 # Usage: scripts/make-demo-media.sh <work folder with raw.mov, times.txt, shots/>
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -11,7 +11,8 @@ FF=/opt/homebrew/bin/ffmpeg
 FFPROBE=/opt/homebrew/bin/ffprobe
 SHOTS=marketing/screenshots
 MEDIA=website/public/assets/media
-mkdir -p "$SHOTS" "$MEDIA"
+GIF_OUT=marketing/media   # README-only GIFs, not published on the site
+mkdir -p "$SHOTS" "$MEDIA" "$GIF_OUT"
 [ -s "$WORK/raw.mov" ] || { echo "missing $WORK/raw.mov" >&2; exit 1; }
 
 # --- Timeline: seconds from the start of raw.mov for each marker ------------------------------
@@ -44,13 +45,18 @@ still 6-menubar 06-menu-bar     "In the menu bar, too."
 # 16:10 crop anchored at the top (keeps the menu bar). Peek → editor → capture → menu bar (the
 # task-panel segment is left out; the peek already shows a tick), sped up to land under 30 s.
 CROP="crop=iw:trunc(iw*10/16/2)*2:0:0"
+# macOS draws its purple screen-recording dot at the far right of the menu bar while recording;
+# delogo paints it out from the surrounding menu bar (demo-still.swift does the same for stills).
+RAW_W=$($FFPROBE -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$WORK/raw.mov")
+K=1; [ "$RAW_W" -gt 2000 ] && K=2   # backing scale (Retina)
+DOT="delogo=x=$((RAW_W - 29 * K)):y=$((7 * K)):w=$((21 * K)):h=$((20 * K))"
 A1=$(sub "$(t seg-peek)" 0.6); A2=$(t seg-tasks)
 B1=$(add "$(t seg-editor)" 0.05); B2=$(add "$(t seg-outro)" 1.9)
 LEN=$(awk -v a="$A2" -v b="$A1" -v c="$B2" -v d="$B1" 'BEGIN{printf "%.2f", (a-b)+(c-d)}')
 SPEED=$(awk -v l="$LEN" 'BEGIN{s=l/29; if (s<1) s=1; printf "%.3f", s}')
 echo "Hero: $A1-$A2 + $B1-$B2 s ($LEN s at ${SPEED}x)"
 part() { # <start> <end> <out>: a lossless-ish intermediate at constant 60 fps
-    $FF -v error -y -ss "$1" -i "$WORK/raw.mov" -an -t "$(sub "$2" "$1")" -vf "setpts=PTS-STARTPTS,fps=60,$CROP" \
+    $FF -v error -y -ss "$1" -i "$WORK/raw.mov" -an -t "$(sub "$2" "$1")" -vf "setpts=PTS-STARTPTS,fps=60,$DOT,$CROP" \
         -c:v libx264 -preset veryfast -crf 12 -pix_fmt yuv420p "$3"
 }
 part "$A1" "$A2" "$WORK/hero-a.mp4"
@@ -72,7 +78,7 @@ clip() { # <name> <start> <duration> <speed> <crop filter>
     $FF -v error -y -ss "$(awk -v l="$out_len" 'BEGIN{printf "%.2f", l*0.62}')" -i "$MEDIA/$name.mp4" -frames:v 1 -q:v 3 "$MEDIA/$name-poster.jpg"
     $FF -v error -y -i "$MEDIA/$name.mp4" \
         -vf "fps=15,scale=800:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=160:stats_mode=diff[p];[b][p]paletteuse=dither=sierra2_4a:diff_mode=rectangle" \
-        "$MEDIA/$name.gif"
+        "$GIF_OUT/$name.gif"
 }
 # Right half, vertically centered on the notch.
 RIGHT="crop=trunc(iw*0.56/2)*2:trunc(iw*0.56*10/16/2)*2:iw-trunc(iw*0.56/2)*2:(ih-trunc(iw*0.56*10/16/2)*2)/2"

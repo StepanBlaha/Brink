@@ -1,6 +1,7 @@
 import AppKit
 
-/// A full-screen "desktop" under the notch for recordings: the icon's dusk wallpaper, a clean
+/// A full-screen "desktop" under the notch for recordings: the graphite wallpaper from
+/// branding/BRAND.md, a clean
 /// fake menu bar and a quiet fake app window. It hides the user's real desktop, windows, Dock
 /// and menu-bar items.
 @MainActor
@@ -43,13 +44,15 @@ private final class BackdropView: NSView {
 
     override func draw(_ dirtyRect: NSRect) {
         let b = bounds
-        NSGradient(colors: [NSColor(srgbRed: 0.36, green: 0.42, blue: 0.62, alpha: 1),
-                            NSColor(srgbRed: 0.62, green: 0.52, blue: 0.66, alpha: 1),
-                            NSColor(srgbRed: 0.93, green: 0.66, blue: 0.56, alpha: 1)])!.draw(in: b, angle: -70)
-        // Soft glow low on the right, like a sunset behind hills.
-        NSGradient(colors: [NSColor(srgbRed: 1, green: 0.78, blue: 0.6, alpha: 0.45), NSColor(srgbRed: 1, green: 0.78, blue: 0.6, alpha: 0)])!
-            .draw(fromCenter: NSPoint(x: b.width * 0.72, y: b.height * 0.05), radius: 0,
-                  toCenter: NSPoint(x: b.width * 0.72, y: b.height * 0.05), radius: b.width * 0.5, options: [])
+        // Graphite: a mid slate, so the black notch and its hairline outline separate from it.
+        NSGradient(colors: [Self.hex(0x4b5058), Self.hex(0x3a3f46), Self.hex(0x2b2f35)])!.draw(in: b, angle: -70)
+        // Faint cool sheen at the top left, then a soft vignette towards the corners.
+        NSGradient(colors: [NSColor(srgbRed: 0.85, green: 0.9, blue: 1, alpha: 0.08), NSColor(srgbRed: 0.85, green: 0.9, blue: 1, alpha: 0)])!
+            .draw(fromCenter: NSPoint(x: b.width * 0.2, y: b.height), radius: 0,
+                  toCenter: NSPoint(x: b.width * 0.2, y: b.height), radius: b.width * 0.6, options: [])
+        NSGradient(colors: [NSColor.black.withAlphaComponent(0), NSColor.black.withAlphaComponent(0.28)])!
+            .draw(fromCenter: NSPoint(x: b.midX, y: b.midY), radius: b.height * 0.45,
+                  toCenter: NSPoint(x: b.midX, y: b.midY), radius: hypot(b.width, b.height) * 0.62, options: [])
         drawAppWindow(in: b)
         drawMenuBar(in: b)
     }
@@ -116,6 +119,10 @@ private final class BackdropView: NSView {
             if w > 0 { bar(NSRect(x: left, y: y, width: (frame.maxX - left - 50) * w, height: 9), gray) }
             y -= 26
         }
+    }
+
+    private static func hex(_ v: Int) -> NSColor {
+        NSColor(srgbRed: CGFloat((v >> 16) & 255) / 255, green: CGFloat((v >> 8) & 255) / 255, blue: CGFloat(v & 255) / 255, alpha: 1)
     }
 
     private func bar(_ rect: NSRect, _ color: NSColor) {

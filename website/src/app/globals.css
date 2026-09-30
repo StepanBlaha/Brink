@@ -64,3 +64,6 @@ kbd {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+/* Above-the-fold intro: the HTML is visible by default and a short CSS animation (no JS) eases it in. */
+.intro { animation: intro 0.35s var(--ease) both; animation-delay: var(--d, 0s); }
+@keyframes intro { from { opacity: 0.001; transform: translateY(8px); } }

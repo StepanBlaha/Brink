@@ -1,4 +1,5 @@
 import { Brand } from "./Brand";
+import { MobileMenu } from "./MobileMenu";
 import { NavLinks } from "./NavLinks";
 import { HeaderShell } from "./HeaderShell";
 import { ScrollProgress } from "./ScrollProgress";
@@ -11,7 +12,10 @@ export function Header() {
       <HeaderShell>
         <div className={`wrap ${styles.inner}`}>
           <Brand />
-          <NavLinks />
+          <div className={styles.right}>
+            <NavLinks />
+            <MobileMenu />
+          </div>
         </div>
       </HeaderShell>
     </>

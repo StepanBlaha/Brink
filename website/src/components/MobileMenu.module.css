@@ -1,0 +1,21 @@
+.toggle {
+  display: none; width: 44px; height: 44px; margin-right: -10px; padding: 0; border: 0; background: transparent;
+  color: #fff; cursor: pointer; align-items: center; justify-content: center; border-radius: 10px;
+}
+.bars { position: relative; width: 20px; height: 12px; display: block; }
+.bars i { position: absolute; left: 0; right: 0; height: 2px; border-radius: 2px; background: currentColor; transition: transform 0.25s var(--ease), top 0.25s var(--ease); }
+.bars i:first-child { top: 1px; }
+.bars i:last-child { top: 9px; }
+.barsOpen i:first-child { top: 5px; transform: rotate(45deg); }
+.barsOpen i:last-child { top: 5px; transform: rotate(-45deg); }
+.panel {
+  position: fixed; inset: 57px 0 0 0; z-index: 55; background: #000; display: flex; flex-direction: column;
+  padding: 16px var(--gut) 40px; overflow-y: auto; overscroll-behavior: contain;
+}
+.panel a {
+  display: block; padding: 16px 0; font-size: 1.6rem; font-weight: 600; letter-spacing: -0.02em;
+  color: #fff; text-decoration: none; border-bottom: 1px solid var(--line);
+}
+.panel a:hover, .panel a[aria-current="page"] { color: var(--accent-text); }
+@media (max-width: 640px) { .toggle { display: inline-flex; } }
+@media (prefers-reduced-motion: reduce) { .bars i { transition: none; } }

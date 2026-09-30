@@ -13,11 +13,15 @@ func render(_ px: Int) -> NSBitmapImageRep {
 
     // Squircle background.
     let bg = NSBezierPath(roundedRect: box, xRadius: box.width * 0.225, yRadius: box.width * 0.225)
-    // "Screen": a calm dusk wallpaper gradient.
-    NSGradient(colors: [NSColor(srgbRed: 0.36, green: 0.42, blue: 0.62, alpha: 1),
-                        NSColor(srgbRed: 0.62, green: 0.52, blue: 0.66, alpha: 1),
-                        NSColor(srgbRed: 0.93, green: 0.66, blue: 0.56, alpha: 1)])!.draw(in: bg, angle: -70)
+    // "Screen": the graphite wallpaper (branding/BRAND.md), a touch lighter so the black notch reads.
+    NSGradient(colors: [NSColor(srgbRed: 0x5b / 255.0, green: 0x61 / 255.0, blue: 0x6a / 255.0, alpha: 1),
+                        NSColor(srgbRed: 0x46 / 255.0, green: 0x4b / 255.0, blue: 0x53 / 255.0, alpha: 1),
+                        NSColor(srgbRed: 0x2e / 255.0, green: 0x32 / 255.0, blue: 0x38 / 255.0, alpha: 1)])!.draw(in: bg, angle: -70)
     bg.addClip()
+    // Soft cool sheen at the top left, like light on a matte display.
+    NSGradient(colors: [NSColor(srgbRed: 0.85, green: 0.9, blue: 1, alpha: 0.16), NSColor(srgbRed: 0.85, green: 0.9, blue: 1, alpha: 0)])!
+        .draw(fromCenter: NSPoint(x: box.minX + box.width * 0.2, y: box.maxY - box.height * 0.1), radius: 0,
+              toCenter: NSPoint(x: box.minX + box.width * 0.2, y: box.maxY - box.height * 0.1), radius: box.width * 0.75, options: [])
 
     // Black bezel on the right edge; the notch hangs off it.
     let edgeX = box.maxX - box.width * 0.1
@@ -50,6 +54,10 @@ func render(_ px: Int) -> NSBitmapImageRep {
     check.line(to: NSPoint(x: cbRect.maxX - cb * 0.22, y: cbRect.maxY - cb * 0.26))
     check.lineWidth = cb * 0.13; check.lineCapStyle = .round; check.lineJoinStyle = .round
     NSColor.white.setStroke(); check.stroke()
+
+    // Faint rim so the dark squircle still separates from a dark Dock.
+    bg.lineWidth = max(1, box.width * 0.012)
+    NSColor(white: 1, alpha: 0.1).setStroke(); bg.stroke()
 
     NSGraphicsContext.restoreGraphicsState()
     return rep

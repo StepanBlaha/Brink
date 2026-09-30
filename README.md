@@ -3,7 +3,7 @@
 <h1 align="center">Brink</h1>
 <p align="center"><b>Your pages, on the edge.</b><br>A quiet notch on the edge of your Mac's screen that keeps your Notion pages and tasks one hover away.</p>
 
-<p align="center"><img src="website/public/assets/media/peek-tick.gif" width="720" alt="Hovering the Brink notch shows a peek of a grocery list; one item gets ticked off in place"></p>
+<p align="center"><img src="marketing/media/peek-tick.gif" width="720" alt="Hovering the Brink notch shows a peek of a grocery list; one item gets ticked off in place"></p>
 
 > Brink is an independent app. It is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc. "Notion" is a trademark of Notion Labs, Inc.
 
@@ -58,7 +58,7 @@ swift test
 | `Tests/NotionKitTests/` | 190+ tests, including a fake Notion server for end-to-end sync |
 | `branding/` | Brand guide, app icon and its generator |
 | `legal/`, `LICENSE` | Privacy policy, terms, third-party notices |
-| `website/`, `marketing/` | Next.js (App Router, CSS Modules) static site for GitHub Pages: landing page, SEO, press kit, legal pages rendered from `legal/*.md`; App Store and launch copy. Config in `website/src/site.ts`. `website-legacy/` is the old static HTML kept for reference |
+| `website/`, `marketing/` | Next.js (App Router, CSS Modules) static site for GitHub Pages: landing page, SEO, press kit, legal pages rendered from `legal/*.md`; App Store and launch copy. Config in `website/src/site.ts`. the old static site was removed |
 
 The code module is still named `NotionDock`. Existing installs keep their data because the bundle id and storage paths stayed the same. Rename it only before a first public release.
 

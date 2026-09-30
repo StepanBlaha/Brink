@@ -4,6 +4,7 @@
   border-bottom: 1px solid var(--line);
 }
 .inner { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+.right { display: flex; align-items: center; gap: clamp(8px, 2vw, 16px); }
 .nav { display: flex; gap: clamp(12px, 3vw, 28px); align-items: center; font-size: 0.92rem; }
 .nav a { color: var(--fg2); text-decoration: none; }
 .nav a:hover, .nav a[aria-current="page"] { color: #fff; }

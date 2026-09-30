@@ -8,5 +8,5 @@ export const metadata = pageMetadata({
 });
 
 export default function Page() {
-  return <LegalPage file="NOTICE.md" title="Acknowledgements" />;
+  return <LegalPage file="NOTICE.md" title="Acknowledgements" path="acknowledgements/" />;
 }

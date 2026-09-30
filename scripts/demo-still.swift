@@ -2,7 +2,8 @@
 // Usage: swift scripts/demo-still.swift <in.png> <out.png> "<caption>"
 // The capture is scaled to fill the width and anchored at the top (the fake menu bar stays);
 // a display taller than 16:10 loses a strip at the bottom, a wider one is letterboxed with the
-// wallpaper's colors. The caption is white SF Pro on the dusk gradient, bottom center.
+// wallpaper's colors. The caption is white SF Pro on the graphite wallpaper (branding/BRAND.md),
+// bottom center.
 // (Swift, not ffmpeg drawtext: the Homebrew ffmpeg here is built without libfreetype.)
 import AppKit
 
@@ -19,9 +20,10 @@ let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: width, pixelsHigh:
 NSGraphicsContext.saveGraphicsState()
 NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
 let canvas = NSRect(x: 0, y: 0, width: width, height: height)
-NSGradient(colors: [NSColor(srgbRed: 0.36, green: 0.42, blue: 0.62, alpha: 1),
-                    NSColor(srgbRed: 0.62, green: 0.52, blue: 0.66, alpha: 1),
-                    NSColor(srgbRed: 0.93, green: 0.66, blue: 0.56, alpha: 1)])!.draw(in: canvas, angle: -70)
+func hex(_ v: Int) -> NSColor {
+    NSColor(srgbRed: CGFloat((v >> 16) & 255) / 255, green: CGFloat((v >> 8) & 255) / 255, blue: CGFloat(v & 255) / 255, alpha: 1)
+}
+NSGradient(colors: [hex(0x4b5058), hex(0x3a3f46), hex(0x2b2f35)])!.draw(in: canvas, angle: -70)
 
 let srcW = CGFloat(cg.width), srcH = CGFloat(cg.height)
 var scale = CGFloat(width) / srcW
@@ -30,6 +32,15 @@ let drawW = srcW * scale, drawH = srcH * scale
 let drawRect = NSRect(x: (CGFloat(width) - drawW) / 2, y: CGFloat(height) - drawH, width: drawW, height: drawH)
 NSGraphicsContext.current?.imageInterpolation = .high
 NSGraphicsContext.current?.cgContext.draw(cg, in: drawRect)
+
+// Paint out macOS's purple screen-recording dot (far right of the menu bar) with a thin
+// column of the menu bar just left of it, stretched. make-demo-media.sh uses ffmpeg delogo on the same box.
+let k: CGFloat = srcW > 2000 ? 2 : 1
+if let patch = cg.cropping(to: CGRect(x: srcW - 40 * k, y: 7 * k, width: 3 * k, height: 20 * k)) {
+    let dot = NSRect(x: drawRect.minX + (srcW - 29 * k) * scale, y: drawRect.maxY - 27 * k * scale,
+                     width: 21 * k * scale, height: 20 * k * scale)
+    NSGraphicsContext.current?.cgContext.draw(patch, in: dot)
+}
 
 let caption = args[3]
 let font = NSFont.systemFont(ofSize: 76, weight: .semibold)

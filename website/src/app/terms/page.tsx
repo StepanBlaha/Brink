@@ -8,5 +8,5 @@ export const metadata = pageMetadata({
 });
 
 export default function Page() {
-  return <LegalPage file="TERMS.md" title="Terms of Use" />;
+  return <LegalPage file="TERMS.md" title="Terms of Use" path="terms/" />;
 }

@@ -7,10 +7,16 @@ import type LocomotiveScroll from "locomotive-scroll";
 interface SmoothApi {
   /** Smooth-scrolls to a selector/element/offset. Returns false when smooth scroll is off. */
   scrollTo: (target: string | HTMLElement | number) => boolean;
+  /** Pause / resume smooth scrolling (e.g. while a modal menu is open). No-op when smooth scroll is off. */
+  stop: () => void;
+  start: () => void;
 }
 
-const Ctx = createContext<SmoothApi>({ scrollTo: () => false });
+const Ctx = createContext<SmoothApi>({ scrollTo: () => false, stop: () => {}, start: () => {} });
 export const useSmoothScroll = () => useContext(Ctx);
+
+/** Fired on document just before a same-page anchor click is smooth-scrolled. */
+export const BEFORE_ANCHOR_SCROLL = "brink:before-anchor-scroll";
 
 const stripSlash = (p: string) => p.replace(/\/+$/, "");
 
@@ -56,7 +62,10 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       if (!el) return;
       e.preventDefault();
       e.stopPropagation();
-      loco.scrollTo(el, { duration: 1.3 });
+      // This handler swallows the click before React sees it, so tell listeners (the mobile menu) first.
+      document.dispatchEvent(new Event(BEFORE_ANCHOR_SCROLL));
+      loco.start();
+      loco.scrollTo(el, { duration: 1.3, force: true });
       history.pushState(null, "", a.hash);
     };
     document.addEventListener("click", onClick, true);
@@ -67,9 +76,11 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     () => ({
       scrollTo: (target) => {
         if (!instance.current) return false;
-        instance.current.scrollTo(target, { duration: 1.3 });
+        instance.current.scrollTo(target, { duration: 1.3, force: true });
         return true;
       },
+      stop: () => instance.current?.stop(),
+      start: () => instance.current?.start(),
     }),
     [],
   );
