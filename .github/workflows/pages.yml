@@ -26,8 +26,8 @@ jobs:
       - name: Build static site
         working-directory: website
         env:
-          # A GitHub project Pages site lives under /<repo>. Empty this with a custom domain.
-          NEXT_PUBLIC_BASE_PATH: /Brink
+          # Custom domain: the site is served from the root, so no base path.
+          NEXT_PUBLIC_SITE_URL: https://brinknotch.site
         run: |
           npm ci
           npm run build
@@ -37,3 +37,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./website/out
           force_orphan: true
+          cname: brinknotch.site

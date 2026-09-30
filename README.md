@@ -11,7 +11,7 @@
   <a href="https://github.com/StepanBlaha/Brink/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/StepanBlaha/Brink/total?color=555"></a>
 </p>
 
-<p align="center"><a href="https://github.com/StepanBlaha/Brink/releases/latest"><b>⬇ Download Brink for Mac</b></a> · <a href="https://stepanblaha.github.io/Brink/">Website</a> · <a href="https://stepanblaha.github.io/Brink/#faq">FAQ</a></p>
+<p align="center"><a href="https://github.com/StepanBlaha/Brink/releases/latest"><b>⬇ Download Brink for Mac</b></a> · <a href="https://brinknotch.site/">Website</a> · <a href="https://brinknotch.site/#faq">FAQ</a></p>
 
 <p align="center"><img src="marketing/media/peek-tick.gif" width="720" alt="Hovering the Brink notch shows a peek of a grocery list; one item gets ticked off in place"></p>
 
@@ -48,7 +48,7 @@
 - **Share menu:** if "Send to Brink" isn't listed, enable it in System Settings → General → Login Items & Extensions → **Sharing**.
 - **Launch at login:** turn it on in Brink Settings → General.
 
-Questions? See the [FAQ](https://stepanblaha.github.io/Brink/#faq) or [open an issue](https://github.com/StepanBlaha/Brink/issues/new/choose).
+Questions? See the [FAQ](https://brinknotch.site/#faq) or [open an issue](https://github.com/StepanBlaha/Brink/issues/new/choose).
 
 ## Privacy
 
@@ -106,7 +106,7 @@ npm run build        # static export to website/out
 npm run lint && npm run typecheck
 ```
 
-Site settings (URL, email, links, price) live in `website/src/site.ts`. The site is served from `/` by default. GitHub Pages needs `/Brink`, so the deploy workflow builds with `NEXT_PUBLIC_BASE_PATH=/Brink`. For a custom domain, drop that variable and set `NEXT_PUBLIC_SITE_URL`. Every push to `main` deploys `website/out` to the `gh-pages` branch.
+Site settings (URL, email, links, price) live in `website/src/site.ts`. The site is live at https://brinknotch.site (a custom domain on GitHub Pages) and is served from the root. The deploy workflow sets `NEXT_PUBLIC_SITE_URL=https://brinknotch.site` and writes the `CNAME` file on every deploy. Every push to `main` deploys `website/out` to the `gh-pages` branch.
 
 ## Contributing and security
 

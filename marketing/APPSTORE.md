@@ -89,8 +89,8 @@ All "None" / "No": cartoon or fantasy violence, realistic violence, sexual conte
 
 ## URLs (placeholders)
 - Support URL: https://github.com/StepanBlaha/Brink/issues
-- Marketing URL: https://stepanblaha.github.io/Brink/
-- Privacy Policy URL: https://stepanblaha.github.io/Brink/privacy.html
+- Marketing URL: https://brinknotch.site/
+- Privacy Policy URL: https://brinknotch.site/privacy.html
 - Support email: stepa15.b@gmail.com
 - Copyright: 2026 Stepan Blaha
 

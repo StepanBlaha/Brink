@@ -54,7 +54,7 @@ It is a black notch on the edge of the screen (left, right or top). Hover to pee
 
 Native SwiftUI/AppKit, no tracking, no server: your data goes between your Mac and Notion only. Requires macOS 14+ and a Notion internal integration.
 
-It's free. Feedback very welcome: https://stepanblaha.github.io/Brink/
+It's free. Feedback very welcome: https://brinknotch.site/
 
 Brink is an independent app and is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc.
 ```

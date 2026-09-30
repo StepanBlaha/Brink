@@ -2,8 +2,8 @@ import Foundation
 
 /// External destinations used by the About window and the Help entries.
 enum Links {
-    static let website = URL(string: "https://stepanblaha.github.io/Brink/")!
-    static let help = URL(string: "https://stepanblaha.github.io/Brink/#faq")!
+    static let website = URL(string: "https://brinknotch.site/")!
+    static let help = URL(string: "https://brinknotch.site/#faq")!
     static let feedbackEmail = "stepa15.b@gmail.com"
     static let download = URL(string: "https://github.com/StepanBlaha/Brink/releases/latest")!
     static var feedback: URL {
