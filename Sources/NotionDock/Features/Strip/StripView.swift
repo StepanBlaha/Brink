@@ -75,6 +75,15 @@ struct StripView: View {
 
     @ViewBuilder
     private func contextMenu(for pin: PinItem) -> some View {
+        if TodayPin.isToday(pin.id) {
+            if let onUnpin { Button("Hide Today") { onUnpin(pin) } }
+        } else {
+            realContextMenu(for: pin)
+        }
+    }
+
+    @ViewBuilder
+    private func realContextMenu(for pin: PinItem) -> some View {
         if let onKeepOpen, let isKeptOpen {
             Button(isKeptOpen(pin) ? "Keep open ✓" : "Keep open") {
                 onKeepOpen(pin)

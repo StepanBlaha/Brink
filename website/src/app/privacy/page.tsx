@@ -3,7 +3,7 @@ import { LegalPage } from "@/components/LegalPage";
 
 export const metadata = pageMetadata({
   title: "Privacy Policy",
-  description: "Brink's privacy policy: your data stays between your Mac and Notion. No analytics, no tracking, no server.",
+  description: "Brink's privacy policy: your data stays between your Mac and Notion. No analytics, no tracking, nothing stored on a server.",
   path: "privacy/",
 });
 

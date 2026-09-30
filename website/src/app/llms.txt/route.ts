@@ -12,7 +12,7 @@ Key facts:
 - Runs on macOS 14 or later.
 - ${site.price}. No account, no subscription.
 - Works with Notion through an internal integration that you create and control.
-- Privacy: no analytics, no tracking, no server. Your data goes only between your Mac and the Notion API.
+- Privacy: no analytics, no tracking, no data stored on any server. Your pages go only between your Mac and the Notion API. The optional "Connect to Notion" sign-in passes through a small relay that swaps the login code for a token and stores and logs nothing.
 
 ${site.disclaimer} ${site.trademark}
 

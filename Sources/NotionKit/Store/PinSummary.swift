@@ -10,6 +10,8 @@ public struct PinSummary: Sendable, Equatable {
     public var nextItems: [String]
     /// Ids + titles of the first (up to) `nextRefLimit` open items (for the widget).
     public var nextRefs: [ItemRef] = []
+    /// Every open item that has a date (database pins with a date property only).
+    public var dueItems: [DueItem] = []
 
     public struct ItemRef: Sendable, Equatable {
         public let id: String
@@ -57,7 +59,7 @@ public struct PinSummary: Sendable, Equatable {
 
     /// Counts database rows using the pin's config: done = the done property (checkbox true,
     /// or status equal to `doneValue`); due today = an open row whose date property starts today.
-    public static func fromRows(_ rows: [Row], config: DatabaseConfig, today: String) -> PinSummary {
+    public static func fromRows(_ rows: [Row], config: DatabaseConfig, today: String, pinId: String = "", calendar: Calendar = .current) -> PinSummary {
         var summary = PinSummary.empty
         for row in rows {
             summary.total += 1
@@ -73,6 +75,11 @@ public struct PinSummary: Sendable, Equatable {
                case .date(let start?, _)? = row.properties[dateName],
                start.hasPrefix(today) {
                 summary.dueTodayCount += 1
+            }
+            if let dateName = config.dateProperty,
+               case .date(let start?, _)? = row.properties[dateName],
+               let parsed = DueDateParser.parse(start, calendar: calendar) {
+                summary.dueItems.append(DueItem(id: row.id, pinId: pinId, title: title.isEmpty ? "Untitled" : title, due: parsed.date, hasTime: parsed.hasTime))
             }
         }
         return summary

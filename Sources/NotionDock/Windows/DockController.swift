@@ -45,9 +45,16 @@ final class DockController {
 
     /// The active group's pins (or every pin, if the switcher is on "All pins"), mapped to
     /// the strip's display model. `PinStore.pins` is kept sorted by `order` already.
-    private var pins: [PinItem] {
+    private var realPins: [PinItem] {
         activePins.map(mapPinItem)
     }
+
+    /// What the strip shows: the virtual Today pin (if enabled) followed by the real pins.
+    private var pins: [PinItem] {
+        Settings.shared.showTodayPin ? [TodayPin.item] + realPins : realPins
+    }
+
+    private var stripPinCount: Int { activePins.count + (Settings.shared.showTodayPin ? 1 : 0) }
 
     private var activePins: [Pin] {
         guard let groupID = Settings.shared.activeGroupID,
@@ -71,6 +78,7 @@ final class DockController {
         installMouseMovedMonitors()
 
         PinSummaryService.shared.start(appModel: appModel)
+        startReminders()
         hotkeys = HotkeyCenter { [weak self] action, index in
             self?.handleHotkey(action, pinIndex: index)
         }
@@ -105,9 +113,14 @@ final class DockController {
     }
 
     @objc private func openPinRequested(_ note: Notification) {
-        guard let pinID = note.object as? String, appModel.pinStore.pins.contains(where: { $0.id == pinID }) else { return }
-        // A pin outside the active group would not be in the strip: show every pin.
-        if !activePins.contains(where: { $0.id == pinID }) { Settings.shared.activeGroupID = nil }
+        guard let pinID = note.object as? String else { return }
+        if TodayPin.isToday(pinID) {
+            guard Settings.shared.showTodayPin else { return }
+        } else {
+            guard appModel.pinStore.pins.contains(where: { $0.id == pinID }) else { return }
+            // A pin outside the active group would not be in the strip: show every pin.
+            if !activePins.contains(where: { $0.id == pinID }) { Settings.shared.activeGroupID = nil }
+        }
         addFlowContent = nil
         guard let index = pins.firstIndex(where: { $0.id == pinID }) else { return }
         let item = pins[index]
@@ -170,6 +183,9 @@ final class DockController {
             return .addFlow(addFlowContent)
         }
         guard let selectedPinID, let pinItem = pins.first(where: { $0.id == selectedPinID }) else { return nil }
+        if TodayPin.isToday(selectedPinID) {
+            return .pin(title: pinItem.title, icon: pinItem.icon, content: todayContent(), isPinned: isPanelPinned, canOpenInNotion: false)
+        }
         let backingPin = pin(withPinItemID: selectedPinID)
         let content = backingPin.map(panelContent(for:)) ?? AnyView(
             Text("Database not configured. Unpin and pin it again.")
@@ -181,12 +197,13 @@ final class DockController {
     }
 
     private let notchState = NotchState()
+    private let todayModel = TodayModel()
     private var isHostInstalled = false
 
     private func refreshContent() {
         installHostIfNeeded()
         // The top edge's strip can outgrow the window when pins are added.
-        if Settings.shared.edge == .top, activePins.count != positionedPinCount { positionPanel() }
+        if Settings.shared.edge == .top, stripPinCount != positionedPinCount { positionPanel() }
         let state = notchState
         let content = expandedContentValue
         withAnimation(Theme.Motion.unfold) {
@@ -247,7 +264,9 @@ final class DockController {
                 self.openPinInNotion(backingPin)
             },
             onReorder: { [weak self] pinItem, targetIndex in
-                guard let self else { return }
+                guard let self, !TodayPin.isToday(pinItem.id) else { return }
+                // Today is not a stored pin: it only shifts the strip indices by one.
+                let targetIndex = max(0, targetIndex - (Settings.shared.showTodayPin ? 1 : 0))
                 if let groupID = Settings.shared.activeGroupID {
                     self.appModel.pinStore.move(pinID: pinItem.id, toIndex: targetIndex, withinGroup: groupID)
                 } else {
@@ -293,12 +312,12 @@ final class DockController {
         case .clipboardAppend:
             NotificationCenter.default.post(name: .clipboardAppendRequested, object: nil)
         case .toggleLastPin:
-            let candidates = pins
+            let candidates = realPins
             let target = candidates.first { $0.id == Settings.shared.lastOpenedPinID } ?? candidates.first
             if let target { toggleFromHotkey(target) }
         case .openPinN:
-            guard let pinIndex, pins.indices.contains(pinIndex) else { return }
-            toggleFromHotkey(pins[pinIndex])
+            guard let pinIndex, realPins.indices.contains(pinIndex) else { return }
+            toggleFromHotkey(realPins[pinIndex])
         }
     }
 
@@ -338,7 +357,7 @@ final class DockController {
         let edge = Settings.shared.edge
         let frame = screen.frame
         let visible = screen.visibleFrame
-        positionedPinCount = activePins.count
+        positionedPinCount = stripPinCount
 
         topInset = 0
         mergedWidth = nil
@@ -362,7 +381,7 @@ final class DockController {
         case .left, .right:
             size = CGSize(width: min(PanelSizeLimits.maxWidth, visible.width), height: visible.height)
         case .top:
-            let strip = Theme.Notch.stripMetrics(pinCount: activePins.count).length + 2 * Theme.Notch.stripFlare
+            let strip = Theme.Notch.stripMetrics(pinCount: stripPinCount).length + 2 * Theme.Notch.stripFlare
             // From the screen's top down to the Dock (visible bottom): the panel never covers it.
             size = CGSize(width: min(frame.width, max(PanelSizeLimits.maxWidth + 120, strip + 80)), height: frame.maxY - visible.minY)
         }
@@ -376,7 +395,7 @@ final class DockController {
         var layout = NotchLayout(
             edge: Settings.shared.edge,
             windowSize: windowSize,
-            pinCount: activePins.count,
+            pinCount: stripPinCount,
             anchor: layoutAnchor,
             anchorLeading: anchorLeading,
             expandedCenter: expandedCenter,
@@ -560,7 +579,11 @@ final class DockController {
             onCancel: { [weak self] in
                 self?.collapse(force: true)
             },
-            saveLabel: appModel.pinStore.pins.contains { $0.notionId == result.id } ? "Pin as new view" : "Pin database"
+            saveLabel: appModel.pinStore.pins.contains { $0.notionId == result.id } ? "Pin as new view" : "Pin database",
+            onBack: { [weak self] in
+                guard let self else { return }
+                self.showPinSearchPanel(near: CGRect(x: 0, y: self.expandedCenter - 1, width: 1, height: 2))
+            }
         )
         addFlowContent = AnyView(view)
         refreshContent()
@@ -644,7 +667,7 @@ final class DockController {
 
     private func open(pinItem: PinItem, iconFrameGlobal: CGRect?) {
         selectedPinID = pinItem.id
-        Settings.shared.lastOpenedPinID = pinItem.id
+        if !TodayPin.isToday(pinItem.id) { Settings.shared.lastOpenedPinID = pinItem.id }
         if let iconFrameGlobal {
             expandedCenter = clampedExpandedCenter(for: iconFrameGlobal.midY)
         }
@@ -778,6 +801,8 @@ final class DockController {
     /// Marks a to-do / task done straight from the hover peek, through the same write path
     /// as the menu-bar list and widget. Summaries refresh via `.pinContentDidChange`.
     private func checkSummaryItem(pinID: String, itemID: String) {
+        // Items ticked in the Today pin's peek belong to whichever pin they came from.
+        let pinID = TodayPin.isToday(pinID) ? (PinSummaryService.shared.todayDigest().items.first { $0.id == itemID }?.pinId ?? pinID) : pinID
         guard let pin = appModel.pinStore.pins.first(where: { $0.id == pinID }),
               let operation = InboxCapture.toggleOperation(pin: pin, itemId: itemID, checked: true) else { return }
         SoundService.shared.tick()
@@ -794,6 +819,7 @@ final class DockController {
     }
 
     private func unpin(pinItemID: String) {
+        if TodayPin.isToday(pinItemID) { Settings.shared.showTodayPin = false; return }
         appModel.pinStore.remove(id: pinItemID)
         pageModels[pinItemID] = nil
         databaseModels[pinItemID] = nil
@@ -1032,6 +1058,51 @@ final class DockController {
     }
 }
 
+// MARK: - Today
+extension DockController {
+    fileprivate func todayContent() -> AnyView {
+        AnyView(TodayView(model: todayModel))
+    }
+
+    /// The "Show Today pin" setting flipped: rebuild the strip (and close Today if it was open).
+    fileprivate func todayPinSettingDidChange() {
+        if !Settings.shared.showTodayPin, TodayPin.isToday(selectedPinID) { collapse(force: true) }
+        positionPanel()
+        refreshContent()
+    }
+}
+
+// MARK: - Reminders
+extension DockController {
+    fileprivate func startReminders() {
+        ItemActions.shared.configure(appModel: appModel)
+        ReminderService.shared.start(appModel: appModel)
+        NotificationCenter.default.addObserver(forName: .reminderPeekRequested, object: nil, queue: .main) { [weak self] note in
+            guard let pinID = note.object as? String else { return }
+            MainActor.assumeIsolated { self?.peekForReminder(pinID: pinID) }
+        }
+        NotificationCenter.default.addObserver(forName: .todayPinSettingChanged, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.todayPinSettingDidChange() }
+        }
+    }
+
+    /// A reminder fired while the app runs: unfold the strip with the peek card on that pin for 3 s.
+    fileprivate func peekForReminder(pinID: String) {
+        guard phase != .expanded, pins.contains(where: { $0.id == pinID }) else { return }
+        if phase == .resting { setPhase(.strip) }
+        guard let frame = demoIconFrame(pinID: pinID) else { return }
+        notchState.peekFrame = frame
+        notchState.peekPinID = pinID
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+            guard let self, self.notchState.peekPinID == pinID else { return }
+            self.notchState.peekPinID = nil
+            if self.phase == .strip, !self.isMenuTracking, !self.isPointInStripHotZone(self.currentLocalMousePoint()) {
+                self.setPhase(.resting)
+            }
+        }
+    }
+}
+
 // MARK: - Demo
 // Hooks for `Features/Demo/DemoDirector` (scripted marketing recordings, demo mode only). They
 // drive the same state changes a real hover/click would, without needing the real mouse.
@@ -1097,6 +1168,17 @@ extension DockController {
         addFlowContent = nil
         refreshContent()
         open(pinItem: item, iconFrameGlobal: demoIconFrame(pinID: pinID))
+    }
+
+    /// Probe: opens the add flow (`db` = straight to a database's setup step).
+    func demoOpenAddFlow(database: Bool) {
+        if database {
+            showDatabaseSetup(for: SearchResult(id: DemoContent.sprintDataSource, kind: .dataSource, title: "Sprint", icon: .emoji("\u{1F3C3}"), url: nil))
+            expandedCenter = clampedExpandedCenter(for: expandedCenter)
+            setPhase(.expanded)
+        } else {
+            openAddFlow()
+        }
     }
 
     func demoTextView(pinID: String) -> EditorTextView? {

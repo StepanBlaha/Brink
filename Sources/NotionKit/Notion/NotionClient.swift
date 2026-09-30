@@ -9,15 +9,21 @@ public actor NotionClient {
     public static let apiVersion = "2025-09-03"
 
     private let tokenProvider: @Sendable () -> String?
+    /// Called once on a 401 with the token that was rejected; returns true when a fresh token is
+    /// available (OAuth refresh), in which case the request is retried a single time.
+    private let onUnauthorized: (@Sendable (_ rejectedToken: String) async -> Bool)?
     private let session: URLSession
     private let baseURL = URL(string: "https://api.notion.com/v1")!
     private let rateLimiter = RateLimiter(minSpacing: 0.34)
     private let decoder = JSONDecoder()
     private let encoder = JSONEncoder()
 
-    public init(tokenProvider: @escaping @Sendable () -> String?, session: URLSession = .shared) {
+    public init(tokenProvider: @escaping @Sendable () -> String?,
+                session: URLSession = .shared,
+                onUnauthorized: (@Sendable (_ rejectedToken: String) async -> Bool)? = nil) {
         self.tokenProvider = tokenProvider
         self.session = session
+        self.onUnauthorized = onUnauthorized
     }
 
     // MARK: - Search & pinning
@@ -165,7 +171,7 @@ public actor NotionClient {
 
     /// `rawBody` (additive, for multipart file uploads) is sent as is with its own Content-Type
     /// instead of a JSON `body`.
-    func performRequest(method: String, path: String, query: [String: String], body: JSONValue?, rawBody: (data: Data, contentType: String)? = nil, attempt: Int = 0) async throws -> Data {
+    func performRequest(method: String, path: String, query: [String: String], body: JSONValue?, rawBody: (data: Data, contentType: String)? = nil, attempt: Int = 0, didRefresh: Bool = false) async throws -> Data {
         guard let token = tokenProvider(), !token.isEmpty else { throw NotionError.missingToken }
 
         var components = URLComponents(url: baseURL.appendingPathComponent(path), resolvingAgainstBaseURL: false)!
@@ -204,12 +210,15 @@ public actor NotionClient {
             let retryAfter = http.value(forHTTPHeaderField: "Retry-After").flatMap(Double.init) ?? 1
             await rateLimiter.delay(until: Date().addingTimeInterval(retryAfter))
             try? await Task.sleep(nanoseconds: UInt64(retryAfter * 1_000_000_000))
-            return try await performRequest(method: method, path: path, query: query, body: body, rawBody: rawBody, attempt: attempt + 1)
+            return try await performRequest(method: method, path: path, query: query, body: body, rawBody: rawBody, attempt: attempt + 1, didRefresh: didRefresh)
         case 500..<600:
             guard attempt < 1 else { throw decodeAPIError(data, status: http.statusCode) }
             try? await Task.sleep(nanoseconds: 500_000_000)
-            return try await performRequest(method: method, path: path, query: query, body: body, rawBody: rawBody, attempt: attempt + 1)
+            return try await performRequest(method: method, path: path, query: query, body: body, rawBody: rawBody, attempt: attempt + 1, didRefresh: didRefresh)
         case 401:
+            if !didRefresh, let onUnauthorized, await onUnauthorized(token) {
+                return try await performRequest(method: method, path: path, query: query, body: body, rawBody: rawBody, attempt: attempt, didRefresh: true)
+            }
             throw NotionError.unauthorized
         case 404:
             throw NotionError.notFound

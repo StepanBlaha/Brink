@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.10.0 — 2026-09-30
+
+### New
+- **Today view.** A ☀️ Today pin at the top of the strip collects every open task due today or overdue across your database pins, grouped by pin, with overdue items in red. Tick, snooze or change the date in place. Turn it off in Settings → General.
+- **Due reminders.** macOS notifications for tasks with a due date, with Mark done, Snooze 1 hour and Open buttons, plus an optional morning summary. The notch can peek open when a reminder fires. Set it up in Settings → General → Reminders.
+- **Connect to Notion.** One-click sign-in with Notion's own page picker, as an alternative to pasting an integration token. It appears once the public integration is configured.
+
+### Improved
+- The add-a-pin flow has a proper header and back button, compact Notion-style rows and consistent spacing.
+- Brink is now open source under the MIT License. The name and icon stay protected (TRADEMARKS.md).
+
 ## 0.9.0 — 2026-09-29 (first release candidate)
 
 ### Notch

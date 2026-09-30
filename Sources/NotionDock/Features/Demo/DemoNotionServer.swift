@@ -57,6 +57,34 @@ final class DemoNotionServer: URLProtocol, @unchecked Sendable {
           "annotations": ["bold": false, "italic": false, "strikethrough": false, "underline": false, "code": false, "color": "default"]]]
     }
 
+    /// A realistic mix for the add-a-pin search: emoji pages, a database, long titles, one with no icon.
+    private static func searchResults(query: String) -> [[String: Any]] {
+        func page(_ id: String, _ emoji: String?, _ title: String) -> [String: Any] {
+            ["object": "page", "id": id, "url": "https://example.com/\(id)",
+             "icon": emoji.map { ["type": "emoji", "emoji": $0] as [String: Any] } ?? NSNull(),
+             "properties": ["Name": ["id": "title", "type": "title", "title": richText(title)]]]
+        }
+        let all: [[String: Any]] = [
+            page(DemoContent.groceriesPage, "\u{1F6D2}", "Groceries"),
+            page(DemoContent.launchPage, "\u{1F680}", "Launch plan"),
+            ["object": "data_source", "id": DemoContent.sprintDataSource, "url": "https://example.com/sprint",
+             "icon": ["type": "emoji", "emoji": "\u{1F3C3}"], "title": richText("Sprint")],
+            page(DemoContent.readingPage, "\u{1F4DA}", "Reading"),
+            page("demo-page-long", "\u{1F4DD}", "Q4 planning notes and a very long title that keeps going past the edge of the panel"),
+            page("demo-page-noicon", nil, "Meeting notes"),
+            page("demo-page-trip", "\u{2708}\u{FE0F}", "Trip to Lisbon"),
+            ["object": "data_source", "id": "demo-ds-tasks", "url": "https://example.com/tasks",
+             "icon": NSNull(), "title": richText("Personal tasks")],
+        ]
+        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
+        guard !q.isEmpty else { return all }
+        return all.filter { item in
+            let title = (item["properties"] as? [String: Any]).flatMap { ($0["Name"] as? [String: Any])?["title"] as? [[String: Any]] }
+                ?? item["title"] as? [[String: Any]] ?? []
+            return title.compactMap { $0["plain_text"] as? String }.joined().lowercased().contains(q)
+        }
+    }
+
     // MARK: - URLProtocol
 
     override class func canInit(with request: URLRequest) -> Bool { true }
@@ -103,10 +131,7 @@ final class DemoNotionServer: URLProtocol, @unchecked Sendable {
         let sub = parts.count > 3 ? parts[3] : ""
         switch (parts[1], method) {
         case ("search", "POST"):
-            let results: [[String: Any]] = DemoContent.pages.map { pageID, page in
-                ["object": "page", "id": pageID, "icon": ["type": "emoji", "emoji": page.emoji], "properties": [:]]
-            }
-            return (200, list(results))
+            return (200, list(searchResults(query: body?["query"] as? String ?? "")))
         case ("pages", "GET"):
             if let row = rows[id] { return (200, row) }
             guard let page = DemoContent.pages[id] else { return notFound() }

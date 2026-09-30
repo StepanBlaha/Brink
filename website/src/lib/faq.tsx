@@ -17,8 +17,13 @@ export const faq: FaqItem[] = [
   },
   {
     question: "What do I need to run it?",
-    answer: "A Mac running macOS 14 or later, and a Notion internal integration. You create the integration yourself in Notion, paste its token into Brink, and share the pages you want with it. Not seeing a page? Share it with your integration in Notion.",
-    content: <>A Mac running macOS 14 or later, and a Notion internal integration. You create the integration yourself in Notion, paste its token into Brink, and share the pages you want with it. Not seeing a page? Share it with your integration in Notion.</>,
+    answer: "A Mac running macOS 14 or later and a Notion account. Click Connect to Notion and pick the pages Brink may use. If you prefer, you can paste an internal integration token instead.",
+    content: <>A Mac running macOS 14 or later and a Notion account. Click Connect to Notion and pick the pages Brink may use. If you prefer, you can paste an internal integration token instead.</>,
+  },
+  {
+    question: "How does connecting to Notion work?",
+    answer: "Connect to Notion opens Notion’s own consent screen in your browser. You choose exactly which pages and databases Brink can see, then click Allow. Notion needs a secret to finish sign-in that can’t safely ship inside an app, so a tiny relay run by the developer swaps Notion’s one-time code for your access token. It stores and logs nothing and never sees your pages. The token is saved in your Mac’s Keychain. To add pages later, connect again and update your selection. Advanced users can paste an internal integration token instead, which skips the relay.",
+    content: <>Connect to Notion opens Notion&rsquo;s own consent screen in your browser. You choose exactly which pages and databases Brink can see, then click Allow. Notion needs a secret to finish sign-in that can&rsquo;t safely ship inside an app, so a tiny relay run by the developer swaps Notion&rsquo;s one-time code for your access token. It stores and logs nothing and never sees your pages. The token is saved in your Mac&rsquo;s Keychain. To add pages later, connect again and update your selection. Advanced users can paste an internal integration token instead, which skips the relay.</>,
   },
   {
     question: "Does it work offline?",
@@ -27,8 +32,8 @@ export const faq: FaqItem[] = [
   },
   {
     question: "Where does my data go?",
-    answer: "Only between your Mac and Notion. The token is stored in the macOS Keychain, and there is no server, analytics or tracking.",
-    content: <>Only between your Mac and Notion. The token is stored in the macOS Keychain, and there is no server, analytics or tracking.</>,
+    answer: "Only between your Mac and Notion. The token is stored in the macOS Keychain. There’s no analytics or tracking, and apart from the sign-in relay (which stores nothing), there’s no server.",
+    content: <>Only between your Mac and Notion. The token is stored in the macOS Keychain. There&rsquo;s no analytics or tracking, and apart from the sign-in relay (which stores nothing), there&rsquo;s no server.</>,
   },
   {
     question: "How much does it cost?",
@@ -47,7 +52,7 @@ export const faq: FaqItem[] = [
   },
   {
     question: "How do I remove Brink’s access?",
-    answer: "Choose Remove token in Brink’s settings, or remove the integration in Notion under Settings → Connections. Brink loses access immediately.",
-    content: <>Choose Remove token in Brink&rsquo;s settings, or remove the integration in Notion under Settings &rarr; Connections. Brink loses access immediately.</>,
+    answer: "Choose Disconnect in Brink’s settings, or remove Brink in Notion under Settings → Connections. Brink loses access immediately.",
+    content: <>Choose Disconnect in Brink&rsquo;s settings, or remove Brink in Notion under Settings &rarr; Connections. Brink loses access immediately.</>,
   },
 ];

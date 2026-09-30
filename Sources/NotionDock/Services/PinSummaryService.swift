@@ -19,7 +19,9 @@ final class PinSummaryService {
     @ObservationIgnored private var observers: [NSObjectProtocol] = []
     private static let childFetchLimit = 6
 
-    func summary(for pinID: String) -> PinSummary? { summaries[pinID] }
+    func summary(for pinID: String) -> PinSummary? {
+        TodayPin.isToday(pinID) ? todaySummary() : summaries[pinID]
+    }
 
     func start(appModel: AppModel) {
         guard self.appModel == nil else { return }
@@ -47,6 +49,7 @@ final class PinSummaryService {
             applyCached(pin)
             refresh(pinID: pin.id)
         }
+        ReminderService.shared.summariesDidChange()
     }
 
     func refreshAll(stagger: TimeInterval) {
@@ -69,7 +72,10 @@ final class PinSummaryService {
         Task { [weak self] in
             let result = await Self.compute(pin: pin, client: client)
             guard let self else { return }
-            if let result { self.summaries[pinID] = result }
+            if let result {
+                self.summaries[pinID] = result
+                ReminderService.shared.summariesDidChange()
+            }
             self.inFlight.remove(pinID)
             if self.pendingAgain.remove(pinID) != nil { self.refresh(pinID: pinID) }
         }
@@ -82,7 +88,7 @@ final class PinSummaryService {
             if let blocks = appModel.cache.loadBlocks(forPin: pin.id) { summaries[pin.id] = PinSummary.fromBlocks(blocks) }
         case .dataSource:
             if let config = pin.config, let rows = appModel.cache.loadRows(forPin: pin.id) {
-                summaries[pin.id] = PinSummary.fromRows(rows, config: config, today: PinSummary.dayString())
+                summaries[pin.id] = PinSummary.fromRows(rows, config: config, today: PinSummary.dayString(), pinId: pin.id)
             }
         }
     }
@@ -109,7 +115,7 @@ final class PinSummaryService {
                 guard let config = pin.config else { return nil }
                 let filter = config.filters.flatMap { ViewQueryBuilder.filterJSON($0) }
                 let rows = try await client.queryDataSource(pin.notionId, filter: filter)
-                return PinSummary.fromRows(rows, config: config, today: PinSummary.dayString())
+                return PinSummary.fromRows(rows, config: config, today: PinSummary.dayString(), pinId: pin.id)
             }
         } catch {
             return nil
@@ -117,6 +123,26 @@ final class PinSummaryService {
     }
 
     // MARK: - Derived
+
+    /// Everything due today or overdue across the database pins (the Today view's data).
+    func todayDigest(now: Date = Date()) -> TodayDigest {
+        guard let appModel else { return TodayDigest(sections: []) }
+        return TodayAggregator.aggregate(pins: appModel.pinStore.pins, summaries: summaries, now: now)
+    }
+
+    var hasDatabasePins: Bool { appModel?.pinStore.pins.contains { $0.kind == .dataSource } ?? false }
+
+    /// The Today pin's badge and hover peek: open = due today or overdue.
+    private func todaySummary() -> PinSummary {
+        let items = todayDigest().items
+        var s = PinSummary.empty
+        s.openCount = items.count
+        s.total = items.count
+        s.dueTodayCount = items.count
+        s.nextItems = items.prefix(PinSummary.nextItemLimit).map(\.title)
+        s.nextRefs = items.prefix(PinSummary.nextRefLimit).map { PinSummary.ItemRef(id: $0.id, title: $0.title) }
+        return s
+    }
 
     /// done/total across the pins for the pill; `nil` = nothing to show.
     func progressRatio(pinIDs: [String]) -> Double? {

@@ -255,6 +255,35 @@ final class Settings {
         didSet { defaults.set(menuBarListEnabled, forKey: "menuBarListEnabled") }
     }
 
+    /// Show the built-in "Today" pin at the top of the strip.
+    var showTodayPin: Bool {
+        didSet { defaults.set(showTodayPin, forKey: "showTodayPin"); NotificationCenter.default.post(name: .todayPinSettingChanged, object: nil) }
+    }
+
+    /// Due reminders (local notifications). Turning this on asks for permission (`ReminderService`).
+    var remindersEnabled: Bool {
+        didSet { defaults.set(remindersEnabled, forKey: "remindersEnabled"); ReminderService.settingsChanged() }
+    }
+
+    /// Hour (0-23) date-only tasks are notified at.
+    var reminderHour: Int {
+        didSet { defaults.set(reminderHour, forKey: "reminderHour"); ReminderService.settingsChanged() }
+    }
+
+    var morningSummaryEnabled: Bool {
+        didSet { defaults.set(morningSummaryEnabled, forKey: "morningSummaryEnabled"); ReminderService.settingsChanged() }
+    }
+
+    /// Minutes after midnight the morning summary fires at.
+    var morningSummaryMinutes: Int {
+        didSet { defaults.set(morningSummaryMinutes, forKey: "morningSummaryMinutes"); ReminderService.settingsChanged() }
+    }
+
+    /// Unfold the notch for 3 seconds on the pin when a reminder fires while the app runs.
+    var peekForReminders: Bool {
+        didSet { defaults.set(peekForReminders, forKey: "peekForReminders"); ReminderService.settingsChanged() }
+    }
+
     /// The pin (id) most recently opened; ⌥Space re-opens it. Persisted across launches.
     var lastOpenedPinID: String? {
         didSet {
@@ -281,5 +310,11 @@ final class Settings {
         notchOutline = defaults.object(forKey: "notchOutline") as? Bool ?? true
         menuBarListEnabled = defaults.object(forKey: "menuBarListEnabled") as? Bool ?? true
         lastOpenedPinID = defaults.string(forKey: "lastOpenedPinID")
+        showTodayPin = defaults.object(forKey: "showTodayPin") as? Bool ?? true
+        remindersEnabled = defaults.bool(forKey: "remindersEnabled")
+        reminderHour = defaults.object(forKey: "reminderHour") as? Int ?? 9
+        morningSummaryEnabled = defaults.bool(forKey: "morningSummaryEnabled")
+        morningSummaryMinutes = defaults.object(forKey: "morningSummaryMinutes") as? Int ?? 8 * 60
+        peekForReminders = defaults.object(forKey: "peekForReminders") as? Bool ?? true
     }
 }

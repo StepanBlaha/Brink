@@ -27,6 +27,7 @@ struct OnboardingView: View {
     @State private var step = 0
     @State private var goingForward = true
     @State private var tokenInput = ""
+    @State private var showTokenEntry = false
 
     private let stepCount = 3
 
@@ -75,20 +76,59 @@ struct OnboardingView: View {
     private var connect: some View {
         VStack(spacing: 12) {
             Text("Connect to Notion").font(.system(size: 22, weight: .semibold))
-            Text("Create an integration in Notion and paste its token below.\nThen share each page you want to pin with that integration (••• → Connections).")
-                .font(Theme.Font.small).foregroundStyle(Theme.Color.secondaryText)
-                .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
-            pill("Open Notion integrations") { NSWorkspace.shared.open(Links.notionIntegrations) }
-            SecureField(appModel.hasToken ? "Token saved" : "secret_…", text: $tokenInput)
-                .textFieldStyle(.roundedBorder).frame(width: 300)
-                .onSubmit(testConnection)
-            HStack(spacing: 8) {
-                pill("Test connection", action: testConnection)
-                    .disabled(tokenInput.trimmingCharacters(in: .whitespaces).isEmpty && !appModel.hasToken)
+            if appModel.oauthAvailable && !showTokenEntry {
+                oauthConnect
+            } else {
+                tokenConnect
             }
             status.frame(height: 32)
         }
         .padding(.horizontal, 40)
+    }
+
+    /// Primary path: one click, Notion's own consent screen and page picker.
+    @ViewBuilder
+    private var oauthConnect: some View {
+        if appModel.authKind == .oauth {
+            HStack(spacing: 8) {
+                WorkspaceIconView(icon: appModel.workspace?.workspaceIcon, name: appModel.workspace?.workspaceName, size: 24)
+                Text(appModel.workspace?.workspaceName ?? "Notion workspace").font(Theme.Font.body)
+            }
+        } else {
+            Text("Your browser opens Notion. Pick the pages and databases Brink may use, then click Allow. Brink sees nothing else.")
+                .font(Theme.Font.small).foregroundStyle(Theme.Color.secondaryText)
+                .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+            // Not `primary(_:)`: the footer's button already owns the default-action shortcut.
+            Button(appModel.isSigningIn ? "Waiting for Notion…" : "Connect to Notion") {
+                Task { await appModel.connectWithNotion() }
+            }
+            .buttonStyle(.notion)
+            .padding(.horizontal, 14).padding(.vertical, 7)
+            .background(Theme.Color.accent, in: RoundedRectangle(cornerRadius: Theme.Metrics.radius))
+            .foregroundStyle(.white)
+            .disabled(appModel.isSigningIn)
+            Button("Use an integration token instead") { showTokenEntry = true }
+                .buttonStyle(.link).font(Theme.Font.small)
+        }
+    }
+
+    /// Advanced fallback (and the only path when OAuth isn't configured).
+    @ViewBuilder
+    private var tokenConnect: some View {
+        Text("Create an integration in Notion and paste its token below.\nThen share each page you want to pin with that integration (••• → Connections).")
+            .font(Theme.Font.small).foregroundStyle(Theme.Color.secondaryText)
+            .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+        pill("Open Notion integrations") { NSWorkspace.shared.open(Links.notionIntegrations) }
+        SecureField(appModel.hasToken ? "Token saved" : "secret_…", text: $tokenInput)
+            .textFieldStyle(.roundedBorder).frame(width: 300)
+            .onSubmit(testConnection)
+        HStack(spacing: 8) {
+            pill("Test connection", action: testConnection)
+                .disabled(tokenInput.trimmingCharacters(in: .whitespaces).isEmpty && !appModel.hasToken)
+            if appModel.oauthAvailable {
+                pill("Back to Connect to Notion") { showTokenEntry = false }
+            }
+        }
     }
 
     private var pinFirst: some View {
@@ -105,7 +145,9 @@ struct OnboardingView: View {
     @ViewBuilder
     private var status: some View {
         switch appModel.connectionStatus {
-        case .idle: if appModel.hasToken { small("Token saved.", Theme.Color.secondaryText) }
+        case .idle:
+            if appModel.authKind == .oauth { small("Connected.", Theme.Color.success) }
+            else if appModel.hasToken { small("Token saved.", Theme.Color.secondaryText) }
         case .testing: ProgressView().controlSize(.small)
         case .connected(let count): small("Connected. Brink can see \(count) page\(count == 1 ? "" : "s").", Theme.Color.success)
         case .error(let message): small(message, Theme.Color.danger)

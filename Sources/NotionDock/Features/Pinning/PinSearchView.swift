@@ -20,13 +20,12 @@ struct PinSearchView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            header
-            Divider()
+            AddFlowHeader(title: "Add a pin", onClose: onClose)
+            searchField
             content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(width: 380, height: 520)
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .onAppear {
             searchFieldFocused = true
             runSearch()
@@ -34,10 +33,10 @@ struct PinSearchView: View {
         .onChange(of: query) { _, _ in scheduleSearch() }
     }
 
-    private var header: some View {
+    private var searchField: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 13))
+                .font(.system(size: 12))
                 .foregroundStyle(Theme.Color.secondaryText)
             TextField("Search Notion…", text: $query)
                 .textFieldStyle(.plain)
@@ -46,14 +45,12 @@ struct PinSearchView: View {
                 .onKeyPress(.downArrow) { moveSelection(1); return .handled }
                 .onKeyPress(.upArrow) { moveSelection(-1); return .handled }
                 .onKeyPress(.return) { pickSelected(); return .handled }
-            Button(action: onClose) {
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundStyle(Theme.Color.secondaryText)
-            }
-            .buttonStyle(.notion)
-            .focusEffectDisabled()
         }
-        .padding(12)
+        .padding(.horizontal, 8)
+        .frame(height: 30)
+        .background(RoundedRectangle(cornerRadius: Theme.Metrics.radius + 2).fill(Color.white.opacity(0.08)))
+        .padding(.horizontal, Theme.Metrics.hPadding)
+        .padding(.vertical, 8)
     }
 
     @ViewBuilder
@@ -88,8 +85,10 @@ struct PinSearchView: View {
                             }
                     }
                 }
-                .padding(6)
+                .padding(.horizontal, 6)
+                .padding(.bottom, 6)
             }
+            .scrollIndicators(.hidden)
         }
     }
 
@@ -104,34 +103,31 @@ struct PinSearchView: View {
     private func resultRow(_ result: SearchResult, isSelected: Bool, isPinned: Bool) -> some View {
         HStack(spacing: 8) {
             iconView(result.icon, kind: result.kind)
-                .frame(width: 20)
+                .frame(width: 18, height: 18)
 
-            VStack(alignment: .leading, spacing: 1) {
-                Text(result.title.isEmpty ? "Untitled" : result.title)
-                    .font(Theme.Font.body)
-                    .foregroundStyle(Theme.Color.text)
-                    .lineLimit(1)
-                Text(result.kind == .dataSource ? "Database" : "Page")
-                    .font(Theme.Font.caption)
-                    .foregroundStyle(Theme.Color.secondaryText)
-            }
+            Text(result.title.isEmpty ? "Untitled" : result.title)
+                .font(Theme.Font.body)
+                .foregroundStyle(Theme.Color.text)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .layoutPriority(0)
 
             Spacer(minLength: 4)
 
-            if isPinned {
-                if result.kind == .dataSource {
-                    Text("Pin as new view")
-                        .font(Theme.Font.caption)
-                        .foregroundStyle(Theme.Color.accent)
-                }
-                Image(systemName: "checkmark")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(Theme.Color.secondaryText)
-            }
+            Text(result.kind == .dataSource ? "Database" : "Page")
+                .font(Theme.Font.caption)
+                .foregroundStyle(Theme.Color.secondaryText)
+                .lineLimit(1)
+                .fixedSize()
+
+            Image(systemName: "checkmark")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(Theme.Color.accent)
+                .frame(width: 12)
+                .opacity(isPinned ? 1 : 0)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 6)
-        .frame(height: Theme.Metrics.rowHeight + 6)
+        .padding(.horizontal, 6)
+        .frame(height: Theme.Metrics.rowHeight)
         .notionHover(selected: isSelected)
     }
 
@@ -142,6 +138,7 @@ struct PinSearchView: View {
             Text(value).font(.system(size: 14))
         default:
             Image(systemName: kind == .dataSource ? "cylinder.split.1x2" : "doc.text")
+                .font(.system(size: 13))
                 .foregroundStyle(Theme.Color.secondaryText)
         }
     }

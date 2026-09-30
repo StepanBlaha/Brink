@@ -39,6 +39,7 @@ extension DemoDirector {
         case "pill": s.pillStyle = PillStyle.resolve(stored: arg(words, 1), legacyHidden: nil)
         case "phase": dock.demoSetPhase(NotchPhase.named(arg(words, 1)))
         case "open": dock.demoOpen(pinID: arg(words, 1))
+        case "addflow": dock.demoOpenAddFlow(database: arg(words, 1) == "db")
         case "peek": dock.demoShowPeek(pinID: arg(words, 1) == "none" ? nil : arg(words, 1))
         case "mouse":
             DemoMode.mouseOverride = arg(words, 1) == "none" ? nil : CGPoint(x: num(words, 1), y: num(words, 2))

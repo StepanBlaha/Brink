@@ -10,4 +10,8 @@ extension Notification.Name {
     /// A pin's content changed locally (write synced); summaries/badges should refresh.
     /// `object` is the pin id (String).
     static let pinContentDidChange = Notification.Name("NotionDock.pinContentDidChange")
+    /// The "Show Today pin" setting flipped; the dock rebuilds its strip.
+    static let todayPinSettingChanged = Notification.Name("NotionDock.todayPinSettingChanged")
+    /// A reminder fired while the app runs; `object` is the pin id to peek at.
+    static let reminderPeekRequested = Notification.Name("NotionDock.reminderPeekRequested")
 }

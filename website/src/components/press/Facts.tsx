@@ -14,7 +14,7 @@ export function Facts() {
         <dt>Maker</dt><dd>{site.author}</dd>
         <dt>Requires</dt><dd>A Notion internal integration</dd>
         <dt>Languages</dt><dd>English; natural dates in English and Czech</dd>
-        <dt>Privacy</dt><dd>No analytics, no tracking, no server. See the <Link href="/privacy/">privacy policy</Link>.</dd>
+        <dt>Privacy</dt><dd>No analytics, no tracking, nothing stored on a server. See the <Link href="/privacy/">privacy policy</Link>.</dd>
         <dt>Price</dt><dd>{site.price}</dd>
       </dl>
     </>

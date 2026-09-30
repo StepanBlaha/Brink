@@ -255,7 +255,7 @@ struct NotchRootView: View {
                 onTogglePin: onTogglePin,
                 onClose: onClosePanel,
                 onOpenInNotion: canOpenInNotion ? onOpenInNotion : nil,
-                onChangeIcon: pins.first(where: { $0.id == selectedPinID }).map { item in { onChangeIcon(item) } }
+                onChangeIcon: pins.first(where: { $0.id == selectedPinID && !TodayPin.isToday($0.id) }).map { item in { onChangeIcon(item) } }
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 

@@ -39,8 +39,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     /// Widget links: `brink://pin/<id>` opens that pin in the notch.
+    /// `brink://oauth/callback?…` finishes "Connect to Notion" when the auth session didn't catch it.
     func application(_ application: NSApplication, open urls: [URL]) {
         for url in urls {
+            if url.host?.lowercased() == "oauth" {
+                appModel?.handleOAuthCallback(url)
+                continue
+            }
             guard let pinID = SharedContainer.pinID(from: url) else { continue }
             NotificationCenter.default.post(name: .openPinInNotchRequested, object: pinID)
         }

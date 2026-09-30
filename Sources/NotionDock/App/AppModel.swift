@@ -20,19 +20,95 @@ final class AppModel {
     let client: NotionClient
 
     private(set) var hasToken: Bool
+    /// `.oauth` after "Connect to Notion", `.internal` for a pasted token, `nil` when disconnected.
+    private(set) var authKind: AuthKind?
+    /// Workspace name/icon from the OAuth token response (Settings → Connection).
+    private(set) var workspace: OAuthWorkspace?
+    private(set) var isSigningIn = false
     var connectionStatus: ConnectionStatus = .idle
+
+    /// Non-nil only when `OAuthConfig` is filled in; the UI hides "Connect to Notion" otherwise.
+    let signIn: NotionSignIn?
+    private let broker: OAuthBroker?
+    var oauthAvailable: Bool { signIn != nil }
 
     init() {
         if DemoMode.isActive {
             // Demo mode: an in-process fake Notion; the Keychain is never read or written.
             client = NotionClient(tokenProvider: { "demo-token" }, session: DemoNotionServer.session)
             hasToken = true
+            signIn = nil
+            broker = nil
             DemoMode.seedPins(into: pinStore)
             return
         }
         let tokenStore = tokenStore
-        client = NotionClient(tokenProvider: { tokenStore.load() })
+        if let configuration = OAuthConfig.configuration {
+            let broker = OAuthBroker(configuration: configuration)
+            let refresher = OAuthTokenRefresher(store: tokenStore, broker: broker)
+            self.broker = broker
+            signIn = NotionSignIn(configuration: configuration)
+            client = NotionClient(tokenProvider: { tokenStore.load() },
+                                  onUnauthorized: { await refresher.handleUnauthorized(rejectedToken: $0) })
+        } else {
+            broker = nil
+            signIn = nil
+            client = NotionClient(tokenProvider: { tokenStore.load() })
+        }
         hasToken = tokenStore.load() != nil
+        reloadAuthState()
+    }
+
+    private func reloadAuthState() {
+        authKind = tokenStore.kind
+        workspace = authKind == .oauth ? tokenStore.loadWorkspace() : nil
+    }
+
+    // MARK: - Connect to Notion (OAuth)
+
+    /// Opens Notion's consent screen (with its page picker), exchanges the code via the broker
+    /// and stores the tokens. A user cancel is silent.
+    func connectWithNotion() async {
+        guard !DemoMode.isActive, let signIn, !isSigningIn else { return }
+        isSigningIn = true
+        defer { isSigningIn = false }
+        do {
+            let code = try await signIn.authorize()
+            try await finishSignIn(code: code)
+        } catch where NotionSignIn.isUserCancel(error) {
+            connectionStatus = .idle
+        } catch {
+            connectionStatus = .error(error.localizedDescription)
+        }
+    }
+
+    /// `brink://oauth/callback…` delivered to the app delegate instead of the auth session.
+    func handleOAuthCallback(_ url: URL) {
+        guard let signIn, signIn.pendingState != nil else { return }
+        signIn.cancel()
+        Task {
+            do {
+                try await finishSignIn(code: try signIn.consume(url))
+            } catch {
+                connectionStatus = .error(error.localizedDescription)
+            }
+        }
+    }
+
+    private func finishSignIn(code: String) async throws {
+        guard let broker else { return }
+        connectionStatus = .testing
+        let tokens = try await broker.exchange(code: code)
+        try tokenStore.saveOAuth(accessToken: tokens.accessToken, refreshToken: tokens.refreshToken,
+                                 workspace: tokens.workspace)
+        hasToken = true
+        reloadAuthState()
+        await testConnection()
+    }
+
+    /// Clears every Keychain entry (access token, refresh token, workspace info).
+    func disconnect() {
+        removeToken()
     }
 
     func saveToken(_ token: String) {
@@ -42,6 +118,7 @@ final class AppModel {
         do {
             try tokenStore.save(trimmed)
             hasToken = true
+            reloadAuthState()
             connectionStatus = .idle
         } catch {
             connectionStatus = .error(error.localizedDescription)
@@ -50,8 +127,10 @@ final class AppModel {
 
     func removeToken() {
         guard !DemoMode.isActive else { return }
+        signIn?.cancel()
         tokenStore.delete()
         hasToken = false
+        reloadAuthState()
         connectionStatus = .idle
     }
 

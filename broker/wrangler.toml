@@ -1,0 +1,20 @@
+# Brink token-exchange broker (Cloudflare Worker). See README.md for deploy steps.
+name = "brink-auth"
+main = "src/index.ts"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+# Wrangler's own observability/logs stay off: the Worker never logs, and request
+# logs are not needed to relay a code for a token.
+[observability]
+enabled = false
+
+[vars]
+# Where GET /callback bounces the browser (the app's URL scheme).
+APP_CALLBACK_URL = "brink://oauth/callback"
+# Max token/refresh requests per IP per minute (per Worker isolate).
+RATE_LIMIT_PER_MINUTE = "20"
+
+# Secrets (never in this file):
+#   wrangler secret put NOTION_CLIENT_ID
+#   wrangler secret put NOTION_CLIENT_SECRET

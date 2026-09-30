@@ -12,6 +12,8 @@ struct DatabaseSetupView: View {
     /// When editing an existing pin's view: prefills every field from this config.
     var initialConfig: DatabaseConfig? = nil
     var saveLabel: String = "Pin database"
+    /// Set when reached from the search step: shows a back button.
+    var onBack: (() -> Void)? = nil
 
     @State private var schema: DataSourceSchema?
     @State private var isLoading = true
@@ -47,8 +49,7 @@ struct DatabaseSetupView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            header
-            Divider()
+            AddFlowHeader(title: title.isEmpty ? "Untitled" : title, onBack: onBack, onClose: onCancel)
             if isLoading {
                 centered { ProgressView() }
             } else if let errorMessage {
@@ -63,27 +64,8 @@ struct DatabaseSetupView: View {
                 form
             }
         }
-        .frame(width: 380, height: 520)
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .task { await load() }
-    }
-
-    private var header: some View {
-        HStack {
-            Text("Set up \u{201C}\(title.isEmpty ? "Untitled" : title)\u{201D}")
-                .font(Theme.Font.title)
-                .foregroundStyle(Theme.Color.text)
-                .lineLimit(1)
-            Spacer()
-            Button(action: onCancel) {
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundStyle(Theme.Color.secondaryText)
-            }
-            .buttonStyle(.notion)
-            .focusEffectDisabled()
-        }
-        .padding(12)
     }
 
     private func centered<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
@@ -102,7 +84,7 @@ struct DatabaseSetupView: View {
     }
 
     private var viewOptions: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 8) {
             Button {
                 withAnimation(Theme.Motion.list) { viewOptionsExpanded.toggle() }
             } label: {
@@ -126,8 +108,8 @@ struct DatabaseSetupView: View {
     }
 
     private var formContent: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text("Which property means done?")
                     .font(Theme.Font.small)
                     .foregroundStyle(Theme.Color.secondaryText)
@@ -138,6 +120,8 @@ struct DatabaseSetupView: View {
                     }
                 }
                 .labelsHidden()
+                .controlSize(.small)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .onChange(of: donePropertyID) { _, newID in
                     let initial = schema?.properties.first { $0.name == initialConfig?.doneProperty }
                     doneStatusValue = (newID != nil && newID == initial?.id) ? initialConfig?.doneValue : nil
@@ -145,7 +129,7 @@ struct DatabaseSetupView: View {
             }
 
             if let doneProperty, doneProperty.type == "status" {
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text("Which status option means done?")
                         .font(Theme.Font.small)
                         .foregroundStyle(Theme.Color.secondaryText)
@@ -156,10 +140,12 @@ struct DatabaseSetupView: View {
                         }
                     }
                     .labelsHidden()
+                .controlSize(.small)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
 
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text("Date property (optional)")
                     .font(Theme.Font.small)
                     .foregroundStyle(Theme.Color.secondaryText)
@@ -170,6 +156,8 @@ struct DatabaseSetupView: View {
                     }
                 }
                 .labelsHidden()
+                .controlSize(.small)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
 
             if doneCandidates.isEmpty {
@@ -180,10 +168,13 @@ struct DatabaseSetupView: View {
 
             viewOptions
 
-            Button(saveLabel) { save() }
+            Button { save() } label: {
+                Text(saveLabel)
+                    .font(Theme.Font.small.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 28)
+            }
                 .buttonStyle(.notion)
-                .padding(.horizontal, 12).padding(.vertical, 7)
-                .frame(maxWidth: .infinity)
                 .background(Theme.Color.accent.opacity(canSave ? 1 : 0.4))
                 .foregroundStyle(.white)
                 .clipShape(RoundedRectangle(cornerRadius: Theme.Metrics.radius))
