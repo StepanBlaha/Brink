@@ -1,10 +1,4 @@
 .hero { padding: clamp(48px, 8vw, 96px) 0 clamp(24px, 4vw, 48px); position: relative; overflow: clip; }
-.glowWrap { position: absolute; inset: 0; pointer-events: none; }
-.glow {
-  position: absolute; right: -20%; top: -10%; width: 70vw; height: 70vw; max-width: 900px; max-height: 900px;
-  background: radial-gradient(closest-side, rgba(10, 132, 255, 0.22), transparent);
-}
-.spot { position: absolute; inset: 0; pointer-events: none; }
 .grid {
   position: relative; display: grid; grid-template-columns: 1fr 1.05fr;
   gap: clamp(24px, 5vw, 72px); align-items: center;

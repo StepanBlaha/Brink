@@ -1,7 +1,5 @@
 import { site } from "@/site";
-import { HeroGlow } from "./HeroGlow";
 import { MagneticLink } from "./MagneticLink";
-import { Parallax } from "./Parallax";
 import { Reveal } from "./Reveal";
 import { SplitText } from "./SplitText";
 import { NotchDemo } from "./notch/NotchDemo";
@@ -13,10 +11,6 @@ const LEDE =
 export function Hero() {
   return (
     <section id="hero" className={styles.hero}>
-      <Parallax speed={-0.12} className={styles.glowWrap}>
-        <div className={styles.glow} aria-hidden="true" />
-      </Parallax>
-      <HeroGlow />
       <div className={`wrap ${styles.grid}`}>
         <div className={styles.copy}>
           <h1>

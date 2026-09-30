@@ -1,1 +1,2 @@
 .head { margin-bottom: clamp(32px, 5vw, 64px); max-width: 40rem; }
+.center { margin-left: auto; margin-right: auto; text-align: center; }

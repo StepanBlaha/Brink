@@ -1,4 +1,4 @@
-.faq { max-width: 46rem; }
+.faq { max-width: 46rem; margin-inline: auto; }
 .item { border-bottom: 1px solid var(--line); }
 .q { margin: 0; font-size: 1.05rem; letter-spacing: 0; line-height: 1.4; }
 .q button {

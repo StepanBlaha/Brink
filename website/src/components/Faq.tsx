@@ -7,7 +7,7 @@ export function Faq() {
   return (
     <section id="faq">
       <div className="wrap">
-        <SectionHead eyebrow="FAQ" title="Questions, answered." />
+        <SectionHead eyebrow="FAQ" title="Questions, answered." center />
         <FaqAccordion items={faq.map(({ question, content }) => ({ question, content }))} />
       </div>
     </section>
