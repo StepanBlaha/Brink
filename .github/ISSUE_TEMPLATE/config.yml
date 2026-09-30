@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: FAQ and install help
+    url: https://stepanblaha.github.io/Brink/#faq
+    about: Setup, Notion integration, privacy and first-launch questions.
+  - name: Report a security issue privately
+    url: https://github.com/StepanBlaha/Brink/security/advisories/new
+    about: Please don't file security problems as public issues.

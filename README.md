@@ -3,6 +3,15 @@
 <h1 align="center">Brink</h1>
 <p align="center"><b>Your pages, on the edge.</b><br>A quiet notch on the edge of your Mac's screen that keeps your Notion pages and tasks one hover away.</p>
 
+<p align="center">
+  <a href="https://github.com/StepanBlaha/Brink/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/StepanBlaha/Brink?label=download&color=0A84FF"></a>
+  <img alt="macOS 14+" src="https://img.shields.io/badge/macOS-14%2B-black?logo=apple">
+  <img alt="Free" src="https://img.shields.io/badge/price-free-2ea44f">
+  <a href="https://github.com/StepanBlaha/Brink/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/StepanBlaha/Brink/total?color=555"></a>
+</p>
+
+<p align="center"><a href="https://github.com/StepanBlaha/Brink/releases/latest"><b>⬇ Download Brink for Mac</b></a> · <a href="https://stepanblaha.github.io/Brink/">Website</a> · <a href="https://stepanblaha.github.io/Brink/#faq">FAQ</a></p>
+
 <p align="center"><img src="marketing/media/peek-tick.gif" width="720" alt="Hovering the Brink notch shows a peek of a grocery list; one item gets ticked off in place"></p>
 
 > Brink is an independent app. It is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc. "Notion" is a trademark of Notion Labs, Inc.
@@ -21,6 +30,12 @@
 ![The Launch plan page open in the notch panel, with headings, to-dos and a callout](marketing/screenshots/03-editor.png)
 
 More in [`marketing/screenshots/`](marketing/screenshots/) and [`website/public/assets/media/`](website/public/assets/media/) (editor and quick-capture clips). All media are recorded in demo mode with sample data: `./scripts/record-demo.sh` (see [Demo recordings](#demo-recordings)).
+
+## Install
+
+1. Download **Brink-x.y.z.zip** from [Releases](https://github.com/StepanBlaha/Brink/releases/latest), unzip it and move **Brink.app** to Applications.
+2. The first time, **right-click Brink → Open → Open**. The app isn't notarized yet, so macOS asks once.
+3. Follow the welcome steps to connect Notion and pin your first page.
 
 ## Requirements
 
@@ -81,6 +96,10 @@ Pushes to `main` build and publish `website/out` to `gh-pages` via `.github/work
 ## Privacy
 
 Brink talks only to the Notion API. Your token is kept in the Keychain, and your content is cached on your Mac. There's no analytics or tracking. See [legal/PRIVACY.md](legal/PRIVACY.md).
+
+## Contributing and security
+
+Bug reports and ideas are welcome in [Issues](https://github.com/StepanBlaha/Brink/issues/new/choose). See [CONTRIBUTING.md](CONTRIBUTING.md). Report security problems privately: [SECURITY.md](SECURITY.md).
 
 ## License
 

@@ -1,0 +1,48 @@
+name: Bug report
+description: Something in Brink doesn't work as expected.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for reporting. Please don't include your Notion token or private page content. For security problems, see SECURITY.md instead."
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. Hover the notch\n2. Click a pin\n3. ..."
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [Notch / strip / panel, Page editor, Database tasks, Quick capture, Menu-bar list, Widget, Send to Brink, Settings / hotkeys, Sync with Notion, Other]
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Brink version
+      description: About Brink shows it, e.g. 0.9.0 (1)
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version and Mac
+      placeholder: "macOS 26.4, MacBook Pro M1, notch on the right edge"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (optional)
+      description: "Run `log show --last 10m --predicate 'subsystem == \"cz.stepanblaha.notiondock\"' --style compact` and paste the relevant lines. Remove anything private."
+      render: text
