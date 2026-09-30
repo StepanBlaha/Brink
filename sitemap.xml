@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>https://brinknotch.site/</loc>
+<lastmod>2026-09-30T19:14:36.579Z</lastmod>
+<priority>1</priority>
+</url>
+<url>
+<loc>https://brinknotch.site/press/</loc>
+<lastmod>2026-09-30T19:14:36.579Z</lastmod>
+<priority>0.5</priority>
+</url>
+<url>
+<loc>https://brinknotch.site/privacy/</loc>
+<lastmod>2026-09-30T19:14:36.579Z</lastmod>
+<priority>0.3</priority>
+</url>
+<url>
+<loc>https://brinknotch.site/terms/</loc>
+<lastmod>2026-09-30T19:14:36.579Z</lastmod>
+<priority>0.3</priority>
+</url>
+<url>
+<loc>https://brinknotch.site/acknowledgements/</loc>
+<lastmod>2026-09-30T19:14:36.579Z</lastmod>
+<priority>0.2</priority>
+</url>
+</urlset>

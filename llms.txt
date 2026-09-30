@@ -1,0 +1,26 @@
+# Brink
+
+> A black notch on your Mac's screen edge that keeps your Notion pages and tasks one hover away. Your pages, on the edge.
+
+Key facts:
+- Runs on macOS 14 or later.
+- Free. No account, no subscription.
+- Works with Notion through an internal integration that you create and control.
+- Privacy: no analytics, no tracking, no data stored on any server. Your pages go only between your Mac and the Notion API. The optional "Connect to Notion" sign-in passes through a small relay that swaps the login code for a token and stores and logs nothing.
+
+Brink is an independent app and is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc. “Notion” is a trademark of Notion Labs, Inc.
+
+## Pages
+
+- [Home](https://brinknotch.site/): what Brink does, features, privacy and FAQ
+- [Press kit](https://brinknotch.site/press/): name usage, descriptions, icons, colors and facts
+- [Privacy Policy](https://brinknotch.site/privacy/): what Brink stores and sends
+- [Terms of Use](https://brinknotch.site/terms/): terms for using the app
+- [Acknowledgements](https://brinknotch.site/acknowledgements/): third-party notices and credits
+
+## Links
+
+- [Download](https://github.com/StepanBlaha/Brink/releases/latest): latest release on GitHub
+- [Source](https://github.com/StepanBlaha/Brink): GitHub repository
+- [Sitemap](https://brinknotch.site/sitemap.xml)
+- Contact: stepa15.b@gmail.com

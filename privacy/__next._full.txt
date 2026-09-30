@@ -1,0 +1,91 @@
+1:"$Sreact.fragment"
+3:I[21055,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"MotionRoot"]
+4:I[20032,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"SmoothScroll"]
+5:I[46083,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"ScrollProgress"]
+6:I[24381,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"HeaderShell"]
+7:I[22016,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],""]
+8:I[85437,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"Image"]
+9:I[36934,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"NavLinks"]
+a:I[26370,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"MobileMenu"]
+b:I[39756,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"default"]
+c:I[16868,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js","/_next/static/chunks/2go9790k9yc48.js"],"default"]
+d:I[37457,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"default"]
+f:I[97367,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"OutletBoundary"]
+10:"$Sreact.suspense"
+13:I[97367,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"ViewportBoundary"]
+15:I[97367,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"MetadataBoundary"]
+17:I[68027,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"default",1]
+:HL["/_next/static/chunks/2depriywirgx2.css","style"]
+:HL["/_next/static/chunks/0iy8u8pqcjx7n.css","style"]
+2:["$","style",null,{"children":"[data-reveal]{opacity:1!important;transform:none!important}"}]
+12:X
+0:{"P":null,"c":["","privacy",""],"q":"","i":false,"f":[[["",{"children":["privacy",{"children":["__PAGE__",{},"$undefined","$undefined",4608]},"$undefined","$undefined",4608]},"$undefined","$undefined",4624],[["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/2depriywirgx2.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","script","script-0",{"src":"/_next/static/chunks/1kvb2lx2u79-2.js","async":true,"nonce":"$undefined"}],["$","script","script-1",{"src":"/_next/static/chunks/2anbmu80ioc1l.js","async":true,"nonce":"$undefined"}],["$","script","script-2",{"src":"/_next/static/chunks/2eoix7acz4tow.js","async":true,"nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"children":[["$","noscript",null,{"children":"$2"}],["$","$L3",null,{"children":["$","$L4",null,{"children":[["$","a",null,{"className":"SkipLink-module__Ir2r-G__skip","href":"#main","children":"Skip to content"}],[["$","$L5",null,{}],["$","$L6",null,{"children":["$","div",null,{"className":"wrap Header-module__hBw1pG__inner","children":[["$","$L7",null,{"className":"Brand-module__kb3XQa__brand","href":"/","children":[["$","$L8",null,{"src":"/assets/icon-256.png","alt":"","width":28,"height":28,"unoptimized":true}],"Brink"]}],["$","div",null,{"className":"Header-module__hBw1pG__right","children":[["$","$L9",null,{}],["$","$La",null,{}]]}]]}]}]],["$","main",null,{"id":"main","children":["$","$Lb",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lc",null,{"children":["$","$Ld",null,{}]}],"templateStyles":[],"templateScripts":[["$","script","script-0",{"src":"/_next/static/chunks/2go9790k9yc48.js","async":true,"nonce":"$undefined"}]],"notFound":[["$","div",null,{"className":"wrap","children":["$","article",null,{"className":"Prose-module__CL27nW__prose ","children":["$undefined",["$","h1",null,{"children":"Page not found"}],["$","p",null,{"children":["That page is not on the edge. Try the ",["$","$L7",null,{"href":"/","children":"home page"}],"."]}]]}]}],[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/0iy8u8pqcjx7n.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]]],"forbidden":"$undefined","unauthorized":"$undefined"}]}],["$","footer",null,{"className":"Footer-module__S6Hkya__foot","children":["$","div",null,{"className":"wrap","children":[["$","div",null,{"className":"Footer-module__S6Hkya__cols","children":[["$","$L7",null,{"className":"Brand-module__kb3XQa__brand","href":"/","children":[["$","$L8",null,{"src":"/assets/icon-256.png","alt":"","width":28,"height":28,"unoptimized":true}],"Brink"]}],["$","nav",null,{"className":"Footer-module__S6Hkya__links","aria-label":"Footer","children":[["$","$L7",null,{"href":"/privacy/","children":"Privacy"}],["$","$L7",null,{"href":"/terms/","children":"Terms"}],["$","$L7",null,{"href":"/acknowledgements/","children":"Acknowledgements"}],["$","$L7",null,{"href":"/press/","children":"Press kit"}],["$","a",null,{"href":"mailto:stepa15.b@gmail.com","children":"stepa15.b@gmail.com"}],["$","a",null,{"href":"https://github.com/StepanBlaha/Brink","rel":"noopener","children":"GitHub"}]]}]]}],["$","p",null,{"className":"Footer-module__S6Hkya__disclaimer","children":["Brink is an independent app and is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc."," ","“Notion” is a trademark of Notion Labs, Inc."]}],["$","p",null,{"className":"small","children":["© ","2026"," ","Stepan Blaha"]}]]}]}]]}]}]]}]}]]}],{"children":[["$","$1","c",{"children":[null,["$","$Lb",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Ld",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":[["$","$1","c",{"children":["$Le",[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/0iy8u8pqcjx7n.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","$Lf",null,{"children":["$","$10",null,{"name":"Next.MetadataOutlet","children":"$@11"}]}]]}],{},null,false,null]},null,false,"$12"]},null,false,null],["$","$1","h",{"children":[null,["$","$L13",null,{"children":"$L14"}],["$","div",null,{"hidden":true,"children":["$","$L15",null,{"children":["$","$10",null,{"name":"Next.Metadata","children":"$L16"}]}]}],null]}],false]],"m":"$undefined","G":["$17",[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/2depriywirgx2.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]]],"S":true,"h":null,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"HqdR4y3iBTMPCKFRAbyXo"}
+12:C
+14:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#000000"}],["$","meta","3",{"name":"color-scheme","content":"dark"}]]
+18:I[27201,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2anbmu80ioc1l.js","/_next/static/chunks/2eoix7acz4tow.js"],"IconMark"]
+11:null
+16:[["$","title","0",{"children":"Privacy Policy | Brink"}],["$","meta","1",{"name":"description","content":"Brink's privacy policy: your data stays between your Mac and Notion. No analytics, no tracking, nothing stored on a server."}],["$","meta","2",{"name":"application-name","content":"Brink"}],["$","meta","3",{"name":"author","content":"Stepan Blaha"}],["$","link","4",{"rel":"manifest","href":"/manifest.webmanifest","crossOrigin":"$undefined"}],["$","link","5",{"rel":"canonical","href":"https://brinknotch.site/privacy/"}],["$","meta","6",{"property":"og:title","content":"Privacy Policy"}],["$","meta","7",{"property":"og:description","content":"Brink's privacy policy: your data stays between your Mac and Notion. No analytics, no tracking, nothing stored on a server."}],["$","meta","8",{"property":"og:url","content":"https://brinknotch.site/privacy/"}],["$","meta","9",{"property":"og:site_name","content":"Brink"}],["$","meta","10",{"property":"og:image","content":"https://brinknotch.site/assets/og.png"}],["$","meta","11",{"property":"og:image:width","content":"1200"}],["$","meta","12",{"property":"og:image:height","content":"630"}],["$","meta","13",{"property":"og:image:alt","content":"Brink: a notch on the screen edge showing a to-do list"}],["$","meta","14",{"property":"og:type","content":"website"}],["$","meta","15",{"name":"twitter:card","content":"summary_large_image"}],["$","meta","16",{"name":"twitter:title","content":"Privacy Policy"}],["$","meta","17",{"name":"twitter:description","content":"Brink's privacy policy: your data stays between your Mac and Notion. No analytics, no tracking, nothing stored on a server."}],["$","meta","18",{"name":"twitter:image","content":"https://brinknotch.site/assets/og.png"}],["$","link","19",{"rel":"icon","href":"/favicon.ico","sizes":"any"}],["$","link","20",{"rel":"icon","href":"/assets/favicon-32.png","type":"image/png","sizes":"32x32"}],["$","link","21",{"rel":"apple-touch-icon","href":"/assets/apple-touch-icon.png"}],["$","$L18","22",{}]]
+19:T10c7,<p><em>Last updated: 2026-09-30</em></p>
+<p>Brink is a Mac app that shows your Notion pages and tasks in a notch at the edge of your screen. It is built to keep your data on your Mac.</p>
+<h2>What Brink stores</h2>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Where it is stored</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Your Notion credential: an OAuth access token and refresh token (Connect to Notion), or a pasted integration token</td>
+<td>macOS Keychain (service <code>cz.stepanblaha.notiondock</code>)</td>
+<td>To call the Notion API on your behalf</td>
+</tr>
+<tr>
+<td>Workspace name and icon (Connect to Notion only)</td>
+<td>macOS Keychain, next to the token</td>
+<td>To show which workspace is connected</td>
+</tr>
+<tr>
+<td>Your pins, groups, icons and saved views</td>
+<td><code>~/Library/Application Support/NotionDock/</code></td>
+<td>To remember what you pinned</td>
+</tr>
+<tr>
+<td>Cached page content, rows, covers and images</td>
+<td><code>~/Library/Application Support/NotionDock/cache/</code></td>
+<td>So the panel opens instantly</td>
+</tr>
+<tr>
+<td>Unsynced edits</td>
+<td><code>~/Library/Application Support/NotionDock/pending.json</code></td>
+<td>So edits made offline are not lost</td>
+</tr>
+<tr>
+<td>Settings (accent color, size, shortcuts)</td>
+<td>macOS user defaults</td>
+<td>To remember your preferences</td>
+</tr>
+</tbody></table>
+<h2>Where your data goes</h2>
+<ul>
+<li>Brink talks <strong>only to the Notion API</strong> (<code>api.notion.com</code>), to the image and file URLs Notion returns for your own pages, and (only when you use Connect to Notion) to the sign-in relay described below.</li>
+<li>It sends your token and your page content there to read and save your pages, under <a rel="noopener" href="https://www.notion.so/notion/Privacy-Policy-3468d120cf614d4c9014c09f6adc9091">Notion&#39;s privacy policy</a>.</li>
+<li><strong>Connect to Notion (sign-in broker):</strong> Notion&#39;s sign-in needs a secret that can&#39;t safely ship inside an app, so the one-time code exchange goes through a small relay the developer runs on Cloudflare Workers (<code>brink-auth…workers.dev</code>). The relay passes Notion&#39;s one-time code (or, later, your refresh token) to Notion and returns the new tokens to your Mac. It <strong>stores nothing and logs nothing</strong>: no database, no request logs. It also never sees your pages. Your page content always goes directly between your Mac and <code>api.notion.com</code>. Cloudflare processes the connection under <a rel="noopener" href="https://www.cloudflare.com/privacypolicy/">Cloudflare&#39;s privacy policy</a>. If you paste an integration token instead, the relay is never used.</li>
+<li><strong>No analytics, tracking, advertising, crash reporting or telemetry.</strong> Apart from that sign-in relay, Brink has no server of its own, and none of your content is sent to its developer.</li>
+<li><strong>Diagnostic logs:</strong> Brink writes local diagnostic logs to the macOS unified log (subsystem <code>cz.stepanblaha.notiondock</code>). They can include block IDs and error messages, but never your token. They stay on your Mac unless you choose to share them.</li>
+</ul>
+<h2>Your control</h2>
+<ul>
+<li><strong>Disconnect:</strong> Settings → Connection → Disconnect removes the token, the refresh token and the workspace info from the Keychain.</li>
+<li><strong>Choose pages:</strong> with Connect to Notion, you pick the pages Brink can see on Notion&#39;s consent screen. Connect again at any time to change the selection.</li>
+<li><strong>Revoke access:</strong> remove the integration in Notion (Settings → Connections), and Brink immediately loses access.</li>
+<li><strong>Delete all local data:</strong> quit Brink, delete <code>~/Library/Application Support/NotionDock/</code>, then remove the Keychain items (or use Disconnect first).</li>
+</ul>
+<h2>Children</h2>
+<p>Brink is not directed at children under 13 (16 in the EU).</p>
+<h2>Changes</h2>
+<p>Updates to this policy will be dated above and shipped with the app.</p>
+<h2>Contact</h2>
+<p>Stepan Blaha: <a href="mailto:stepa15.b@gmail.com">stepa15.b@gmail.com</a>. Issues and questions are also welcome at <a rel="noopener" href="https://github.com/StepanBlaha/Brink/issues">https://github.com/StepanBlaha/Brink/issues</a></p>
+e:["$","div",null,{"className":"wrap","children":["$","article",null,{"className":"Prose-module__CL27nW__prose ","children":[[["$","script",null,{"type":"application/ld+json","dangerouslySetInnerHTML":{"__html":"{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://brinknotch.site/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Privacy Policy\",\"item\":\"https://brinknotch.site/privacy/\"}]}"}}],["$","nav",null,{"aria-label":"Breadcrumb","className":"Prose-module__CL27nW__crumbs","children":["$","ol",null,{"children":[["$","li",null,{"children":["$","$L7",null,{"href":"/","children":"Home"}]}],["$","li",null,{"aria-current":"page","children":"Privacy Policy"}]]}]}]],["$","h1",null,{"children":"Privacy Policy"}],["$","div",null,{"dangerouslySetInnerHTML":{"__html":"$19"}}]]}]}]
