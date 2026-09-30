@@ -2,7 +2,7 @@
 // Usage: swift scripts/demo-still.swift <in.png> <out.png> "<caption>"
 // The capture is scaled to fill the width and anchored at the top (the fake menu bar stays);
 // a display taller than 16:10 loses a strip at the bottom, a wider one is letterboxed with the
-// wallpaper's colors. The caption is white SF Pro on the graphite wallpaper (branding/BRAND.md),
+// wallpaper's colors. The caption is white SF Pro on the dusk wallpaper (branding/BRAND.md),
 // bottom center.
 // (Swift, not ffmpeg drawtext: the Homebrew ffmpeg here is built without libfreetype.)
 import AppKit
@@ -23,7 +23,7 @@ let canvas = NSRect(x: 0, y: 0, width: width, height: height)
 func hex(_ v: Int) -> NSColor {
     NSColor(srgbRed: CGFloat((v >> 16) & 255) / 255, green: CGFloat((v >> 8) & 255) / 255, blue: CGFloat(v & 255) / 255, alpha: 1)
 }
-NSGradient(colors: [hex(0x4b5058), hex(0x3a3f46), hex(0x2b2f35)])!.draw(in: canvas, angle: -70)
+NSGradient(colors: [hex(0x5c6b9e), hex(0x9e85a8), hex(0xeda88f)])!.draw(in: canvas, angle: -70)
 
 let srcW = CGFloat(cg.width), srcH = CGFloat(cg.height)
 var scale = CGFloat(width) / srcW

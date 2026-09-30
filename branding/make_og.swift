@@ -1,5 +1,5 @@
-// Renders the social card (1200x630): deep graphite (branding/BRAND.md), icon, "Brink", tagline,
-// and the black notch on the right edge over a mid-graphite lift so it reads.
+// Renders the social card (1200x630): the dusk wallpaper (branding/BRAND.md), icon,
+// "Brink", tagline, and the black notch on the right edge.
 // Usage: swift branding/make_og.swift <out.png> website/public/assets/icon-512.png
 import AppKit
 let W = 1200, H = 630
@@ -11,9 +11,10 @@ func hex(_ v: Int, _ a: CGFloat = 1) -> NSColor {
     NSColor(srgbRed: CGFloat((v >> 16) & 255) / 255, green: CGFloat((v >> 8) & 255) / 255, blue: CGFloat(v & 255) / 255, alpha: a)
 }
 let accent = hex(0x0a84ff)
-NSGradient(colors: [hex(0x1f2226), hex(0x2b2f35), hex(0x16181b)])!.draw(in: NSRect(x: 0, y: 0, width: W, height: H), angle: -70)
-NSGradient(colors: [hex(0x4b5058, 0.95), hex(0x3a3f46, 0.55), hex(0x2b2f35, 0)])!
-    .draw(fromCenter: NSPoint(x: 1010, y: 315), radius: 0, toCenter: NSPoint(x: 1010, y: 315), radius: 470, options: [])
+// The dusk wallpaper, blue side under the text and peach side under the notch, softly darkened.
+NSGradient(colors: [hex(0x5c6b9e), hex(0x9e85a8), hex(0xeda88f)])!.draw(in: NSRect(x: 0, y: 0, width: W, height: H), angle: -20)
+NSGradient(colors: [NSColor.black.withAlphaComponent(0.34), NSColor.black.withAlphaComponent(0.1), NSColor.black.withAlphaComponent(0)])!
+    .draw(in: NSRect(x: 0, y: 0, width: W, height: H), angle: 0)
 // Screen edge + notch (right side).
 let edge = 1200.0 - 26.0
 NSColor.black.setFill(); NSRect(x: edge, y: 0, width: 26, height: 630).fill()

@@ -1,6 +1,6 @@
 import AppKit
 
-/// A full-screen "desktop" under the notch for recordings: the graphite wallpaper from
+/// A full-screen "desktop" under the notch for recordings: the dusk wallpaper from
 /// branding/BRAND.md, a clean
 /// fake menu bar and a quiet fake app window. It hides the user's real desktop, windows, Dock
 /// and menu-bar items.
@@ -44,14 +44,17 @@ private final class BackdropView: NSView {
 
     override func draw(_ dirtyRect: NSRect) {
         let b = bounds
-        // Graphite: a mid slate, so the black notch and its hairline outline separate from it.
-        NSGradient(colors: [Self.hex(0x4b5058), Self.hex(0x3a3f46), Self.hex(0x2b2f35)])!.draw(in: b, angle: -70)
-        // Faint cool sheen at the top left, then a soft vignette towards the corners.
-        NSGradient(colors: [NSColor(srgbRed: 0.85, green: 0.9, blue: 1, alpha: 0.08), NSColor(srgbRed: 0.85, green: 0.9, blue: 1, alpha: 0)])!
+        // Dusk: the app icon's wallpaper (branding/BRAND.md).
+        NSGradient(colors: [Self.hex(0x5c6b9e), Self.hex(0x9e85a8), Self.hex(0xeda88f)])!.draw(in: b, angle: -70)
+        // Soft warm glow low on the right, a faint light sheen top left, then a gentle vignette.
+        NSGradient(colors: [NSColor(srgbRed: 1, green: 0.78, blue: 0.6, alpha: 0.3), NSColor(srgbRed: 1, green: 0.78, blue: 0.6, alpha: 0)])!
+            .draw(fromCenter: NSPoint(x: b.width * 0.72, y: b.height * 0.05), radius: 0,
+                  toCenter: NSPoint(x: b.width * 0.72, y: b.height * 0.05), radius: b.width * 0.5, options: [])
+        NSGradient(colors: [NSColor(white: 1, alpha: 0.1), NSColor(white: 1, alpha: 0)])!
             .draw(fromCenter: NSPoint(x: b.width * 0.2, y: b.height), radius: 0,
                   toCenter: NSPoint(x: b.width * 0.2, y: b.height), radius: b.width * 0.6, options: [])
-        NSGradient(colors: [NSColor.black.withAlphaComponent(0), NSColor.black.withAlphaComponent(0.28)])!
-            .draw(fromCenter: NSPoint(x: b.midX, y: b.midY), radius: b.height * 0.45,
+        NSGradient(colors: [NSColor.black.withAlphaComponent(0), NSColor.black.withAlphaComponent(0.16)])!
+            .draw(fromCenter: NSPoint(x: b.midX, y: b.midY), radius: b.height * 0.5,
                   toCenter: NSPoint(x: b.midX, y: b.midY), radius: hypot(b.width, b.height) * 0.62, options: [])
         drawAppWindow(in: b)
         drawMenuBar(in: b)
