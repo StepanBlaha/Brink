@@ -1,16 +1,14 @@
 .wrap { margin: 0; min-width: 0; }
 .screen {
   position: relative; aspect-ratio: 16 / 11; min-height: 380px; width: 100%; border-radius: 18px; overflow: clip;
-  /* Graphite wallpaper (branding/BRAND.md): mid slate so the black notch and its outline read. */
-  background:
-    radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.3) 100%),
-    linear-gradient(160deg, #4b5058 0%, #3a3f46 52%, #2b2f35 100%);
+  /* Dusk wallpaper (purple to peach), the hero simulator's own look. */
+  background: linear-gradient(160deg, #5c6b9e 0%, #9e85a8 52%, #eda88f 100%);
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 0 0 6px #0c0c0e, 0 0 0 7px rgba(255, 255, 255, 0.1), 0 30px 80px -30px #000;
 }
 .screen::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(60% 50% at 20% 0%, rgba(217, 230, 255, 0.1), transparent 70%);
+  background: radial-gradient(60% 50% at 20% 0%, rgba(255, 255, 255, 0.18), transparent 70%);
 }
 .menubar { position: absolute; top: 0; left: 0; right: 12px; height: 22px; display: flex; gap: 8px; align-items: center; padding: 0 12px; background: rgba(0, 0, 0, 0.22); }
 .menubar i { width: 34px; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, 0.5); }
