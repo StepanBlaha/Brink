@@ -6,7 +6,7 @@
     radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(0, 0, 0, 0.3) 100%),
     linear-gradient(160deg, #4b5058 0%, #3a3f46 52%, #2b2f35 100%);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 0 0 6px #0c0c0e, 0 0 0 7px rgba(255, 255, 255, 0.1), 0 50px 90px -30px rgba(10, 132, 255, 0.35), 0 30px 80px -30px #000;
+  box-shadow: 0 0 0 6px #0c0c0e, 0 0 0 7px rgba(255, 255, 255, 0.1), 0 30px 80px -30px #000;
 }
 .screen::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
