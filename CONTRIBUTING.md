@@ -10,7 +10,7 @@ Thanks for helping make Brink better.
 
 ## Code contributions
 
-Brink's source is public but **not open source**: it is © Stepan Blaha, all rights reserved (see [LICENSE](LICENSE)). Pull requests are welcome, but please **open an issue first**, so we can agree on the change before you spend time on it. By opening a pull request, you agree that your contribution may be included in Brink under the project's license.
+Brink is open source under the [MIT License](LICENSE). Pull requests are welcome. For anything bigger than a small fix, please **open an issue first**, so we can agree on the approach before you spend time on it. By opening a pull request, you agree that your contribution is licensed under the MIT License. If you publish your own fork as an app, give it a different name and icon (see [TRADEMARKS.md](TRADEMARKS.md)).
 
 ### Setup
 

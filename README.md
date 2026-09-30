@@ -7,6 +7,7 @@
   <a href="https://github.com/StepanBlaha/Brink/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/StepanBlaha/Brink?label=download&color=0A84FF"></a>
   <img alt="macOS 14+" src="https://img.shields.io/badge/macOS-14%2B-black?logo=apple">
   <img alt="Free" src="https://img.shields.io/badge/price-free-2ea44f">
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-555"></a>
   <a href="https://github.com/StepanBlaha/Brink/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/StepanBlaha/Brink/total?color=555"></a>
 </p>
 
@@ -109,8 +110,8 @@ Site settings (URL, email, links, price) live in `website/src/site.ts`. The site
 
 ## Contributing and security
 
-Bug reports and ideas are welcome in [Issues](https://github.com/StepanBlaha/Brink/issues/new/choose). See [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Please report security problems privately, as described in [SECURITY.md](SECURITY.md).
+Bug reports and ideas are welcome in [Issues](https://github.com/StepanBlaha/Brink/issues/new/choose). Pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Please report security problems privately, as described in [SECURITY.md](SECURITY.md).
 
 ## License
 
-Proprietary, © 2026 Stepan Blaha. All rights reserved. See [LICENSE](LICENSE) and [legal/NOTICE.md](legal/NOTICE.md). The design was inspired by [Codenotch](https://github.com/vinzdg/codenotch); no code from it is included.
+Open source under the [MIT License](LICENSE), © 2026 Stepan Blaha. The name "Brink" and the app icon aren't covered by the license; see [TRADEMARKS.md](TRADEMARKS.md). Third-party notices are in [legal/NOTICE.md](legal/NOTICE.md). The design was inspired by [Codenotch](https://github.com/vinzdg/codenotch); no code from it is included.
