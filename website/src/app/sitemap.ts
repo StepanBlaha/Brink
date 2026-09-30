@@ -4,7 +4,8 @@ import { absoluteUrl } from "@/site";
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date("2026-09-29");
+  // Build time: every deploy (a push to main) refreshes it.
+  const lastModified = new Date();
   return [
     { url: absoluteUrl(), priority: 1.0 },
     { url: absoluteUrl("press/"), priority: 0.5 },
