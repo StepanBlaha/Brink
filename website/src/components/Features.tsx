@@ -8,7 +8,7 @@ import { Customization } from "./Customization";
 export function Features() {
   return (
     <>
-      <section id="features" style={{ paddingBottom: 0 }}>
+      <section id="features" style={{ paddingBottom: "clamp(48px, 7vw, 104px)" }}>
         <div className="wrap">
           <SectionHead eyebrow="Features" title="Everything within one hover.">
             Brink is a notch app for Mac that turns the edge of your screen into a fast lane to the Notion pages and tasks you actually use.
