@@ -1,0 +1,13 @@
+.window { min-height: 100vh; padding: 20px; background: #121212; color: var(--text); font: 13px/1.4 var(--font); }
+.section { display: flex; flex-direction: column; gap: 12px; max-width: 460px; }
+.h { margin: 0; font-size: 16px; font-weight: 600; }
+.hint { margin: 0; color: var(--text-2); }
+.error { margin: 0; color: var(--danger); }
+.field { display: flex; flex-direction: column; gap: 4px; color: var(--text-2); }
+.input { height: 32px; padding: 0 10px; border: 0; border-radius: 6px; outline: none; background: #1c1c1e; color: var(--text); font: inherit; }
+.input:focus { box-shadow: 0 0 0 1px var(--accent); }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.primary, .secondary { height: 30px; padding: 0 12px; border: 0; border-radius: 6px; font: inherit; cursor: pointer; }
+.primary { background: var(--accent); color: #fff; font-weight: 600; }
+.secondary { background: #2a2a2c; color: var(--text); }
+.primary:disabled, .secondary:disabled { opacity: 0.4; cursor: default; }

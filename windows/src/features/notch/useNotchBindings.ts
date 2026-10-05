@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNotchStore } from "../../state/notchStore";
 import { applyDebug } from "./debug";
 import {
@@ -20,20 +20,29 @@ interface Args {
   hitRects: Rect[];
   zonesAt: (x: number, y: number) => Zones;
   firstPinId: string;
+  /** A menu or popover is open: it blocks folding, and an outside click dismisses it first. */
+  overlay?: { isOpen: () => boolean; dismiss: () => void };
 }
 
 const isTextTarget = (t: EventTarget | null): boolean =>
   t instanceof HTMLElement && (t.matches("input, textarea") || t.isContentEditable);
 
 /** Wires the phase machine to the window: pointer, keys, focus, hit rects, placement, debug. */
-export function useNotchBindings({ layout, hitRects, zonesAt, firstPinId }: Args): PhaseMachine {
+export function useNotchBindings({ layout, hitRects, zonesAt, firstPinId, overlay }: Args): PhaseMachine {
   const store = useNotchStore;
-  const [machine] = useState(() => new PhaseMachine({ onChange: (s) => store.getState().setPhase(s) }));
+  const overlayRef = useRef(overlay);
+  useEffect(() => {
+    overlayRef.current = overlay;
+  });
+  const [machine] = useState(
+    () => new PhaseMachine({ onChange: (s) => store.getState().setPhase(s), isBlocked: () => overlayRef.current?.isOpen() === true }),
+  );
   const zonesRef = useRef(zonesAt);
   zonesRef.current = zonesAt;
   const focusTaken = useRef(false);
   const phase = store((s) => s.phase.phase);
-  const { edge, size, pins } = store((s) => s.config);
+  const { edge, size } = store((s) => s.config);
+  const pins = layout.pinCount;
 
   // Window size follows the viewport (Rust sizes the HWND once per placement).
   useEffect(() => {
@@ -48,18 +57,28 @@ export function useNotchBindings({ layout, hitRects, zonesAt, firstPinId }: Args
   useEffect(() => sendHitRects(hitRects, phase === "expanded"), [hitRects, phase]);
   useEffect(() => () => machine.dispose(), [machine]);
 
-  usePointer((x, y) => machine.pointerMoved(zonesRef.current(x, y)), () => machine.outsideClick());
+  const outside = useCallback(() => {
+    const o = overlayRef.current;
+    if (o?.isOpen()) o.dismiss();
+    else machine.outsideClick();
+  }, [machine]);
+  usePointer((x, y) => machine.pointerMoved(zonesRef.current(x, y)), outside);
 
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && store.getState().phase.phase === "expanded") {
+      if (e.key !== "Escape") return;
+      const o = overlayRef.current;
+      if (o?.isOpen()) {
+        e.preventDefault();
+        o.dismiss();
+      } else if (store.getState().phase.phase === "expanded") {
         e.preventDefault();
         machine.escape();
       }
     };
     const down = (e: MouseEvent) => {
       // Browser dev only: in Tauri the window is click-through, Rust reports outside clicks.
-      if (!inTauri() && e.target === document.querySelector("[data-phase]")) machine.outsideClick();
+      if (!inTauri() && e.target === document.querySelector("[data-phase]")) outside();
     };
     const focusIn = (e: FocusEvent) => {
       if (isTextTarget(e.target) && !focusTaken.current) {
@@ -75,7 +94,7 @@ export function useNotchBindings({ layout, hitRects, zonesAt, firstPinId }: Args
       window.removeEventListener("mousedown", down);
       window.removeEventListener("focusin", focusIn);
     };
-  }, [machine, store]);
+  }, [machine, store, outside]);
 
   useEffect(() => {
     if (phase !== "expanded" && focusTaken.current) {

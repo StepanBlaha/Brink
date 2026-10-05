@@ -22,7 +22,6 @@ export function applyDebug(
     if (k === "pill" && (v === "line" || v === "percent" || v === "dot" || v === "hidden")) setConfig({ pill: v });
     if (k === "outline") setConfig({ outline: v === "1" });
     if (k === "reduce") setConfig({ reduce: v === "1" });
-    if (k === "pins") setConfig({ pins: Math.min(Math.max(Number(v) || 0, 0), 5) });
     return;
   }
   const [name, arg] = c.split(":");

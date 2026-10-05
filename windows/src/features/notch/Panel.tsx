@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { FakePin } from "./fakePins";
 import { CheckIcon, PinIcon, PlusIcon, XIcon } from "./icons";
 import styles from "./panel.module.css";
@@ -10,10 +10,12 @@ interface Props {
   fontScale: number;
   onToggleKeepOpen: () => void;
   onClose: () => void;
+  /** Real content (database view); replaces the placeholder rows and quick-add. */
+  children?: ReactNode;
 }
 
 /** Placeholder panel: header, fake task rows, a quick-add input (focus test). Real content: M3+. */
-export function Panel({ pin, addFlow, keepOpen, fontScale, onToggleKeepOpen, onClose }: Props) {
+export function Panel({ pin, addFlow, keepOpen, fontScale, onToggleKeepOpen, onClose, children }: Props) {
   const [done, setDone] = useState<Record<string, boolean>>({});
   const title = addFlow ? "Add a page" : (pin?.title ?? "");
   return (
@@ -35,6 +37,10 @@ export function Panel({ pin, addFlow, keepOpen, fontScale, onToggleKeepOpen, onC
           <XIcon />
         </button>
       </header>
+      {children ? (
+        <div className={styles.body}>{children}</div>
+      ) : (
+      <>
       <div className={styles.body}>
         {addFlow ? (
           <p className={styles.empty}>Search your workspace to pin a page.</p>
@@ -59,6 +65,8 @@ export function Panel({ pin, addFlow, keepOpen, fontScale, onToggleKeepOpen, onC
         )}
       </div>
       <input className={styles.quick} placeholder="Add a task" aria-label="Quick add" />
+      </>
+      )}
     </div>
   );
 }

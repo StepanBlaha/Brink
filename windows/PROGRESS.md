@@ -34,3 +34,15 @@
 - [ ] Setup flow copy / ViewBuilder UI ("Pin as new view", "Sprint · This week"): deferred, see DECISIONS
 - [ ] Natural-date quick add: waits for NaturalDate port (M7)
 - [ ] Screenshot against the Sprint demo DB on Windows, Windows CI green (see commit follow-up)
+
+## M3 Pins, search, pinning, strip interactions (2026-10-05)
+- [x] Real pins from the store (browser: in-memory mock `ipc/mockWorkspace.ts`); `pinsStore`/`groupsStore` mutate optimistically then persist, resync on failure (`state/pinsActions.test.ts`)
+- [x] Reorder by pointer drag (4 px threshold, target index and shifts in `pinItems.test.ts`), Today drop rejected (`reorderIntent`), verified by drag in the browser pane
+- [x] Context menu (Keep open, Change Icon (disabled until M8), Edit View, Move to group, Open in Notion, Unpin), `common/Menu.test.tsx`
+- [x] Add flow: search (300 ms debounce, stale answers dropped, `usePinSearch.test.ts`), keyboard nav + Untitled/kind/pinned check/empty copy (`PinSearch.test.tsx`), database setup + View options (`pinning.test.ts`), Edit View prefill
+- [x] Resize grips 6/18 px, double-click reset, sizes in `settings.panelSizes`, no morph while resizing (`useResize.test.ts`)
+- [x] Group switcher (select, new group, Manage opens settings), Settings stub with token paste/test/disconnect (`ConnectionSection`)
+- [x] Panel shows M4 `DatabaseHost` for database pins
+- [x] Rust `shell.rs`: `open_in_notion` (notion:// when registered, else https; unit tests), `show_settings`; Windows code type-checked for msvc in a scratch crate
+- [ ] Playwright and Windows screenshots (`docs/screens/m3/`) deferred; browser-pane checks done on Mac
+- [ ] Windows CI green (see commit follow-up)

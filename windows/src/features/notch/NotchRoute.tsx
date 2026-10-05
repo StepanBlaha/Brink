@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { initState } from "../../state/bridge";
 import { useNotchStore } from "../../state/notchStore";
 import "./notchWindow.css";
 import { NotchRoot } from "./NotchRoot";
@@ -10,5 +11,9 @@ export function NotchRoute() {
     useNotchStore.getState().setConfig(parseParams(window.location.search));
     return true;
   });
+  useEffect(() => {
+    const stop = initState();
+    return () => void stop.then((f) => f());
+  }, []);
   return <NotchRoot />;
 }

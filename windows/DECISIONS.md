@@ -65,3 +65,14 @@ Source: `docs/WINDOWS-PORT.md` section 2.1. Dated entries below the table record
 - **Title edit** commits on Enter or blur (Mac: Enter only); Escape reverts.
 - **Row-out** uses the `list` spring plus the 0.8 s model delay; Reduce Motion uses the instant transition.
 - **Sound tick** on completion is M6.
+
+## 2026-10-05 M3 pins and add flow
+
+- **Strip moved** to `src/features/strip/`; `Strip` takes `PinItem`s. Panel/Peek still get the M2 `FakePin` shape through `notch/pinAdapter.ts` until M6 summaries.
+- **Today pin hidden in M3** (`stripItems(..., showToday=false)`); the reorder index shift and drop rejection are implemented and tested for M6.
+- **Submenu is inline** (accordion) in `common/Menu`, so every menu area stays inside one hit rect (the window is click-through outside reported rects).
+- **Overlays block folding**: a menu or popover sets `isBlocked`; outside click or Esc dismisses it before collapsing the panel.
+- **No Playwright yet**: keyboard-navigation tests use Testing Library (`@testing-library/react`, new dev dependency). Playwright and Windows screenshots wait for a Windows run.
+- **Icons**: three inline Lucide paths in `common/icons.tsx`; custom lucide/SF symbol pin icons render as a colored placeholder until the M8 picker.
+- **Panel size** writes `settings.panelSizes` through `settings_set` (clamped on read) rather than `panel_size_set`.
+- **Mock IPC** (`?pins=0` for an empty workspace) now has an in-memory workspace for pins, groups, auth and search.

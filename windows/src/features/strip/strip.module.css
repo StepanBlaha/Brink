@@ -39,3 +39,25 @@
   text-align: center;
   pointer-events: none;
 }
+.slot { position: relative; flex: none; touch-action: none; }
+.slotShift { transition: transform 0.28s cubic-bezier(0.3, 1.25, 0.5, 1); }
+.dragging { z-index: 3; transition: none; }
+.dragging .icon { background: var(--selected); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6); }
+.glyph { line-height: 1; pointer-events: none; }
+.letter {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 600;
+  line-height: 1;
+  pointer-events: none;
+}
+.groupLabel { font-size: 12px; font-weight: 600; line-height: 1; }
+.prompt { display: flex; flex-direction: column; gap: 6px; padding: 4px; width: 190px; }
+.promptLabel { color: var(--text-2); font-size: 12px; }
+.promptInput {
+  height: 28px; padding: 0 8px; border: 0; border-radius: 6px; outline: none;
+  background: rgba(255, 255, 255, 0.08); color: var(--text); font: inherit;
+}
+.promptInput:focus { box-shadow: 0 0 0 1px var(--accent); }

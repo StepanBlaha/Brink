@@ -20,6 +20,17 @@ export function appVersion(): Promise<AppVersion> {
   return invoke<AppVersion>("app_version");
 }
 
+// ---- shell ----
+
+/** Opens the page in the Notion app when its protocol is registered, else in the browser. */
+export function openInNotion(notionId: string): Promise<void> {
+  return invoke("open_in_notion", { notionId });
+}
+
+export function showSettings(): Promise<void> {
+  return invoke("show_settings");
+}
+
 // ---- auth ----
 
 export function authStatus(): Promise<AuthStatus> {

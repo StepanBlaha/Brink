@@ -7,6 +7,7 @@ pub mod notion;
 pub mod paths;
 pub mod queue;
 pub mod secrets;
+pub mod shell;
 pub mod store;
 pub mod window;
 
@@ -32,6 +33,8 @@ pub fn run() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             app_version,
+            shell::open_in_notion,
+            shell::show_settings,
             commands::auth::auth_status,
             commands::auth::auth_save_token,
             commands::auth::auth_disconnect,

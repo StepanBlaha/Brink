@@ -1,14 +1,25 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useNotchStore } from "../../state/notchStore";
 import { crossfade, instant } from "../../theme/motion";
-import { FAKE_PINS, type FakePin } from "./fakePins";
+import { ignore } from "../../state/ignore";
+import { useGroupsStore } from "../../state/groupsStore";
+import { usePinsStore } from "../../state/pinsStore";
+import { useSettingsStore } from "../../state/settingsStore";
+import { DatabaseHost } from "../database/DatabaseHost";
+import { AddFlow } from "../pinning/AddFlow";
+import { clampPanelSize } from "../../theme/notchMetrics";
+import { activePins, effectiveGroupId, groupItems, reorderIntent, stripItems, type PinItem } from "../strip/pinItems";
+import { Strip } from "../strip/Strip";
+import { StripOverlay, type Overlay } from "../strip/StripOverlay";
+import { ResizeGrips } from "./ResizeGrips";
+import { useResize } from "./useResize";
+import { toPanelPin } from "./pinAdapter";
 import { NotchShape } from "./NotchShape";
 import { Panel } from "./Panel";
 import { PhaseBody } from "./PhaseBody";
 import { Peek } from "./Peek";
 import { PillProgress } from "./Pill";
-import { Strip } from "./Strip";
 import styles from "./notch.module.css";
 import { useNotchBindings } from "./useNotchBindings";
 import { useNotchLayout } from "./useNotchLayout";
@@ -18,7 +29,7 @@ import {
   rectContains,
   rectMidY,
 } from "./notchGeometry";
-import { bodyRectFor, clampedExpandedCenter, hotRect, peekRect } from "./notchLayout";
+import { bodyRectFor, clampedExpandedCenter, hotRect, maxPanelSize, peekRect } from "./notchLayout";
 
 const PEEK_ITEMS = 3;
 
@@ -28,17 +39,50 @@ export function NotchRoot() {
   const reduce = useReducedMotion() === true || nativeReduceMotion || config.reduce;
   const [iconMid, setIconMid] = useState<number | null>(null);
   const [peekIcon, setPeekIcon] = useState<Rect | null>(null);
-  const base = useNotchLayout();
+  const storedPins = usePinsStore((s) => s.pins);
+  const groups = useGroupsStore((s) => s.groups);
+  const activeGroupID = useSettingsStore((s) => s.settings.activeGroupID);
+  const items = useMemo(() => stripItems(activePins(storedPins, groups, activeGroupID), false), [storedPins, groups, activeGroupID]);
+  const activeId = effectiveGroupId(groups, activeGroupID);
+  const activeGroup = groupItems(groups).find((g) => g.id === activeId);
+  const [overlay, setOverlay] = useState<Overlay | null>(null);
+  const [overlayRect, setOverlayRect] = useState<Rect | null>(null);
+  const [editPinId, setEditPinId] = useState<string | undefined>(undefined);
+  const panelSizes = useSettingsStore((st) => st.settings.panelSizes);
+  const base0 = useNotchLayout(items.length);
+  const stored = ps.selectedPinId ? panelSizes[ps.selectedPinId] : undefined;
+  const base = useMemo(() => {
+    if (!stored) return base0;
+    const max = maxPanelSize(base0);
+    return { ...base0, expandedSize: clampPanelSize({ width: stored[0], height: stored[1] }, max.width, max.height) };
+  }, [base0, stored]);
+  const clampSize = useCallback(
+    (sz: { width: number; height: number }) => {
+      const max = maxPanelSize(base);
+      return clampPanelSize(sz, max.width, max.height);
+    },
+    [base],
+  );
+  const commitSize = useCallback(
+    (sz: { width: number; height: number }) => {
+      const id = useNotchStore.getState().phase.selectedPinId;
+      if (id) ignore(useSettingsStore.getState().update({ panelSizes: { ...panelSizes, [id]: [sz.width, sz.height] } }));
+    },
+    [panelSizes],
+  );
+  const resize = useResize({ edge: base.edge, size: base.expandedSize, clamp: clampSize, onCommit: commitSize });
+  const sized = useMemo(() => (resize.live ? { ...base, expandedSize: resize.live } : base), [base, resize.live]);
   const layout = useMemo(
     () => ({
-      ...base,
-      expandedCenter: clampedExpandedCenter(base, iconMid ?? base.windowSize.height / 2),
+      ...sized,
+      expandedCenter: clampedExpandedCenter(sized, iconMid ?? sized.windowSize.height / 2),
     }),
-    [base, iconMid],
+    [sized, iconMid],
   );
   const { phase } = ps;
-  const pins = FAKE_PINS.slice(0, layout.pinCount);
-  const selected = pins.find((p) => p.id === ps.selectedPinId) ?? null;
+  const selectedItem = items.find((p) => p.id === ps.selectedPinId) ?? null;
+  const selectedPin = storedPins.find((p) => p.id === ps.selectedPinId);
+  const selected = selectedItem ? toPanelPin(selectedItem) : null;
   useEffect(() => {
     // Debug peeks have no hover: locate the icon in the DOM.
     const el = ps.peekPinId ? document.querySelector(`[data-pin="${ps.peekPinId}"]`) : null;
@@ -47,15 +91,17 @@ export function NotchRoot() {
       setPeekIcon({ x: r.left, y: r.top, width: r.width, height: r.height });
     }
   }, [ps.peekPinId]);
-  const peekPin = pins.find((p) => p.id === ps.peekPinId) ?? null;
+  const peekItem = items.find((p) => p.id === ps.peekPinId) ?? null;
+  const peekPin = peekItem ? toPanelPin(peekItem) : null;
   const peekBox = peekPin && peekIcon ? peekRect(layout, peekIcon, PEEK_ITEMS) : null;
 
   const hitRects = useMemo(() => {
     if (hidden) return [];
     const r = [hotRect(layout, phase)];
     if (phase === "strip" && peekBox) r.push(peekBox);
+    if (overlayRect) r.push(overlayRect);
     return r;
-  }, [layout, phase, hidden, peekBox]);
+  }, [layout, phase, hidden, peekBox, overlayRect]);
 
   const zonesAt = useCallback(
     (x: number, y: number) => ({
@@ -66,21 +112,40 @@ export function NotchRoot() {
     [layout, peekBox],
   );
 
-  const machine = useNotchBindings({ layout, hitRects, zonesAt, firstPinId: pins[0]?.id ?? "" });
+  const overlayOpen = useRef(false);
+  useEffect(() => {
+    overlayOpen.current = overlay !== null;
+  }, [overlay]);
+  const overlayControl = useMemo(() => ({ isOpen: () => overlayOpen.current, dismiss: () => setOverlay(null) }), []);
+  const machine = useNotchBindings({ layout, hitRects, zonesAt, firstPinId: items[0]?.id ?? "", overlay: overlayControl });
 
-  const select = (pin: FakePin, icon: Rect) => {
+  const select = (pin: { id: string }, icon: Rect) => {
     setIconMid(layout.edge === "top" ? null : rectMidY(icon));
     machine.selectPin(pin.id);
   };
-  const ratio = useMemo(() => {
-    const total = pins.reduce((a, p) => a + p.total, 0);
-    return total === 0 ? null : (total - pins.reduce((a, p) => a + p.open, 0)) / total;
-  }, [pins]);
+  /** Menus open beside the strip, toward the screen's inside (below it on the top edge). */
+  const menuAnchor = (x: number, y: number) => {
+    const gap = layout.scale.stripDepth + 8;
+    if (layout.edge === "top") return { x, y: gap };
+    return { x: layout.edge === "right" ? layout.windowSize.width - gap : gap, y };
+  };
+  const addPin = (icon: Rect) => {
+    setIconMid(layout.edge === "top" ? null : rectMidY(icon));
+    setEditPinId(undefined);
+    machine.openAddFlow();
+  };
+  const reorder = (item: PinItem, stripIndex: number) => {
+    const intent = reorderIntent(item, stripIndex, false, activeId);
+    if (intent) ignore(usePinsStore.getState().move(intent.pinId, intent.toIndex, intent.groupId));
+  };
+  // The Today pin (M6) will feed real counts here; until then the pill has no ratio.
+  const ratio: number | null = null;
 
   const shapeVisible = !(phase === "resting" && layout.pillStyle === "hidden");
   const rail = (animate: boolean, group: boolean) => (
     <Strip
-      pins={pins}
+      items={items}
+      activeGroup={activeGroup}
       edge={layout.edge}
       scale={layout.scale}
       selectedId={ps.selectedPinId}
@@ -88,7 +153,10 @@ export function NotchRoot() {
       reduce={reduce}
       showGroupSwitcher={group}
       onSelect={select}
-      onAdd={() => machine.openAddFlow()}
+      onAdd={addPin}
+      onReorder={reorder}
+      onContextMenu={(item, x, y) => setOverlay({ kind: "pin", pinId: item.id, ...menuAnchor(x, y) })}
+      onGroupMenu={(r) => setOverlay({ kind: "groups", ...menuAnchor(r.x, r.y) })}
       onPeekEnter={
         group
           ? (pin, icon) => {
@@ -108,14 +176,20 @@ export function NotchRoot() {
       animate={{ opacity: 1 }}
       transition={reduce ? instant : crossfade}
     >
+      {ps.addFlow ? (
+        <AddFlow editPinId={editPinId} onClose={() => machine.collapse(true)} />
+      ) : (
       <Panel
         pin={selected}
-        addFlow={ps.addFlow}
+        addFlow={false}
         keepOpen={ps.keepOpen}
         fontScale={layout.fontScale}
         onToggleKeepOpen={() => machine.toggleKeepOpen()}
         onClose={() => machine.collapse(true)}
-      />
+      >
+        {selectedPin?.kind === "dataSource" && selectedPin.config ? <DatabaseHost pin={selectedPin} /> : null}
+      </Panel>
+      )}
     </motion.div>
   );
   const railSize = layout.scale.stripDepth;
@@ -141,7 +215,7 @@ export function NotchRoot() {
       data-phase={phase}
       data-edge={layout.edge}
     >
-      <NotchShape layout={layout} phase={phase} reduce={reduce} outline={config.outline} visible={shapeVisible}>
+      <NotchShape layout={layout} phase={phase} reduce={reduce || resize.resizing} outline={config.outline} visible={shapeVisible}>
         <PillProgress
           rect={bodyRectFor(layout, "resting")}
           edge={layout.edge}
@@ -181,6 +255,36 @@ export function NotchRoot() {
           />
         )}
       </AnimatePresence>
+      {phase === "expanded" && !ps.addFlow && ps.selectedPinId && (
+        <ResizeGrips
+          edge={layout.edge}
+          rect={bodyRectFor(layout, "expanded")}
+          onBegin={resize.begin}
+          onReset={() => {
+            const { [ps.selectedPinId as string]: _gone, ...rest } = panelSizes;
+            void _gone;
+            ignore(useSettingsStore.getState().update({ panelSizes: rest }));
+          }}
+        />
+      )}
+      {overlay && (
+        <StripOverlay
+          overlay={overlay}
+          edge={layout.edge}
+          keptOpenPinId={ps.keepOpen ? ps.selectedPinId : null}
+          onKeepOpen={(id) => {
+            if (!(phase === "expanded" && ps.selectedPinId === id)) machine.selectPin(id);
+            if (!machine.state.keepOpen) machine.toggleKeepOpen();
+          }}
+          onEditView={(id) => {
+            setEditPinId(id);
+            machine.openAddFlow();
+          }}
+          onUnpinned={(id) => ps.selectedPinId === id && machine.collapse(true)}
+          onRect={setOverlayRect}
+          onClose={() => setOverlay(null)}
+        />
+      )}
     </div>
   );
 }
