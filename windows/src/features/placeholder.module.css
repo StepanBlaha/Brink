@@ -1,0 +1,14 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: var(--notch-black);
+  color: var(--text);
+}
+
+.root small {
+  color: var(--text-dim);
+}

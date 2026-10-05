@@ -1,0 +1,88 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Brink",
+  "version": "0.10.0",
+  "identifier": "cz.stepanblaha.brink",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://127.0.0.1:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": false,
+    "macOSPrivateApi": true,
+    "windows": [
+      {
+        "label": "notch",
+        "title": "Brink",
+        "url": "index.html#/notch",
+        "width": 900,
+        "height": 600,
+        "transparent": true,
+        "decorations": false,
+        "shadow": false,
+        "resizable": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "focus": false,
+        "visible": false,
+        "maximizable": false,
+        "minimizable": false,
+        "closable": false,
+        "visibleOnAllWorkspaces": true,
+        "dragDropEnabled": true
+      },
+      {
+        "label": "capture",
+        "title": "Quick capture",
+        "url": "index.html#/capture",
+        "width": 560,
+        "height": 150,
+        "transparent": true,
+        "decorations": false,
+        "shadow": false,
+        "resizable": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "center": true,
+        "visible": false
+      },
+      {
+        "label": "settings",
+        "title": "Brink Settings",
+        "url": "index.html#/settings",
+        "width": 560,
+        "height": 540,
+        "center": true,
+        "visible": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data: blob: https:; connect-src 'self' ipc: http://ipc.localhost http://127.0.0.1:1420 ws://127.0.0.1:1420; style-src 'self' 'unsafe-inline'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis"
+    ],
+    "publisher": "Stepan Blaha",
+    "copyright": "© 2026 Stepan Blaha. Not affiliated with Notion Labs, Inc.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser"
+      },
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      }
+    }
+  }
+}

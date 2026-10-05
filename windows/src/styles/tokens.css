@@ -1,0 +1,6 @@
+:root {
+  --notch-black: #000;
+  --text: #f5f5f5;
+  --text-dim: rgba(245, 245, 245, 0.6);
+  --font: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+}
