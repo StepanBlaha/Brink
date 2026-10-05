@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DatabaseConfig } from "../../domain/store/pin";
 import { DatabaseModel } from "./databaseModel";
 import { createFake, sprintRow, sprintSchema, type Fake } from "./fakePorts";
@@ -43,6 +43,14 @@ describe("query building", () => {
 });
 
 describe("DatabaseModel", () => {
+  const prevTz = process.env["TZ"];
+  beforeAll(() => {
+    process.env["TZ"] = "Europe/Prague";
+  });
+  afterAll(() => {
+    if (prevTz === undefined) delete process.env["TZ"];
+    else process.env["TZ"] = prevTz;
+  });
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
 
@@ -141,7 +149,7 @@ describe("DatabaseModel", () => {
     expect(fake.ops).toHaveLength(0);
     await model.snooze("b", "tomorrow", now);
     const start = (fake.ops[0] as { updates: { value: { date?: { start: string } } }[] }).updates[0]?.value.date?.start;
-    expect(start).toMatch(/^2026-09-30T09:30:00[+-]\d\d:\d\d$/);
+    expect(start).toMatch(/^2026-09-30T09:30:00\+02:00$/);
     await model.snooze("a", "nextWeek", now);
     expect((fake.ops[1] as { updates: { value: { date?: { start: string } } }[] }).updates[0]?.value.date?.start).toBe("2026-10-05");
   });
