@@ -7,6 +7,8 @@ import { useGroupsStore } from "../../state/groupsStore";
 import { usePinsStore } from "../../state/pinsStore";
 import { useSettingsStore } from "../../state/settingsStore";
 import { DatabaseHost } from "../database/DatabaseHost";
+import { PageHost } from "../../editor/PageHost";
+import { ipcEngineApi, ipcEngineCache } from "../../editor/ipcEngineApi";
 import { AddFlow } from "../pinning/AddFlow";
 import { clampPanelSize } from "../../theme/notchMetrics";
 import { activePins, effectiveGroupId, groupItems, reorderIntent, stripItems, type PinItem } from "../strip/pinItems";
@@ -189,7 +191,7 @@ export function NotchRoot() {
         onToggleKeepOpen={() => machine.toggleKeepOpen()}
         onClose={() => machine.collapse(true)}
       >
-        {selectedPin?.kind === "dataSource" && selectedPin.config ? <DatabaseHost pin={selectedPin} /> : null}
+        {selectedPin?.kind === "dataSource" && selectedPin.config ? <DatabaseHost pin={selectedPin} /> : selectedPin?.kind === "page" ? <PageHost pageId={selectedPin.notionId} api={ipcEngineApi} cache={ipcEngineCache(selectedPin.id)} fontScale={layout.fontScale} /> : null}
       </Panel>
       )}
     </motion.div>

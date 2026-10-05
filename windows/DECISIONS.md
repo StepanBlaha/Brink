@@ -109,3 +109,12 @@ Source: `docs/WINDOWS-PORT.md` section 2.1. Dated entries below the table record
 - **Insert and image uploads** go through `EngineApi.appendBlocks` / `uploadFile` (Tauri `notion_append_blocks` / `upload_image` in the app); update and delete use `queue_submit(retainOnTransientFailure: false)`.
 - **Moves.** `blockMoves.ts` holds the index math of `moveBlock`, `maxDepth`, up/down targets; editors apply the plan. A trailing empty text paragraph is not movable (Mac: no characters).
 - **Covers.** The cover cache key test stays in Rust (`store/covers.rs`, M1).
+
+## 2026-10-05 M5b editor UI
+
+- **D2 deviation: raw ProseMirror, no TipTap.** The editor uses `prosemirror-{model,state,view,transform,history,keymap,commands,inputrules}` directly (the foundation TipTap wraps). Same schema, plugins and input rules as the plan; one less abstraction layer for custom identity, keymap and decorations.
+- **Identity rules** are realized by the commands (Enter keeps the top half, merge keeps the first block) plus an `appendTransaction` plugin that only repairs duplicates, kinds and code marks, instead of the mapping-inversion algorithm. A stamp map (`localId -> blockId`) restores an engine-confirmed id when undo/redo brings a block back with `blockId: null`.
+- **Schema.** Token and image are inline atoms (`chip`, `image`) inside their block. `underline` and `color` marks exist because M5a keeps them through edits (PORT 9.12).
+- **Paste** with text ending in a newline at a line start inserts the whole lines above and the line keeps its identity (Mac `paste` test). Copy numbers numbered items within the copied slice.
+- **Playwright deferred again.** The demo-script check ("[] Ship the beta", "## Next", bold, "/to" + Enter) ran through headless Chrome over CDP against the Vite page `#/editordemo`; screenshots in `docs/screens/m5b/`. Text-level tests run on a real `EditorView` in jsdom (`src/test/pmHost.ts`).
+- **Esc in the slash menu** stops propagation so the panel does not fold. Link popover (Ctrl+K), find, images, drag handle and footer are M5c/M5d.

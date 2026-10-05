@@ -17,6 +17,14 @@
   "dependencies": {
     "@tauri-apps/api": "^2.12.1",
     "motion": "^14.0.0",
+    "prosemirror-commands": "^1.7.2",
+    "prosemirror-history": "^1.5.1",
+    "prosemirror-inputrules": "^1.5.1",
+    "prosemirror-keymap": "^1.2.3",
+    "prosemirror-model": "^1.25.12",
+    "prosemirror-state": "^1.4.4",
+    "prosemirror-transform": "^1.12.2",
+    "prosemirror-view": "^1.42.6",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "zustand": "^5.0.15"

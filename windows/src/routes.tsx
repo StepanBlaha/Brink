@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import { Placeholder } from "./features/Placeholder";
+import { EditorDemo } from "./editor/EditorDemo";
 import { DatabaseDemo } from "./features/database/DatabaseDemo";
 import { SettingsWindow } from "./features/settings/SettingsWindow";
 import { CaptureRoute } from "./features/capture/CaptureRoute";
@@ -18,6 +19,7 @@ export const ROUTES = [
   "legal",
   "backdrop",
   "dbdemo",
+  "editordemo",
 ] as const;
 export type RouteName = (typeof ROUTES)[number];
 
@@ -32,6 +34,7 @@ export function renderRoute(hash: string): ReactElement {
   const { name } = parseRoute(hash);
   if (name === "notch") return <NotchRoute />;
   if (name === "dbdemo") return <DatabaseDemo />;
+  if (name === "editordemo") return <EditorDemo />;
   if (name === "capture") return <CaptureRoute />;
   if (name === "toast") return <ToastRoute />;
   if (name === "tray") return <TrayRoute />;

@@ -65,3 +65,11 @@
 - [x] Fixes from PORT 9: underline/color kept (also Rust), mass-delete counts nested children, cache holds plain text.
 - [ ] Text-level EditorDocumentTests / WYSIWYGTests cases (type, Enter, Backspace, undo of shortcuts, paste in a text view): M5b on the real ProseMirror state.
 - [ ] Windows CI green (see commit follow-up)
+
+## M5b Editor UI (2026-10-05)
+- [x] `src/editor/`: schema, identityPlugin, snapshot, loadDocument, docPort (`BrinkDoc`, the engine's `EditorDocPort` over ProseMirror), inputRules, keymap (Enter, Backspace, Tab, marks, history), plugins (gutter, placeholder, toggleCollapse, slash, atomicGuard, paste/copy), TokenChip node view, SlashMenu, BrinkEditor, PageHost, ipcEngineApi.
+- [x] Vitest on a real `EditorView` (jsdom): WYSIWYG shortcuts incl. undo restoring the literal text, inline marks, Notion keys, paste/copy round trip, EditorDocument identity cases, slash menu, toggle collapse, callouts, gutter widgets, and the exact `editsAreSaved` requests through `PageEditorEngine` on `BrinkDoc`.
+- [x] Panel mounts `PageHost` for page pins (Edit in `features/notch/NotchRoot.tsx`); dev page `#/editordemo`; screenshots `docs/screens/m5b/`.
+- [ ] Playwright and Windows screenshot vs `marketing/screenshots/03-editor.png` (deferred, see DECISIONS)
+- [ ] Link popover, find, images, drag handle, move-block keys, footer: M5c/M5d
+- [ ] Windows CI green (see commit follow-up)
