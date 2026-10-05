@@ -1,0 +1,30 @@
+{
+  "id": "00000000-0000-4000-8000-000000000039",
+  "operation": {
+    "kind": "appendBlock",
+    "parentId": "page-4",
+    "block": {
+      "kind": "formatted",
+      "blockKind": "toDo",
+      "richText": [
+        {
+          "text": "Hello ",
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "code": false
+        },
+        {
+          "text": "bold",
+          "bold": true,
+          "italic": false,
+          "strikethrough": false,
+          "code": false
+        }
+      ],
+      "language": "plain text",
+      "checked": true
+    }
+  },
+  "createdAt": 780000039.5
+}

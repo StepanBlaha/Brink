@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import { Placeholder } from "./features/Placeholder";
+import { NotchRoute } from "./features/notch/NotchRoute";
 
 export const ROUTES = [
   "notch",
@@ -23,5 +24,6 @@ export function parseRoute(hash: string): { name: RouteName; arg?: string } {
 
 export function renderRoute(hash: string): ReactElement {
   const { name } = parseRoute(hash);
+  if (name === "notch") return <NotchRoute />;
   return <Placeholder name={name} />;
 }

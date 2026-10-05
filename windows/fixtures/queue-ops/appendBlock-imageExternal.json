@@ -1,0 +1,12 @@
+{
+  "id": "00000000-0000-4000-8000-000000000034",
+  "operation": {
+    "kind": "appendBlock",
+    "parentId": "page-4",
+    "block": {
+      "kind": "imageExternal",
+      "url": "https://example.com/pic.png"
+    }
+  },
+  "createdAt": 780000034.5
+}

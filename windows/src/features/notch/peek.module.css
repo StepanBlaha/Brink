@@ -1,0 +1,16 @@
+.card {
+  position: absolute;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--notch);
+  box-shadow: inset 0 0 0 1px var(--divider), 0 2px 14px rgba(0, 0, 0, 0.45);
+  color: var(--text);
+  overflow: hidden;
+  cursor: pointer;
+}
+.title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sub { color: var(--text-2); margin-bottom: 4px; }
+.item { display: flex; align-items: center; gap: 8px; height: 20px; color: rgba(255, 255, 255, 0.9); white-space: nowrap; overflow: hidden; }
+.box { flex: none; width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--checkbox-border); }
+.checked { background: var(--accent); border-color: var(--accent); }
+.done { color: var(--text-2); text-decoration: line-through; }

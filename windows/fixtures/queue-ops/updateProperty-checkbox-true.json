@@ -1,0 +1,17 @@
+{
+  "id": "00000000-0000-4000-8000-000000000008",
+  "operation": {
+    "kind": "updateProperty",
+    "pageId": "page-3",
+    "updates": [
+      {
+        "name": "Prop",
+        "value": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
+    ]
+  },
+  "createdAt": 780000008.5
+}

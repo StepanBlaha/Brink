@@ -1,0 +1,53 @@
+.root {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  user-select: none;
+  background: transparent;
+}
+.backdrop {
+  background: linear-gradient(160deg, #5c6b9e, #9e85a8, #eda88f);
+}
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.shadowRest {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+  transition: filter 0.3s ease-out;
+}
+.shadowOpen {
+  filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.45));
+  transition: filter 0.3s ease-out;
+}
+.clip {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.clip > * {
+  pointer-events: auto;
+}
+.body {
+  position: absolute;
+  color: var(--text);
+}
+.fade {
+  transition: opacity 0.2s ease-out;
+}
+.hiddenAll {
+  opacity: 0;
+}
+.pillLabel {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: var(--text-2);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

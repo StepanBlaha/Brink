@@ -1,0 +1,19 @@
+{
+  "id": "00000000-0000-4000-8000-000000000010",
+  "operation": {
+    "kind": "updateProperty",
+    "pageId": "page-3",
+    "updates": [
+      {
+        "name": "Prop",
+        "value": {
+          "type": "status",
+          "status": {
+            "name": "In progress"
+          }
+        }
+      }
+    ]
+  },
+  "createdAt": 780000010.5
+}

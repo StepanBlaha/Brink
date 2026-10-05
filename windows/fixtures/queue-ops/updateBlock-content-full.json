@@ -1,0 +1,23 @@
+{
+  "id": "00000000-0000-4000-8000-000000000024",
+  "operation": {
+    "kind": "updateBlock",
+    "blockId": "block-3",
+    "type": "code",
+    "update": {
+      "kind": "content",
+      "richText": [
+        {
+          "text": "let x = 1",
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "code": false
+        }
+      ],
+      "checked": false,
+      "language": "javascript"
+    }
+  },
+  "createdAt": 780000024.5
+}

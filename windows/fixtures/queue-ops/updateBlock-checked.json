@@ -1,0 +1,13 @@
+{
+  "id": "00000000-0000-4000-8000-000000000022",
+  "operation": {
+    "kind": "updateBlock",
+    "blockId": "block-2",
+    "type": "to_do",
+    "update": {
+      "kind": "checked",
+      "checked": true
+    }
+  },
+  "createdAt": 780000022.5
+}

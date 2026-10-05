@@ -1,0 +1,20 @@
+{
+  "id": "00000000-0000-4000-8000-000000000032",
+  "operation": {
+    "kind": "appendBlock",
+    "parentId": "page-4",
+    "block": {
+      "kind": "callout",
+      "richText": [
+        {
+          "text": "Plain callout",
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "code": false
+        }
+      ]
+    }
+  },
+  "createdAt": 780000032.5
+}

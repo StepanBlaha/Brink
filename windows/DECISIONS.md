@@ -27,3 +27,17 @@ Source: `docs/WINDOWS-PORT.md` section 2.1. Dated entries below the table record
 - **Windows `windows` crate** is declared as a Windows-only dependency, unused until M2; Win32 code stays behind `#[cfg(target_os = "windows")]` with a no-op fallback elsewhere.
 - **Versions.** Package versions are whatever `npm` resolved on 2026-10-05 (React 19, Vite 8, Vitest 5, TS 6, ESLint 10, Tauri 2). `package-lock.json` and `Cargo.lock` are committed.
 - **Icons.** Generated with `npx tauri icon ../branding/icon-1024.png`; android/ios outputs removed.
+
+## 2026-10-05 M1 decisions
+
+- **Hotkey defaults in settings.** `hotkeys` defaults to `{toggleLastPin: "Alt+Space", openPinN: "Alt", quickCapture: "Alt+Shift+Space", clipboardAppend: "Ctrl+Alt+V"}`; `openPinN` stores only the modifier prefix like the Mac. Stored values merge over defaults on read.
+- **Settings validation.** `settings_set` is all-or-nothing and rejects unknown keys and invalid values; invalid stored values fall back per key. Empty or null optional strings (`activeGroupID`, `lastOpenedPinID`, `quickCaptureLastPinID`) read as absent.
+- **Queue timer.** Like the plan, `WriteQueue` has no timer; the hub calls `queue_process` on `online` and every 60 s while pending > 0 (UI milestone).
+- **Restart test.** "Kill the process mid-drain" is simulated by aborting the submit task while the server stalls, then reopening `pending.json` and replaying (no subprocess kill).
+- **Cache blocks.** `cache_save` takes raw API block JSON (plan 9 item 1); Rust validates JSON and restricts pinId/kind to `[A-Za-z0-9_-]` against path traversal.
+- **Credentials backend.** `keyring` v3: `windows-native` on Windows, `apple-native` on macOS dev machines, in-memory elsewhere. Credentials of 2048 bytes or more are refused.
+- **create_row command** returns `[page]` (array) so the TS row decoder is uniform. `notion_append_blocks` takes queue-shaped `position` and converts to the API `position` param in Rust. RichText chunks by grapheme cluster (Swift `Character`).
+- **Content-Type.** Exactly one header per request (JSON, or the multipart type for uploads).
+- **Logging.** `logging.rs` is a small own rolling file logger (1 MB x 3) that redacts `secret_`/`ntn_` tokens and `Bearer` values before writing.
+- **Debug page** (search results from real token or fake server) deferred; no UI lands in M1.
+- **Shared commit.** The M1 commit also contains the concurrent M2 work-in-progress that was already in the tree and green.

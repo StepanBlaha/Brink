@@ -1,0 +1,22 @@
+{
+  "id": "00000000-0000-4000-8000-000000000026",
+  "operation": {
+    "kind": "updateBlock",
+    "blockId": "block-4",
+    "type": "callout",
+    "update": {
+      "kind": "calloutContent",
+      "richText": [
+        {
+          "text": "Note",
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "code": false
+        }
+      ],
+      "emoji": "💡"
+    }
+  },
+  "createdAt": 780000026.5
+}

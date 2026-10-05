@@ -1,0 +1,1011 @@
+[
+  {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "operation": {
+      "kind": "toggleDone",
+      "pageId": "page-1",
+      "update": {
+        "name": "Done",
+        "value": {
+          "type": "checkbox",
+          "checkbox": true
+        }
+      }
+    },
+    "createdAt": 780000001.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000002",
+    "operation": {
+      "kind": "toggleDone",
+      "pageId": "page-2",
+      "update": {
+        "name": "Status",
+        "value": {
+          "type": "status",
+          "status": {
+            "name": "Done"
+          }
+        }
+      }
+    },
+    "createdAt": 780000002.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000003",
+    "operation": {
+      "kind": "createRow",
+      "dataSourceId": "ds-1",
+      "title": "Buy milk",
+      "extra": [
+        {
+          "name": "Due",
+          "value": {
+            "type": "date",
+            "date": {
+              "start": "2026-10-01T17:00:00+02:00"
+            }
+          }
+        },
+        {
+          "name": "Priority",
+          "value": {
+            "type": "select",
+            "select": {
+              "name": "High"
+            }
+          }
+        }
+      ]
+    },
+    "createdAt": 780000003.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000004",
+    "operation": {
+      "kind": "createRow",
+      "dataSourceId": "ds-1",
+      "title": "Plain row",
+      "extra": []
+    },
+    "createdAt": 780000004.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000006",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "title",
+            "title": "Hello"
+          }
+        }
+      ]
+    },
+    "createdAt": 780000006.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000007",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "rich_text",
+            "rich_text": "Some notes"
+          }
+        }
+      ]
+    },
+    "createdAt": 780000007.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000008",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "checkbox",
+            "checkbox": true
+          }
+        }
+      ]
+    },
+    "createdAt": 780000008.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000009",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "checkbox",
+            "checkbox": false
+          }
+        }
+      ]
+    },
+    "createdAt": 780000009.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000010",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "status",
+            "status": {
+              "name": "In progress"
+            }
+          }
+        }
+      ]
+    },
+    "createdAt": 780000010.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000011",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "status"
+          }
+        }
+      ]
+    },
+    "createdAt": 780000011.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000012",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "select",
+            "select": {
+              "name": "High"
+            }
+          }
+        }
+      ]
+    },
+    "createdAt": 780000012.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000013",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "select"
+          }
+        }
+      ]
+    },
+    "createdAt": 780000013.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000014",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "date",
+            "date": {
+              "start": "2026-01-01",
+              "end": "2026-01-05"
+            }
+          }
+        }
+      ]
+    },
+    "createdAt": 780000014.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000015",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "date",
+            "date": {
+              "start": "2026-01-01"
+            }
+          }
+        }
+      ]
+    },
+    "createdAt": 780000015.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000016",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "date"
+          }
+        }
+      ]
+    },
+    "createdAt": 780000016.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000017",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "number",
+            "number": 42.5
+          }
+        }
+      ]
+    },
+    "createdAt": 780000017.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000018",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "number"
+          }
+        }
+      ]
+    },
+    "createdAt": 780000018.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000019",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Prop",
+          "value": {
+            "type": "relation"
+          }
+        }
+      ]
+    },
+    "createdAt": 780000019.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000020",
+    "operation": {
+      "kind": "updateProperty",
+      "pageId": "page-3",
+      "updates": [
+        {
+          "name": "Done",
+          "value": {
+            "type": "checkbox",
+            "checkbox": true
+          }
+        },
+        {
+          "name": "Notes",
+          "value": {
+            "type": "rich_text",
+            "rich_text": "Some notes"
+          }
+        }
+      ]
+    },
+    "createdAt": 780000020.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000021",
+    "operation": {
+      "kind": "updateBlock",
+      "blockId": "block-1",
+      "type": "paragraph",
+      "update": {
+        "kind": "text",
+        "text": "New text"
+      }
+    },
+    "createdAt": 780000021.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000022",
+    "operation": {
+      "kind": "updateBlock",
+      "blockId": "block-2",
+      "type": "to_do",
+      "update": {
+        "kind": "checked",
+        "checked": true
+      }
+    },
+    "createdAt": 780000022.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000023",
+    "operation": {
+      "kind": "updateBlock",
+      "blockId": "block-1",
+      "type": "paragraph",
+      "update": {
+        "kind": "richText",
+        "richText": [
+          {
+            "text": "Hello ",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": "bold",
+            "bold": true,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": " link",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false,
+            "link": "https://example.com/x"
+          },
+          {
+            "text": "code",
+            "bold": false,
+            "italic": true,
+            "strikethrough": true,
+            "code": true
+          }
+        ]
+      }
+    },
+    "createdAt": 780000023.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000024",
+    "operation": {
+      "kind": "updateBlock",
+      "blockId": "block-3",
+      "type": "code",
+      "update": {
+        "kind": "content",
+        "richText": [
+          {
+            "text": "let x = 1",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "checked": false,
+        "language": "javascript"
+      }
+    },
+    "createdAt": 780000024.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000025",
+    "operation": {
+      "kind": "updateBlock",
+      "blockId": "block-3",
+      "type": "heading_1",
+      "update": {
+        "kind": "content",
+        "richText": []
+      }
+    },
+    "createdAt": 780000025.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000026",
+    "operation": {
+      "kind": "updateBlock",
+      "blockId": "block-4",
+      "type": "callout",
+      "update": {
+        "kind": "calloutContent",
+        "richText": [
+          {
+            "text": "Note",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "emoji": "💡"
+      }
+    },
+    "createdAt": 780000026.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000027",
+    "operation": {
+      "kind": "updateBlock",
+      "blockId": "block-4",
+      "type": "callout",
+      "update": {
+        "kind": "calloutContent",
+        "richText": [
+          {
+            "text": "Note",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ]
+      }
+    },
+    "createdAt": 780000027.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000028",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "paragraph",
+        "text": "Hello"
+      }
+    },
+    "createdAt": 780000028.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000029",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "toDo",
+        "text": "Task",
+        "checked": false
+      }
+    },
+    "createdAt": 780000029.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000030",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "toDo",
+        "text": "Done task",
+        "checked": true
+      }
+    },
+    "createdAt": 780000030.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000031",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "callout",
+        "richText": [
+          {
+            "text": "Careful",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "emoji": "⚠️"
+      }
+    },
+    "createdAt": 780000031.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000032",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "callout",
+        "richText": [
+          {
+            "text": "Plain callout",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ]
+      }
+    },
+    "createdAt": 780000032.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000033",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "imageUpload",
+        "id": "fu-1"
+      }
+    },
+    "createdAt": 780000033.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000034",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "imageExternal",
+        "url": "https://example.com/pic.png"
+      }
+    },
+    "createdAt": 780000034.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000035",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "formatted",
+        "blockKind": "paragraph",
+        "richText": [
+          {
+            "text": "Hello ",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": "bold",
+            "bold": true,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "language": "plain text",
+        "checked": false
+      }
+    },
+    "createdAt": 780000035.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000036",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "formatted",
+        "blockKind": "heading1",
+        "richText": [
+          {
+            "text": "Hello ",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": "bold",
+            "bold": true,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "language": "plain text",
+        "checked": false
+      }
+    },
+    "createdAt": 780000036.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000037",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "formatted",
+        "blockKind": "heading2",
+        "richText": [
+          {
+            "text": "Hello ",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": "bold",
+            "bold": true,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "language": "plain text",
+        "checked": false
+      }
+    },
+    "createdAt": 780000037.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000038",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "formatted",
+        "blockKind": "heading3",
+        "richText": [
+          {
+            "text": "Hello ",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": "bold",
+            "bold": true,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "language": "plain text",
+        "checked": false
+      }
+    },
+    "createdAt": 780000038.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000039",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "formatted",
+        "blockKind": "toDo",
+        "richText": [
+          {
+            "text": "Hello ",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": "bold",
+            "bold": true,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "language": "plain text",
+        "checked": true
+      }
+    },
+    "createdAt": 780000039.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000040",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "formatted",
+        "blockKind": "bulletedListItem",
+        "richText": [
+          {
+            "text": "Hello ",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": "bold",
+            "bold": true,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "language": "plain text",
+        "checked": false
+      }
+    },
+    "createdAt": 780000040.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000041",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "formatted",
+        "blockKind": "numberedListItem",
+        "richText": [
+          {
+            "text": "Hello ",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": "bold",
+            "bold": true,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "language": "plain text",
+        "checked": false
+      }
+    },
+    "createdAt": 780000041.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000042",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "formatted",
+        "blockKind": "quote",
+        "richText": [
+          {
+            "text": "Hello ",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": "bold",
+            "bold": true,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "language": "plain text",
+        "checked": false
+      }
+    },
+    "createdAt": 780000042.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000043",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "formatted",
+        "blockKind": "code",
+        "richText": [
+          {
+            "text": "Hello ",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": "bold",
+            "bold": true,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "language": "typescript",
+        "checked": false
+      }
+    },
+    "createdAt": 780000043.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000044",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "formatted",
+        "blockKind": "divider",
+        "richText": [],
+        "language": "plain text",
+        "checked": false
+      }
+    },
+    "createdAt": 780000044.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000045",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "formatted",
+        "blockKind": "toggle",
+        "richText": [
+          {
+            "text": "Hello ",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": "bold",
+            "bold": true,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "language": "plain text",
+        "checked": false
+      }
+    },
+    "createdAt": 780000045.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000046",
+    "operation": {
+      "kind": "appendBlock",
+      "parentId": "page-4",
+      "block": {
+        "kind": "formatted",
+        "blockKind": "callout",
+        "richText": [
+          {
+            "text": "Hello ",
+            "bold": false,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          },
+          {
+            "text": "bold",
+            "bold": true,
+            "italic": false,
+            "strikethrough": false,
+            "code": false
+          }
+        ],
+        "language": "plain text",
+        "checked": false
+      }
+    },
+    "createdAt": 780000046.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000047",
+    "operation": {
+      "kind": "appendBlocks",
+      "parentId": "page-4",
+      "blocks": [
+        {
+          "kind": "paragraph",
+          "text": "Hello"
+        },
+        {
+          "kind": "toDo",
+          "text": "Done task",
+          "checked": true
+        }
+      ],
+      "position": {
+        "end": {}
+      }
+    },
+    "createdAt": 780000047.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000048",
+    "operation": {
+      "kind": "appendBlocks",
+      "parentId": "page-4",
+      "blocks": [
+        {
+          "kind": "paragraph",
+          "text": "Hello"
+        },
+        {
+          "kind": "toDo",
+          "text": "Done task",
+          "checked": true
+        }
+      ],
+      "position": {
+        "start": {}
+      }
+    },
+    "createdAt": 780000048.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000049",
+    "operation": {
+      "kind": "appendBlocks",
+      "parentId": "page-4",
+      "blocks": [
+        {
+          "kind": "paragraph",
+          "text": "Hello"
+        },
+        {
+          "kind": "toDo",
+          "text": "Done task",
+          "checked": true
+        }
+      ],
+      "position": {
+        "after": {
+          "_0": "block-9"
+        }
+      }
+    },
+    "createdAt": 780000049.5
+  },
+  {
+    "id": "00000000-0000-4000-8000-000000000051",
+    "operation": {
+      "kind": "deleteBlock",
+      "blockId": "block-5"
+    },
+    "createdAt": 780000051.5
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "object": "data_source",
+  "id": "ds-1",
+  "name": "Tasks",
+  "properties": {
+    "Name": {
+      "id": "title",
+      "name": "Name",
+      "type": "title",
+      "title": {}
+    },
+    "Done": {
+      "id": "abcd",
+      "name": "Done",
+      "type": "checkbox",
+      "checkbox": {}
+    },
+    "Status": {
+      "id": "efgh",
+      "name": "Status",
+      "type": "status",
+      "status": {
+        "options": [
+          {
+            "id": "opt-1",
+            "name": "Not started",
+            "color": "default"
+          },
+          {
+            "id": "opt-2",
+            "name": "Done",
+            "color": "green"
+          }
+        ],
+        "groups": []
+      }
+    },
+    "Priority": {
+      "id": "ijkl",
+      "name": "Priority",
+      "type": "select",
+      "select": {
+        "options": [
+          {
+            "id": "opt-3",
+            "name": "High",
+            "color": "red"
+          },
+          {
+            "id": "opt-4",
+            "name": "Low",
+            "color": "gray"
+          }
+        ]
+      }
+    },
+    "Due": {
+      "id": "mnop",
+      "name": "Due",
+      "type": "date",
+      "date": {}
+    }
+  }
+}

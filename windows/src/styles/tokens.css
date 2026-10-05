@@ -1,6 +1,22 @@
 :root {
   --notch-black: #000;
-  --text: #f5f5f5;
+  --text: #fff;
   --text-dim: rgba(245, 245, 245, 0.6);
-  --font: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --font: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Notch tokens (plan 3.b.1, Theme.swift) */
+:root {
+  --notch: #000;
+  --raised: #1c1c1e;
+  --text-2: #808080;
+  --text-3: rgba(255, 255, 255, 0.32);
+  --hover: rgba(255, 255, 255, 0.16);
+  --selected: rgba(255, 255, 255, 0.22);
+  --divider: rgba(255, 255, 255, 0.1);
+  --checkbox-border: rgba(255, 255, 255, 0.4);
+  --danger: #ff453a;
+  --success: #00ff88;
+  --accent: #0a84ff;
+  --font-mono: "Cascadia Mono", Consolas, monospace;
 }

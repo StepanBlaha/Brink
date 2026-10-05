@@ -1,0 +1,13 @@
+{
+  "id": "00000000-0000-4000-8000-000000000021",
+  "operation": {
+    "kind": "updateBlock",
+    "blockId": "block-1",
+    "type": "paragraph",
+    "update": {
+      "kind": "text",
+      "text": "New text"
+    }
+  },
+  "createdAt": 780000021.5
+}

@@ -1,0 +1,50 @@
+{
+  "object": "list",
+  "results": [
+    {
+      "object": "page",
+      "id": "row-2",
+      "url": "https://notion.so/row-2",
+      "icon": {
+        "type": "emoji",
+        "emoji": "✅"
+      },
+      "properties": {
+        "Name": {
+          "id": "title",
+          "type": "title",
+          "title": [
+            {
+              "type": "text",
+              "text": {
+                "content": "Ship NotionKit"
+              },
+              "plain_text": "Ship NotionKit"
+            }
+          ]
+        },
+        "Done": {
+          "id": "abcd",
+          "type": "checkbox",
+          "checkbox": true
+        },
+        "Status": {
+          "id": "efgh",
+          "type": "status",
+          "status": {
+            "id": "opt-2",
+            "name": "Done",
+            "color": "green"
+          }
+        },
+        "Due": {
+          "id": "mnop",
+          "type": "date",
+          "date": null
+        }
+      }
+    }
+  ],
+  "next_cursor": null,
+  "has_more": false
+}

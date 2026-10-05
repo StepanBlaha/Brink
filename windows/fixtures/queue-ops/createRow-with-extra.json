@@ -1,0 +1,29 @@
+{
+  "id": "00000000-0000-4000-8000-000000000003",
+  "operation": {
+    "kind": "createRow",
+    "dataSourceId": "ds-1",
+    "title": "Buy milk",
+    "extra": [
+      {
+        "name": "Due",
+        "value": {
+          "type": "date",
+          "date": {
+            "start": "2026-10-01T17:00:00+02:00"
+          }
+        }
+      },
+      {
+        "name": "Priority",
+        "value": {
+          "type": "select",
+          "select": {
+            "name": "High"
+          }
+        }
+      }
+    ]
+  },
+  "createdAt": 780000003.5
+}

@@ -1,0 +1,19 @@
+{
+  "id": "00000000-0000-4000-8000-000000000015",
+  "operation": {
+    "kind": "updateProperty",
+    "pageId": "page-3",
+    "updates": [
+      {
+        "name": "Prop",
+        "value": {
+          "type": "date",
+          "date": {
+            "start": "2026-01-01"
+          }
+        }
+      }
+    ]
+  },
+  "createdAt": 780000015.5
+}

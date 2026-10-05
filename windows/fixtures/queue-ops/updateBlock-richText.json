@@ -1,0 +1,43 @@
+{
+  "id": "00000000-0000-4000-8000-000000000023",
+  "operation": {
+    "kind": "updateBlock",
+    "blockId": "block-1",
+    "type": "paragraph",
+    "update": {
+      "kind": "richText",
+      "richText": [
+        {
+          "text": "Hello ",
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "code": false
+        },
+        {
+          "text": "bold",
+          "bold": true,
+          "italic": false,
+          "strikethrough": false,
+          "code": false
+        },
+        {
+          "text": " link",
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "code": false,
+          "link": "https://example.com/x"
+        },
+        {
+          "text": "code",
+          "bold": false,
+          "italic": true,
+          "strikethrough": true,
+          "code": true
+        }
+      ]
+    }
+  },
+  "createdAt": 780000023.5
+}
