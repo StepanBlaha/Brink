@@ -41,3 +41,16 @@ Source: `docs/WINDOWS-PORT.md` section 2.1. Dated entries below the table record
 - **Logging.** `logging.rs` is a small own rolling file logger (1 MB x 3) that redacts `secret_`/`ntn_` tokens and `Bearer` values before writing.
 - **Debug page** (search results from real token or fake server) deferred; no UI lands in M1.
 - **Shared commit.** The M1 commit also contains the concurrent M2 work-in-progress that was already in the tree and green.
+
+## 2026-10-05 M2 notch window
+
+- **File locations.** `notchGeometry.ts` lives in `src/features/notch/` (not `src/domain/store/`, which M1 owns); strip, panel and peek are in `src/features/notch/` too for M2. They move in M3.
+- **Placement uses Tauri monitor APIs** (`Monitor::work_area`, `cursor_position`) rather than `EnumDisplayMonitors`; same data on Windows and macOS, so placement and click-through run on a Mac. `placement.rs` is pure and unit-tested with synthetic rects.
+- **Display changes by polling.** A 100 ms signature poll of monitors, work areas and scale re-places the window instead of `WM_DISPLAYCHANGE`/`WM_DPICHANGED` hooks (no subclassing, within the 250 ms target). Taskbar auto-hide overlap and D3D full screen are polled in `win32.rs` (250 ms / 2 s).
+- **Window size = viewport.** The frontend reads `innerWidth/innerHeight`; Rust only sets the HWND once per placement. Anchor is the window midpoint (top edge is monitor-centered).
+- **Outside click.** Windows `GetAsyncKeyState`, macOS `CGEventSourceButtonState` (dev), polled with the cursor.
+- **Focus.** Taken on `focusin` of a text input (`notch_request_focus`), released when the panel leaves expanded.
+- **Full screen** hides only for `QUNS_RUNNING_D3D_FULL_SCREEN` (adapted, plan 3.a.3). Secondary-monitor taskbars are not checked for auto-hide overlap yet.
+- **Not in M2:** resize grips, virtual-desktop pinning, SystemAccent. Icons are inline SVG until M8; fake pins use emoji.
+- **Debug:** `window.__notch("strip" | "expanded:tasks" | "peek:tasks" | "edge=left" ...)` in dev builds and `?edge=&size=&pill=&outline=1&phase=&backdrop=1` query params.
+- **Verification on Mac** used the Vite page in the browser pane (the real Tauri window was run and showed no errors, but its screenshots would capture the owner's desktop and are not stored).

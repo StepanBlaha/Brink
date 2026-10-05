@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useNotchStore } from "../../state/notchStore";
 import { crossfade, instant } from "../../theme/motion";
@@ -39,6 +39,14 @@ export function NotchRoot() {
   const { phase } = ps;
   const pins = FAKE_PINS.slice(0, layout.pinCount);
   const selected = pins.find((p) => p.id === ps.selectedPinId) ?? null;
+  useEffect(() => {
+    // Debug peeks have no hover: locate the icon in the DOM.
+    const el = ps.peekPinId ? document.querySelector(`[data-pin="${ps.peekPinId}"]`) : null;
+    if (el) {
+      const r = el.getBoundingClientRect();
+      setPeekIcon({ x: r.left, y: r.top, width: r.width, height: r.height });
+    }
+  }, [ps.peekPinId]);
   const peekPin = pins.find((p) => p.id === ps.peekPinId) ?? null;
   const peekBox = peekPin && peekIcon ? peekRect(layout, peekIcon, PEEK_ITEMS) : null;
 
