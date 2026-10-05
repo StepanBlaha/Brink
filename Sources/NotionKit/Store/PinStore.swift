@@ -20,6 +20,14 @@ public enum PinKind: String, Codable, Sendable, Equatable {
     case dataSource
 }
 
+/// Where a pin's content lives. Absent in pins.json written before Apple Notes support, which
+/// decodes to `.notion`. For `.appleNotes`, `Pin.notionId` holds the Notes id and `kind` is
+/// `.page` for a note, `.dataSource` for a folder.
+public enum PinSource: String, Codable, Sendable, Equatable {
+    case notion
+    case appleNotes
+}
+
 public enum DoneKind: String, Codable, Sendable, Equatable {
     case checkbox
     case status
@@ -112,8 +120,11 @@ public struct Pin: Codable, Sendable, Equatable, Identifiable {
     /// Additive, same reasoning as `customIcon`: `nil` means "ungrouped", which is also how
     /// every pin in a pre-groups pins.json decodes, and how the "All pins" view is defined.
     public var groupId: String?
+    /// Additive: where the pin's content lives; a missing key decodes to `.notion`.
+    public var source: PinSource
 
-    public init(id: String = UUID().uuidString, notionId: String, kind: PinKind, title: String, icon: PinIcon, order: Int, config: DatabaseConfig? = nil, customIcon: CustomIcon? = nil, groupId: String? = nil) {
+    public init(id: String = UUID().uuidString, notionId: String, kind: PinKind, title: String, icon: PinIcon, order: Int, config: DatabaseConfig? = nil, customIcon: CustomIcon? = nil, groupId: String? = nil, source: PinSource = .notion) {
+        self.source = source
         self.id = id
         self.notionId = notionId
         self.kind = kind
@@ -124,6 +135,22 @@ public struct Pin: Codable, Sendable, Equatable, Identifiable {
         self.customIcon = customIcon
         self.groupId = groupId
     }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        notionId = try c.decode(String.self, forKey: .notionId)
+        kind = try c.decode(PinKind.self, forKey: .kind)
+        title = try c.decode(String.self, forKey: .title)
+        icon = try c.decode(PinIcon.self, forKey: .icon)
+        order = try c.decode(Int.self, forKey: .order)
+        config = try c.decodeIfPresent(DatabaseConfig.self, forKey: .config)
+        customIcon = try c.decodeIfPresent(CustomIcon.self, forKey: .customIcon)
+        groupId = try c.decodeIfPresent(String.self, forKey: .groupId)
+        source = (try? c.decodeIfPresent(PinSource.self, forKey: .source)) ?? .notion
+    }
+
+    public var isAppleNotes: Bool { source == .appleNotes }
 }
 
 /// A user-defined pin group. Stored separately from `pins.json` (in `groups.json`) so older

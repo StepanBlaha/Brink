@@ -27,7 +27,7 @@ final class ClipboardAppendController {
 
     private func handle() {
         guard let id = UserDefaults.standard.string(forKey: Self.lastOpenedPinKey),
-              let pin = appModel.pinStore.pins.first(where: { $0.id == id }), pin.kind == .page else {
+              let pin = appModel.pinStore.pins.first(where: { $0.id == id }), pin.kind == .page, pin.source == .notion else {
             CaptureToast.show("Open a page pin first", isError: true)
             return
         }

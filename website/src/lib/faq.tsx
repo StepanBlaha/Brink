@@ -26,6 +26,11 @@ export const faq: FaqItem[] = [
     content: <>Connect to Notion opens Notion&rsquo;s own consent screen in your browser. You choose exactly which pages and databases Brink can see, then click Allow. Notion needs a secret to finish sign-in that can&rsquo;t safely ship inside an app, so a tiny relay run by the developer swaps Notion&rsquo;s one-time code for your access token. It stores and logs nothing and never sees your pages. The token is saved in your Mac&rsquo;s Keychain. To add pages later, connect again and update your selection. Advanced users can paste an internal integration token instead, which skips the relay.</>,
   },
   {
+    question: "How does Apple Notes access work?",
+    answer: "Apple Notes access is local only. Brink uses macOS Automation to talk to the Notes app on your Mac, after you click Allow on the system prompt, and only touches the folders and notes you pin. Nothing leaves your Mac except through your own iCloud, which is how Notes itself syncs to your iPhone. You can revoke it any time in System Settings → Privacy & Security → Automation.",
+    content: <>Apple Notes access is local only. Brink uses macOS Automation to talk to the Notes app on your Mac, after you click Allow on the system prompt, and only touches the folders and notes you pin. Nothing leaves your Mac except through your own iCloud, which is how Notes itself syncs to your iPhone. You can revoke it any time in System Settings → Privacy &amp; Security → Automation.</>,
+  },
+  {
     question: "Does it work offline?",
     answer: "Yes, for what you have already opened. Pages are cached so the panel opens instantly, and edits made offline are queued and synced when you are back online.",
     content: <>Yes, for what you have already opened. Pages are cached so the panel opens instantly, and edits made offline are queued and synced when you are back online.</>,

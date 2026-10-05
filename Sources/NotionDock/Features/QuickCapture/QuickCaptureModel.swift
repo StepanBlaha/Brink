@@ -39,7 +39,7 @@ final class QuickCaptureModel {
     }
 
     var dateProperty: String? {
-        guard let pin = destination, pin.kind == .dataSource else { return nil }
+        guard let pin = destination, pin.source == .notion, pin.kind == .dataSource else { return nil }
         if let name = pin.config?.dateProperty { return name }
         let fetched = fetchedDateProperties[pin.id]
         return fetched?.isEmpty == false ? fetched : nil
@@ -53,7 +53,7 @@ final class QuickCaptureModel {
     }
 
     func resolveDateProperty() async {
-        guard let pin = destination, pin.kind == .dataSource, pin.config?.dateProperty == nil,
+        guard let pin = destination, pin.source == .notion, pin.kind == .dataSource, pin.config?.dateProperty == nil,
               fetchedDateProperties[pin.id] == nil else { return }
         let schema = try? await appModel.client.retrieveDataSource(pin.notionId)
         fetchedDateProperties[pin.id] = schema?.properties.first { $0.type == "date" }?.name ?? ""
@@ -67,6 +67,7 @@ final class QuickCaptureModel {
             errorMessage = "Pin a page or database first."
             return .failed
         }
+        if pin.source == .appleNotes { return await saveToNotes(pin) }
         guard let plan = CaptureRequest.plan(text: text, pin: pin, dateProperty: dateProperty) else { return .failed }
         isSaving = true
         errorMessage = nil
@@ -81,6 +82,24 @@ final class QuickCaptureModel {
             return .saved("Saved offline, will sync")
         case .failed(let message):
             errorMessage = message
+            return .failed
+        }
+    }
+
+    /// Apple Notes destinations: a folder gets a new note titled by the first line, a note pin
+    /// gets the text appended. Goes straight to Notes (local), no offline queue needed.
+    private func saveToNotes(_ pin: Pin) async -> SaveResult {
+        guard let plan = NotesCapture.plan(text: text, pin: pin) else { return .failed }
+        isSaving = true
+        errorMessage = nil
+        defer { isSaving = false }
+        do {
+            let message = try await NotesCapture.execute(plan, pinTitle: pin.title, provider: appModel.notes)
+            NotificationCenter.default.post(name: .pinContentDidChange, object: pin.id)
+            text = ""
+            return .saved(message)
+        } catch {
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
             return .failed
         }
     }

@@ -37,6 +37,8 @@
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>Brink uses Automation to read and write your notes in the Notes app, only for the folders and notes you pin. Nothing leaves your Mac except through your own iCloud.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2026 Stepan Blaha. Not affiliated with Notion Labs, Inc.</string>
 </dict>

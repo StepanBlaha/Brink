@@ -18,6 +18,11 @@ final class AppModel {
     let cache = Cache()
     let writeQueue = WriteQueue()
     let client: NotionClient
+    /// Apple Notes through Apple Events (a fake in demo mode). Never touched until the user
+    /// connects Notes in Settings or pins a note.
+    let notes: NotesProviding
+    private(set) var notesAccess: NotesAccessStatus = .unknown
+    private(set) var isRequestingNotesAccess = false
 
     private(set) var hasToken: Bool
     /// `.oauth` after "Connect to Notion", `.internal` for a pasted token, `nil` when disconnected.
@@ -36,12 +41,15 @@ final class AppModel {
         if DemoMode.isActive {
             // Demo mode: an in-process fake Notion; the Keychain is never read or written.
             client = NotionClient(tokenProvider: { "demo-token" }, session: DemoNotionServer.session)
+            notes = DemoNotesProvider()
+            notesAccess = .allowed
             hasToken = true
             signIn = nil
             broker = nil
             DemoMode.seedPins(into: pinStore)
             return
         }
+        notes = AppleNotesService(runner: OSAScriptRunner())
         let tokenStore = tokenStore
         if let configuration = OAuthConfig.configuration {
             let broker = OAuthBroker(configuration: configuration)
@@ -57,6 +65,22 @@ final class AppModel {
         }
         hasToken = tokenStore.load() != nil
         reloadAuthState()
+    }
+
+    // MARK: - Apple Notes
+
+    /// Re-reads the Automation consent without prompting (Settings appears, app activates).
+    func refreshNotesAccess() async {
+        guard !DemoMode.isActive else { return }
+        notesAccess = await NotesPermission.current()
+    }
+
+    /// Shows macOS's "Brink wants to control Notes" prompt (first time) and updates the status.
+    func connectNotes() async {
+        guard !DemoMode.isActive, !isRequestingNotesAccess else { return }
+        isRequestingNotesAccess = true
+        defer { isRequestingNotesAccess = false }
+        notesAccess = await NotesPermission.request()
     }
 
     private func reloadAuthState() {

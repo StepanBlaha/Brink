@@ -8,6 +8,8 @@ final class DockController {
     private let appModel: AppModel
     private var pageModels: [String: PageViewModel] = [:]
     private var databaseModels: [String: DatabaseViewModel] = [:]
+    private var notesFolderModels: [String: NotesFolderModel] = [:]
+    private var notesNoteModels: [String: NotesNoteModel] = [:]
     private var pollingPinID: String?
 
     private let panel: NotchPanel
@@ -540,18 +542,18 @@ final class DockController {
     }
 
     private func presentAddFlow(near frame: CGRect) {
-        guard appModel.hasToken else {
-            showSettings()
-            return
-        }
+        // Without a Notion connection the add flow still works (Apple Notes).
         showPinSearchPanel(near: frame)
     }
 
     private func showPinSearchPanel(near frame: CGRect) {
-        let view = PinSearchView(
+        let view = AddPinView(
             appModel: appModel,
-            onPick: { [weak self] result in
+            onPickNotion: { [weak self] result in
                 self?.handlePicked(result)
+            },
+            onPickNotes: { [weak self] pick in
+                self?.handlePickedNotes(pick)
             },
             onClose: { [weak self] in
                 self?.collapse(force: true)
@@ -573,6 +575,19 @@ final class DockController {
         case .dataSource:
             showDatabaseSetup(for: result)
         }
+    }
+
+    private func handlePickedNotes(_ pick: NotesPick) {
+        let pin: Pin
+        switch pick {
+        case .folder(let folder):
+            pin = Pin(notionId: folder.id, kind: .dataSource, title: folder.name, icon: .emoji("\u{1F5C2}\u{FE0F}"), order: 0, source: .appleNotes)
+        case .note(let note):
+            pin = Pin(notionId: note.id, kind: .page, title: note.title.isEmpty ? "New Note" : note.title, icon: .emoji("\u{1F4DD}"), order: 0, source: .appleNotes)
+        }
+        appModel.pinStore.add(pin)
+        refreshAfterPinsChanged()
+        collapse(force: true)
     }
 
     private func showDatabaseSetup(for result: SearchResult) {
@@ -746,6 +761,10 @@ final class DockController {
     // MARK: - Panel content
 
     private func panelContent(for pin: Pin) -> AnyView {
+        if pin.source == .appleNotes {
+            return AnyView(NotesPinView(pin: pin, folder: pin.kind == .dataSource ? notesFolderModel(for: pin) : nil,
+                                        note: pin.kind == .page ? notesNoteModel(for: pin) : nil))
+        }
         switch pin.kind {
         case .page:
             let model = pageModel(for: pin)
@@ -762,6 +781,20 @@ final class DockController {
             }
             return AnyView(DatabaseTaskView(model: model, pinID: pin.id))
         }
+    }
+
+    private func notesFolderModel(for pin: Pin) -> NotesFolderModel {
+        if let model = notesFolderModels[pin.id] { return model }
+        let model = NotesFolderModel(folderId: pin.notionId, provider: appModel.notes)
+        notesFolderModels[pin.id] = model
+        return model
+    }
+
+    private func notesNoteModel(for pin: Pin) -> NotesNoteModel {
+        if let model = notesNoteModels[pin.id] { return model }
+        let model = NotesNoteModel(noteId: pin.notionId, provider: appModel.notes)
+        notesNoteModels[pin.id] = model
+        return model
     }
 
     private func pageModel(for pin: Pin) -> PageViewModel {
@@ -831,6 +864,8 @@ final class DockController {
         appModel.pinStore.remove(id: pinItemID)
         pageModels[pinItemID] = nil
         databaseModels[pinItemID] = nil
+        notesFolderModels[pinItemID] = nil
+        notesNoteModels[pinItemID] = nil
         if selectedPinID == pinItemID {
             collapse(force: true)
         }

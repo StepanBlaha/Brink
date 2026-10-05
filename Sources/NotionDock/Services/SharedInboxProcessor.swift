@@ -29,7 +29,7 @@ final class SharedInboxProcessor {
     }
 
     func process() {
-        guard let appModel, appModel.hasToken, let inbox = SharedInbox.shared else { return }
+        guard let appModel, appModel.hasToken || appModel.pinStore.pins.contains(where: { $0.source == .appleNotes }), let inbox = SharedInbox.shared else { return }
         if isProcessing { runAgain = true; return }
         let entries = inbox.readAll()
         guard !entries.isEmpty else { return }
@@ -59,6 +59,9 @@ final class SharedInboxProcessor {
             return await submit(operation, pin: pin, appModel: appModel, toast: nil)
         case .capture(let text, let url, let pinId):
             let fallback = UserDefaults.standard.string(forKey: QuickCaptureModel.lastPinKey)
+            if let target = InboxCapture.destination(pinId: pinId, pins: pins, fallbackID: fallback), target.source == .appleNotes {
+                return await captureToNotes(text: text, url: url, pin: target, appModel: appModel)
+            }
             guard let result = InboxCapture.plan(text: text, url: url, pinId: pinId, pins: pins, fallbackID: fallback) else { return nil }
             return await submit(result.plan.operation, pin: result.pin, appModel: appModel, toast: "Added to \(result.pin.title) ✓")
         }
@@ -74,6 +77,18 @@ final class SharedInboxProcessor {
             return pin.id
         case .failed(let message):
             CaptureToast.show(message, isError: true)
+            return nil
+        }
+    }
+
+    private func captureToNotes(text: String, url: String?, pin: Pin, appModel: AppModel) async -> String? {
+        guard let plan = NotesCapture.plan(text: text, url: url, pin: pin) else { return nil }
+        do {
+            let message = try await NotesCapture.execute(plan, pinTitle: pin.title, provider: appModel.notes)
+            CaptureToast.show(message)
+            return pin.id
+        } catch {
+            CaptureToast.show((error as? LocalizedError)?.errorDescription ?? error.localizedDescription, isError: true)
             return nil
         }
     }

@@ -107,7 +107,7 @@ struct IconPickerView: View {
             .background(Theme.Color.hover, in: RoundedRectangle(cornerRadius: Theme.Metrics.radius))
             .padding(.horizontal, 12)
 
-            if pin.kind == .page {
+            if pin.kind == .page && pin.source == .notion {
                 Toggle("Also set as page icon in Notion", isOn: $alsoSetNotionIcon)
                     .font(Theme.Font.caption)
                     .foregroundStyle(Theme.Color.secondaryText)
@@ -169,7 +169,7 @@ struct IconPickerView: View {
         updated.customIcon = .emoji(emoji)
         onSave(updated)
 
-        if alsoSetNotionIcon, pin.kind == .page {
+        if alsoSetNotionIcon, pin.kind == .page, pin.source == .notion {
             isSettingNotionIcon = true
             notionIconError = nil
             let pageId = pin.notionId

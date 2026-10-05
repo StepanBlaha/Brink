@@ -32,6 +32,8 @@ struct ConnectionSettingsView: View {
 
             Divider()
             footnotes
+            Divider()
+            NotesConnectionSection(appModel: appModel)
             Spacer()
         }
         .padding(20)

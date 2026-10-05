@@ -5,6 +5,8 @@ struct PinSearchView: View {
     let appModel: AppModel
     let onPick: (SearchResult) -> Void
     let onClose: () -> Void
+    /// `false` when a parent (`AddPinView`) draws the header and the source switch.
+    var showsHeader = true
 
     @State private var query = ""
     @State private var results: [SearchResult] = []
@@ -20,7 +22,7 @@ struct PinSearchView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            AddFlowHeader(title: "Add a pin", onClose: onClose)
+            if showsHeader { AddFlowHeader(title: "Add a pin", onClose: onClose) }
             searchField
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

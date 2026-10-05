@@ -136,7 +136,7 @@ struct OnboardingView: View {
             Image(systemName: "plus.rectangle.on.rectangle")
                 .font(.system(size: 40, weight: .light)).foregroundStyle(Theme.Color.accent)
             Text("Pin your first page").font(.system(size: 22, weight: .semibold)).padding(.top, 6)
-            Text("Brink lives on the edge of your screen. Hover it, tap +, and pick a page or database.")
+            Text("Brink lives on the edge of your screen. Hover it, tap +, and pick a Notion page or database, or an Apple Notes folder or note.")
                 .font(Theme.Font.small).foregroundStyle(Theme.Color.secondaryText)
                 .multilineTextAlignment(.center).padding(.horizontal, 50)
         }

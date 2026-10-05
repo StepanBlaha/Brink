@@ -49,6 +49,12 @@ final class DemoDirector {
             DemoMode.finish()
             return
         }
+        if DemoMode.trigger.script == "notes" {
+            DemoMode.mark("ready")
+            await runNotes()
+            DemoMode.finish()
+            return
+        }
         await warmUp()
         log("screen \(screen.frame) panel \(panelWindow.frame) level \(panelWindow.level.rawValue) visible \(panelWindow.isVisible) resting \(dock.demoRestingPoint) icon \(String(describing: dock.demoIconFrame(pinID: DemoContent.groceriesPinID)))")
         for w in NSApp.windows { log("window \(type(of: w)) \(w.frame) level \(w.level.rawValue) visible \(w.isVisible) alpha \(w.alphaValue)") }

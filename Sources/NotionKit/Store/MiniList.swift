@@ -26,6 +26,8 @@ public enum MiniList {
         groups: [PinGroup],
         activeGroupID: String?
     ) -> [MiniListSection] {
+        // Apple Notes pins have no to-dos to tick off, so the mini-list is Notion-only.
+        let pins = pins.filter { $0.source == .notion }
         let scoped: [Pin]
         if let activeGroupID, groups.contains(where: { $0.id == activeGroupID }) {
             scoped = pins.filter { $0.groupId == activeGroupID }
@@ -39,7 +41,7 @@ public enum MiniList {
 
     /// Total open items across all pins (for the status item title).
     public static func totalOpen(pins: [Pin], summaries: [String: PinSummary]) -> Int {
-        pins.reduce(0) { $0 + (summaries[$1.id]?.openCount ?? 0) }
+        pins.filter { $0.source == .notion }.reduce(0) { $0 + (summaries[$1.id]?.openCount ?? 0) }
     }
 
     /// Text for the status item: empty when off or nothing is open.

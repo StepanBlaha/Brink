@@ -65,6 +65,7 @@ final class PinSummaryService {
 
     func refresh(pinID: String) {
         guard let appModel, let pin = appModel.pinStore.pins.first(where: { $0.id == pinID }) else { return }
+        if pin.source == .appleNotes { refreshNotes(pin, appModel: appModel); return }
         guard appModel.hasToken else { return }
         if inFlight.contains(pinID) { pendingAgain.insert(pinID); return }
         inFlight.insert(pinID)
@@ -81,8 +82,23 @@ final class PinSummaryService {
         }
     }
 
+    /// Folder pins badge their note count. Note pins have no badge. Never launches Notes or
+    /// prompts: it only reads while Notes is already running and access was granted.
+    private func refreshNotes(_ pin: Pin, appModel: AppModel) {
+        guard pin.kind == .dataSource, !inFlight.contains(pin.id) else { return }
+        inFlight.insert(pin.id)
+        let pinID = pin.id
+        Task { [weak self] in
+            defer { self?.inFlight.remove(pinID) }
+            if appModel.notesAccess == .unknown { await appModel.refreshNotesAccess() }
+            guard appModel.notesAccess == .allowed, DemoMode.isActive || NotesPermission.isRunning,
+                  let notes = try? await appModel.notes.notes(inFolder: pin.notionId) else { return }
+            self?.summaries[pinID] = NotesCapture.summary(forFolderNotes: notes)
+        }
+    }
+
     private func applyCached(_ pin: Pin) {
-        guard let appModel else { return }
+        guard let appModel, pin.source == .notion else { return }
         switch pin.kind {
         case .page:
             if let blocks = appModel.cache.loadBlocks(forPin: pin.id) { summaries[pin.id] = PinSummary.fromBlocks(blocks) }

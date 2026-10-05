@@ -54,6 +54,7 @@ targets:
         CFBundleIconName: AppIcon
         NSHumanReadableCopyright: "© 2026 Stepan Blaha. Not affiliated with Notion Labs, Inc."
         LSUIElement: true
+        NSAppleEventsUsageDescription: "Brink uses Automation to read and write your notes in the Notes app, only for the folders and notes you pin. Nothing leaves your Mac except through your own iCloud."
         LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
         CFBundleURLTypes:
           - CFBundleURLName: cz.stepanblaha.brink

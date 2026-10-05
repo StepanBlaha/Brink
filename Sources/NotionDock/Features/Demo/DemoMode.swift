@@ -88,7 +88,7 @@ enum DemoMode {
     /// Adds the sample pins to the (empty, temporary) pin store.
     static func seedPins(into store: PinStore) {
         guard isActive, store.pins.isEmpty else { return }
-        for pin in DemoContent.pins { store.add(pin) }
+        for pin in (trigger.script == "notes" ? DemoContent.notesPins : DemoContent.pins) { store.add(pin) }
     }
 
     /// Quits the demo: restores preferences, removes the temp folder and the trigger file.
