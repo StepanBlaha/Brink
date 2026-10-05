@@ -1,8 +1,8 @@
 # Brink Privacy Policy
 
-_Last updated: 2026-09-30_
+_Last updated: 2026-10-05_
 
-Brink is a Mac app that shows your Notion pages and tasks in a notch at the edge of your screen. It is built to keep your data on your Mac.
+Brink is a Mac and Windows app that shows your Notion pages and tasks in a notch at the edge of your screen. It is built to keep your data on your computer.
 
 ## What Brink stores
 
@@ -29,6 +29,21 @@ Brink is a Mac app that shows your Notion pages and tasks in a notch at the edge
 - **Choose pages:** with Connect to Notion, you pick the pages Brink can see on Notion's consent screen. Connect again at any time to change the selection.
 - **Revoke access:** remove the integration in Notion (Settings → Connections), and Brink immediately loses access.
 - **Delete all local data:** quit Brink, delete `~/Library/Application Support/NotionDock/`, then remove the Keychain items (or use Disconnect first).
+
+## Brink for Windows
+
+The Windows version works the same way and talks only to the same servers. It stores data here instead:
+
+| Data | Where it is stored |
+|---|---|
+| Notion credential (access token, refresh token or pasted integration token) and workspace name | Windows Credential Manager, as generic credentials whose target names start with `cz.stepanblaha.brink` |
+| Pins, groups, icons, saved views and unsynced edits (`pending.json`) | `%APPDATA%\Brink\` |
+| Settings (accent color, size, shortcuts) | `%APPDATA%\Brink\settings.json` |
+| Cached page content, rows, covers and images | `%LOCALAPPDATA%\Brink\cache\` |
+| Diagnostic logs (local only, never include your token) | `%LOCALAPPDATA%\Brink\logs\` |
+
+- **Disconnect:** Settings → Connection → Disconnect removes the credentials from Credential Manager.
+- **Delete all local data:** use Disconnect, uninstall Brink (Settings → Apps → Installed apps; tick the option to delete app data), then delete `%APPDATA%\Brink\` and `%LOCALAPPDATA%\Brink\` if they remain.
 
 ## Children
 

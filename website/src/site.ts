@@ -13,6 +13,16 @@ export const site = {
   releasesUrl: `${REPO_URL}/releases`,
   issuesUrl: `${REPO_URL}/issues`,
   downloadUrl: `${REPO_URL}/releases/latest`,
+  /**
+   * Flip to true at the Windows launch (see windows/RELEASING.md). While false the
+   * Windows tab shows "Coming soon" and no download links are exposed.
+   */
+  windowsAvailable: false,
+  /** Windows release tags are `win-v<version>`; the version below must match the published release. */
+  windowsVersion: "0.10.0",
+  windowsX64Url: `${REPO_URL}/releases/download/win-v0.10.0/Brink-Setup-0.10.0-x64.exe`,
+  windowsArm64Url: `${REPO_URL}/releases/download/win-v0.10.0/Brink-Setup-0.10.0-arm64.exe`,
+  wingetCommand: "winget install StepanBlaha.Brink",
   price: "Free",
   version: "0.9.0",
   author: "Stepan Blaha",

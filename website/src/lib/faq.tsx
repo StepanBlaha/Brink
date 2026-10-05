@@ -41,6 +41,11 @@ export const faq: FaqItem[] = [
     content: <>Brink is free. Download the latest version from <a href={site.downloadUrl}>GitHub Releases</a>.</>,
   },
   {
+    question: "Does Brink work on Windows?",
+    answer: "Coming soon. A Windows 10 (22H2) and Windows 11 version for x64 and ARM64 is built and in testing. It will be free, with the same notch, hotkeys and Notion editing. Watch GitHub Releases for the launch.",
+    content: <>Coming soon. A Windows 10 (22H2) and Windows 11 version for x64 and ARM64 is built and in testing. It will be free, with the same notch, hotkeys and Notion editing. Watch <a href={site.releasesUrl}>GitHub Releases</a> for the launch.</>,
+  },
+  {
     question: "Does it work on external displays and notched MacBooks?",
     answer: "Yes. Choose the edge (left, right or top) and the display in Settings. On a MacBook with a camera notch, Brink sits on the edge you pick, not over the camera.",
     content: <>Yes. Choose the edge (left, right or top) and the display in Settings. On a MacBook with a camera notch, Brink sits on the edge you pick, not over the camera.</>,

@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.6.0.schema.json
+PackageIdentifier: StepanBlaha.Brink
+PackageVersion: __VERSION__
+PackageLocale: en-US
+Publisher: Stepan Blaha
+PublisherUrl: https://brinknotch.site
+PublisherSupportUrl: https://github.com/StepanBlaha/Brink/issues
+PrivacyUrl: https://brinknotch.site/privacy/
+Author: Stepan Blaha
+PackageName: Brink
+PackageUrl: https://brinknotch.site
+License: MIT
+LicenseUrl: https://github.com/StepanBlaha/Brink/blob/main/LICENSE
+Copyright: © 2026 Stepan Blaha. Not affiliated with Notion Labs, Inc.
+ShortDescription: Your Notion pages and tasks, one hover away on the edge of your screen.
+Description: Brink keeps your Notion pages and tasks on the edge of your screen. Hover to peek, click to check things off, press a hotkey to capture. Independent app, not affiliated with Notion Labs, Inc.
+Moniker: brink
+Tags:
+  - notion
+  - tasks
+  - notes
+  - productivity
+ReleaseNotesUrl: https://github.com/StepanBlaha/Brink/releases/tag/win-v__VERSION__
+ManifestType: defaultLocale
+ManifestVersion: 1.6.0

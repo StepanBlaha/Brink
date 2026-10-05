@@ -26,4 +26,11 @@
   !insertmacro BrinkDeleteShare ".md"
   !insertmacro BrinkDeleteShare ".url"
   DeleteRegKey HKCU "Software\Classes\brink"
+  ; The uninstall page offers "Delete the application data"; Brink keeps its data in
+  ; %APPDATA%\Brink and %LOCALAPPDATA%\Brink, not under the bundle identifier.
+  ${If} $DeleteAppDataCheckboxState = 1
+  ${AndIf} $UpdateMode <> 1
+    RMDir /r "$APPDATA\Brink"
+    RMDir /r "$LOCALAPPDATA\Brink"
+  ${EndIf}
 !macroend

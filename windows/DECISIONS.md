@@ -141,3 +141,12 @@ Source: `docs/WINDOWS-PORT.md` section 2.1. Dated entries below the table record
 - **Embedded database** renders under its chip inside the node view with a React root; the chip title still opens Notion.
 - **Find bar** is sticky inside the scroller. Keys: Ctrl+F, F3 / Ctrl+G (Shift = previous).
 
+
+## 2026-10-05 M10 packaging and release
+
+- **Version.** Windows uses the repo `VERSION` marketing token (0.10.0, same as the Mac). `npm run sync-version` writes it into `package.json` and `tauri.conf.json`; the release workflow runs it and fails if the tag is not `win-v<VERSION>`.
+- **Tags.** `win-v*` (owner request) instead of the plan's `v*`, so Windows never collides with the Mac `v*` release. Draft releases are created with `latest=false` so `releases/latest` stays the Mac release. The release job creates its own draft (not an upload to the Mac release).
+- **Targets.** NSIS x64 and arm64 (arm64 cross-compiled on windows-latest). MSI and MSIX documented in `RELEASING.md`, not built.
+- **Signing.** Azure Trusted Signing through Tauri `signCommand` (`trusted-signing-cli`), else a base64 pfx thumbprint, else unsigned; chosen at build time from secrets.
+- **Uninstall data.** Hook deletes `%APPDATA%\Brink` and `%LOCALAPPDATA%\Brink` when the stock "delete the application data" box is ticked.
+- **Website.** `site.windowsAvailable` (false) gates the Windows download; JSON-LD adds Windows only when true.

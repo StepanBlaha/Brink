@@ -3,3 +3,8 @@
 .icon { margin: 0 auto 24px; }
 .lede { margin: 0 auto 30px; }
 .works { font-size: 0.88rem; color: var(--fg3); margin-top: 22px; }
+.tabs { display: inline-flex; gap: 4px; padding: 4px; margin: 0 auto 26px; border: 1px solid var(--line); border-radius: 999px; }
+.tab { font: inherit; font-size: 0.92rem; color: var(--fg3); background: none; border: 0; border-radius: 999px; padding: 7px 20px; cursor: pointer; }
+.tab[aria-selected="true"] { color: var(--fg); background: var(--line); }
+.tab:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.soon { opacity: 0.6; cursor: default; pointer-events: none; }

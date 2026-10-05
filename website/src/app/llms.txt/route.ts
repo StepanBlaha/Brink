@@ -9,7 +9,7 @@ export function GET() {
 > ${site.shortDescription} ${site.tagline}
 
 Key facts:
-- Runs on macOS 14 or later.
+- Runs on macOS 14 or later. A Windows 10/11 version (x64 and ARM64) is coming soon.
 - ${site.price}. No account, no subscription.
 - Works with Notion through an internal integration that you create and control.
 - Privacy: no analytics, no tracking, no data stored on any server. Your pages go only between your Mac and the Notion API. The optional "Connect to Notion" sign-in passes through a small relay that swaps the login code for a token and stores and logs nothing.

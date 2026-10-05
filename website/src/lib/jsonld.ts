@@ -18,7 +18,7 @@ const organization = {
 const softwareApplication = {
   "@type": "SoftwareApplication",
   name: site.name,
-  operatingSystem: "macOS 14+",
+  operatingSystem: site.windowsAvailable ? "macOS 14+, Windows 10, Windows 11" : "macOS 14+",
   applicationCategory: "ProductivityApplication",
   description: "A notch on the Mac screen edge that keeps your Notion pages and tasks one hover away.",
   url: absoluteUrl(),
@@ -49,7 +49,7 @@ export const pressJsonLd = {
   about: {
     "@type": "SoftwareApplication",
     name: site.name,
-    operatingSystem: "macOS 14+",
+    operatingSystem: site.windowsAvailable ? "macOS 14+, Windows 10, Windows 11" : "macOS 14+",
     applicationCategory: "ProductivityApplication",
   },
 };

@@ -100,3 +100,8 @@
 - [ ] Only on real Windows: dropping a file from Explorer, pasting a screenshot from the clipboard.
 - [ ] Windows CI green (see commit follow-up)
 
+
+## M10 Packaging, release, website (prep, 2026-10-05)
+- [x] NSIS bundle config (per-user, hooks), version sync, `windows-release.yml` (draft only, optional signing), winget templates + `render.sh`, `RELEASING.md`.
+- [x] Website: Mac/Windows chooser (`windowsAvailable: false`), FAQ, llms.txt, JSON-LD flag, `legal/PRIVACY.md` Windows section; lint, typecheck, build green.
+- [ ] Not done on purpose: no release published, no winget submission, no signing secrets, MSI/MSIX, SmartScreen check on a clean VM, CHANGELOG Windows section, TERMS wording.

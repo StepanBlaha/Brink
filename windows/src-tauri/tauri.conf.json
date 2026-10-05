@@ -106,6 +106,9 @@
       "nsis"
     ],
     "publisher": "Stepan Blaha",
+    "category": "Productivity",
+    "shortDescription": "Your Notion pages, on the edge of your screen.",
+    "longDescription": "Brink keeps your Notion pages and tasks one hover away from the edge of your screen. Independent app, not affiliated with Notion Labs, Inc.",
     "copyright": "© 2026 Stepan Blaha. Not affiliated with Notion Labs, Inc.",
     "icon": [
       "icons/32x32.png",
@@ -117,6 +120,9 @@
     "windows": {
       "nsis": {
         "installMode": "currentUser",
+        "installerIcon": "icons/icon.ico",
+        "languages": ["English"],
+        "compression": "lzma",
         "installerHooks": "installer/hooks.nsh"
       },
       "webviewInstallMode": {

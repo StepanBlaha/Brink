@@ -1,0 +1,153 @@
+name: windows-release
+
+# Builds the Windows installers and attaches them to a DRAFT GitHub release.
+# Nothing is ever published automatically: review the draft, then publish by hand
+# (see windows/RELEASING.md).
+on:
+  push:
+    tags: ["win-v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Draft release tag (default: win-v<VERSION>-dispatch-<run number>)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+env:
+  # Optional signing secrets. Without any of them the installers are UNSIGNED.
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  TS_ENDPOINT: ${{ secrets.TRUSTED_SIGNING_ENDPOINT }}
+  TS_ACCOUNT: ${{ secrets.TRUSTED_SIGNING_ACCOUNT }}
+  TS_PROFILE: ${{ secrets.TRUSTED_SIGNING_PROFILE }}
+  WIN_CERT_PFX_BASE64: ${{ secrets.WINDOWS_CERTIFICATE }}
+  WIN_CERT_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            target: x86_64-pc-windows-msvc
+          - arch: arm64
+            target: aarch64-pc-windows-msvc
+    defaults:
+      run:
+        working-directory: windows
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: windows/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: windows/src-tauri
+          key: ${{ matrix.target }}
+
+      - name: Sync version from VERSION
+        id: ver
+        run: |
+          npm ci
+          npm run sync-version
+          VERSION=$(cut -d' ' -f1 ../VERSION)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [[ "${GITHUB_REF_TYPE}" == "tag" && "${GITHUB_REF_NAME}" != "win-v${VERSION}" ]]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match VERSION ${VERSION}"; exit 1
+          fi
+
+      # Signing config is generated only when secrets exist; otherwise the build is unsigned.
+      - name: Prepare signing
+        id: sign
+        run: |
+          echo '{}' > ../sign.json
+          if [[ -n "$AZURE_CLIENT_ID" && -n "$TS_ENDPOINT" && -n "$TS_ACCOUNT" && -n "$TS_PROFILE" ]]; then
+            cargo install trusted-signing-cli --locked
+            node -e '
+              const c={bundle:{windows:{signCommand:{cmd:"trusted-signing-cli",args:["-e",process.env.TS_ENDPOINT,"-a",process.env.TS_ACCOUNT,"-c",process.env.TS_PROFILE,"-d","Brink","%1"]}}}};
+              require("fs").writeFileSync("../sign.json",JSON.stringify(c));'
+            echo "mode=azure-trusted-signing" >> "$GITHUB_OUTPUT"
+          elif [[ -n "$WIN_CERT_PFX_BASE64" ]]; then
+            echo "$WIN_CERT_PFX_BASE64" | base64 -d > "$RUNNER_TEMP/cert.pfx"
+            THUMB=$(powershell -NoProfile -Command '$p=ConvertTo-SecureString $env:WIN_CERT_PASSWORD -AsPlainText -Force; (Import-PfxCertificate -FilePath "$env:RUNNER_TEMP\cert.pfx" -CertStoreLocation Cert:\CurrentUser\My -Password $p).Thumbprint' | tr -d '\r')
+            rm -f "$RUNNER_TEMP/cert.pfx"
+            THUMB="$THUMB" node -e '
+              const c={bundle:{windows:{certificateThumbprint:process.env.THUMB,digestAlgorithm:"sha256",timestampUrl:"http://timestamp.digicert.com"}}};
+              require("fs").writeFileSync("../sign.json",JSON.stringify(c));'
+            echo "mode=certificate" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=unsigned" >> "$GITHUB_OUTPUT"
+            echo "::warning::No signing secrets set: building UNSIGNED installers (SmartScreen will warn)."
+          fi
+
+      - name: Build NSIS installer
+        run: npm run tauri build -- --target ${{ matrix.target }} --bundles nsis --config ../sign.json
+
+      - name: Name, checksum and upload
+        run: |
+          V=${{ steps.ver.outputs.version }}
+          mkdir -p ../dist
+          SRC=$(ls src-tauri/target/${{ matrix.target }}/release/bundle/nsis/*-setup.exe)
+          OUT="../dist/Brink-Setup-${V}-${{ matrix.arch }}.exe"
+          cp "$SRC" "$OUT"
+          (cd ../dist && sha256sum "Brink-Setup-${V}-${{ matrix.arch }}.exe" > "SHA256SUMS-${{ matrix.arch }}.txt")
+          echo "signing: ${{ steps.sign.outputs.mode }}" > "../dist/signing-${{ matrix.arch }}.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: brink-windows-${{ matrix.arch }}
+          path: dist/
+          if-no-files-found: error
+
+  draft-release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: brink-windows-*
+          merge-multiple: true
+          path: dist
+
+      - name: Create DRAFT release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          VERSION=$(cut -d' ' -f1 VERSION)
+          TAG="${GITHUB_REF_NAME}"
+          if [[ "${GITHUB_REF_TYPE}" != "tag" ]]; then
+            TAG="${INPUT_TAG:-win-v${VERSION}-dispatch-${GITHUB_RUN_NUMBER}}"
+          fi
+          cd dist
+          cat SHA256SUMS-*.txt > SHA256SUMS.txt
+          rm SHA256SUMS-*.txt
+          MODE=$(cat signing-x64.txt | cut -d' ' -f2)
+          rm signing-*.txt
+          NOTE="Brink for Windows ${VERSION} (x64 and ARM64 per-user installers). Signing: ${MODE}."
+          if [[ "$MODE" == "unsigned" ]]; then
+            NOTE="$NOTE Unsigned: SmartScreen shows 'Windows protected your PC'; choose More info, then Run anyway."
+          fi
+          # --latest=false keeps the Mac 'releases/latest' download link pointing at the Mac release.
+          gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --draft --latest=false \
+            --target "$GITHUB_SHA" --title "Brink for Windows ${VERSION}" --notes "$NOTE" \
+            Brink-Setup-*.exe SHA256SUMS.txt
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft,assets \
+            --jq '"draft=\(.isDraft) assets=\([.assets[].name])"'

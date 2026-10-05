@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.6.0.schema.json
+PackageIdentifier: StepanBlaha.Brink
+PackageVersion: __VERSION__
+InstallerType: nullsoft
+Scope: user
+InstallModes:
+  - interactive
+  - silent
+  - silentWithProgress
+InstallerSwitches:
+  Silent: /S
+  SilentWithProgress: /S
+UpgradeBehavior: install
+MinimumOSVersion: 10.0.19045.0
+ReleaseDate: __DATE__
+Installers:
+  - Architecture: x64
+    InstallerUrl: https://github.com/StepanBlaha/Brink/releases/download/win-v__VERSION__/Brink-Setup-__VERSION__-x64.exe
+    InstallerSha256: __SHA256_X64__
+  - Architecture: arm64
+    InstallerUrl: https://github.com/StepanBlaha/Brink/releases/download/win-v__VERSION__/Brink-Setup-__VERSION__-arm64.exe
+    InstallerSha256: __SHA256_ARM64__
+ManifestType: installer
+ManifestVersion: 1.6.0
