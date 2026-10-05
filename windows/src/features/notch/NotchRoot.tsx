@@ -11,7 +11,7 @@ import { PageHost } from "../../editor/PageHost";
 import { ipcEngineApi, ipcEngineCache } from "../../editor/ipcEngineApi";
 import { AddFlow } from "../pinning/AddFlow";
 import { clampPanelSize } from "../../theme/notchMetrics";
-import { activePins, effectiveGroupId, groupItems, reorderIntent, stripItems, type PinItem } from "../strip/pinItems";
+import { TODAY_ITEM, activePins, effectiveGroupId, groupItems, isTodayId, reorderIntent, stripItems, type PinItem } from "../strip/pinItems";
 import { Strip } from "../strip/Strip";
 import { StripOverlay, type Overlay } from "../strip/StripOverlay";
 import { ResizeGrips } from "./ResizeGrips";
@@ -26,6 +26,11 @@ import styles from "./notch.module.css";
 import { useNotchBindings } from "./useNotchBindings";
 import { useNotchLayout } from "./useNotchLayout";
 import { useHubHandlers } from "../hub/useHubHandlers";
+import { digestItems } from "../../domain/store/todayAggregator";
+import { sound, itemActions } from "../../services/hub";
+import { TodayHost } from "../today/TodayHost";
+import { peekItemCount } from "./peekModel";
+import { useSummaryView } from "./useSummaryView";
 import {
   type Rect,
   insetRect,
@@ -33,8 +38,6 @@ import {
   rectMidY,
 } from "./notchGeometry";
 import { bodyRectFor, clampedExpandedCenter, hotRect, maxPanelSize, peekRect } from "./notchLayout";
-
-const PEEK_ITEMS = 3;
 
 /** The single notch window root: morphing shape, phase bodies, peek card, hit rects. */
 export function NotchRoot() {
@@ -45,7 +48,13 @@ export function NotchRoot() {
   const storedPins = usePinsStore((s) => s.pins);
   const groups = useGroupsStore((s) => s.groups);
   const activeGroupID = useSettingsStore((s) => s.settings.activeGroupID);
-  const items = useMemo(() => stripItems(activePins(storedPins, groups, activeGroupID), false), [storedPins, groups, activeGroupID]);
+  const showToday = useSettingsStore((s) => s.settings.showTodayPin);
+  const items = useMemo(
+    () => stripItems(activePins(storedPins, groups, activeGroupID), showToday, TODAY_ITEM),
+    [storedPins, groups, activeGroupID, showToday],
+  );
+  const stripIds = useMemo(() => items.map((i) => i.id), [items]);
+  const { summaryFor, badges, pill, digest } = useSummaryView(stripIds);
   const activeId = effectiveGroupId(groups, activeGroupID);
   const activeGroup = groupItems(groups).find((g) => g.id === activeId);
   const [overlay, setOverlay] = useState<Overlay | null>(null);
@@ -96,7 +105,8 @@ export function NotchRoot() {
   }, [ps.peekPinId]);
   const peekItem = items.find((p) => p.id === ps.peekPinId) ?? null;
   const peekPin = peekItem ? toPanelPin(peekItem) : null;
-  const peekBox = peekPin && peekIcon ? peekRect(layout, peekIcon, PEEK_ITEMS) : null;
+  const peekSummary = peekItem ? summaryFor(peekItem.id) : undefined;
+  const peekBox = peekPin && peekIcon ? peekRect(layout, peekIcon, peekItemCount(peekSummary)) : null;
 
   const hitRects = useMemo(() => {
     if (hidden) return [];
@@ -139,11 +149,16 @@ export function NotchRoot() {
     machine.openAddFlow();
   };
   const reorder = (item: PinItem, stripIndex: number) => {
-    const intent = reorderIntent(item, stripIndex, false, activeId);
+    const intent = reorderIntent(item, stripIndex, showToday, activeId);
     if (intent) ignore(usePinsStore.getState().move(intent.pinId, intent.toIndex, intent.groupId));
   };
-  // The Today pin (M6) will feed real counts here; until then the pill has no ratio.
-  const ratio: number | null = null;
+  const ratio = pill.ratio;
+  /** Ticking in the peek: Today items belong to whichever pin they came from. */
+  const checkPeekItem = (pinId: string, itemId: string) => {
+    const owner = isTodayId(pinId) ? digestItems(digest).find((i) => i.id === itemId)?.pinId : pinId;
+    sound.tick();
+    if (owner) void itemActions.markDone(owner, itemId);
+  };
 
   const shapeVisible = !(phase === "resting" && layout.pillStyle === "hidden");
   const rail = (animate: boolean, group: boolean) => (
@@ -153,6 +168,7 @@ export function NotchRoot() {
       edge={layout.edge}
       scale={layout.scale}
       selectedId={ps.selectedPinId}
+      badges={badges}
       animate={animate}
       reduce={reduce}
       showGroupSwitcher={group}
@@ -191,7 +207,7 @@ export function NotchRoot() {
         onToggleKeepOpen={() => machine.toggleKeepOpen()}
         onClose={() => machine.collapse(true)}
       >
-        {selectedPin?.kind === "dataSource" && selectedPin.config ? <DatabaseHost pin={selectedPin} /> : selectedPin?.kind === "page" ? <PageHost pageId={selectedPin.notionId} api={ipcEngineApi} cache={ipcEngineCache(selectedPin.id)} fontScale={layout.fontScale} /> : null}
+        {isTodayId(ps.selectedPinId) ? <TodayHost reduce={reduce} /> : selectedPin?.kind === "dataSource" && selectedPin.config ? <DatabaseHost pin={selectedPin} /> : selectedPin?.kind === "page" ? <PageHost pageId={selectedPin.notionId} api={ipcEngineApi} cache={ipcEngineCache(selectedPin.id)} fontScale={layout.fontScale} /> : null}
       </Panel>
       )}
     </motion.div>
@@ -234,7 +250,7 @@ export function NotchRoot() {
             {phase === "resting" ? (
               layout.pillStyle === "percent" ? (
                 <div className={styles.pillLabel} style={{ fontSize: 10 * layout.fontScale }}>
-                  {Math.round((ratio ?? 0) * 100)}%
+                  {pill.label}
                 </div>
               ) : null
             ) : phase === "strip" ? (
@@ -249,13 +265,15 @@ export function NotchRoot() {
         {phase === "strip" && peekPin && peekBox && (
           <Peek
             key={peekPin.id}
-            pin={peekPin}
+            title={peekPin.title}
+            summary={peekSummary}
             rect={peekBox}
             edge={layout.edge}
             fontScale={layout.fontScale}
             reduce={reduce}
             onHover={(h) => machine.peekCardHover(h)}
             onOpen={() => peekIcon && select(peekPin, peekIcon)}
+            onCheck={(itemId) => checkPeekItem(peekPin.id, itemId)}
           />
         )}
       </AnimatePresence>

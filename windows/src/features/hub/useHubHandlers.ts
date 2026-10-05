@@ -11,9 +11,12 @@ import { activePins } from "../strip/pinItems";
 import type { PhaseMachine } from "../notch/phaseMachine";
 import { clipboardAppend } from "./clipboardAppend";
 import { handleDeepLink } from "./deepLinkHandler";
+import { reminderService, summaryService } from "../../services/hub";
+import { useSummaryStore } from "../../services/summaryStore";
+import { useSummaryHub } from "./useSummaryHub";
 
 const toast = (message: string, isError: boolean): void => void toastShow(message, isError).catch(() => {});
-const contentChanged = (): void => {};
+const contentChanged = (pinId?: string): void => summaryService.contentDidChange(pinId);
 
 /** Where a hotkey or `brink://pin` lands: the active group's real pins (Today excluded). */
 function realPins() {
@@ -63,6 +66,7 @@ export function useHubHandlers(machine: PhaseMachine): void {
           toast,
           contentChanged,
           now: () => new Date(),
+          notify: (q) => void reminderService.handleAction(q["action"] ?? "open", q["pinId"] ?? "", q["itemId"] ?? ""),
         });
       }),
       // Tray menu About/Legal: the windows arrive with M8.
@@ -92,12 +96,15 @@ export function useHubHandlers(machine: PhaseMachine): void {
     }
   }, [selected]);
 
-  // Tray tooltip count. Summaries arrive with M6; until then the total is 0.
+  // Tray tooltip count.
   const pins = usePinsStore((s) => s.pins);
+  const summaries = useSummaryStore((s) => s.summaries);
   useEffect(() => {
-    const text = statusTitle(totalOpen(pins, {}), settings.menuBarShowOpenCount);
+    const text = statusTitle(totalOpen(pins, summaries), settings.menuBarShowOpenCount);
     void traySetCount(text).catch(() => {});
-  }, [pins, settings.menuBarShowOpenCount]);
+  }, [pins, summaries, settings.menuBarShowOpenCount]);
+
+  useSummaryHub(machine);
 }
 
 import { useNotchStore } from "../../state/notchStore";

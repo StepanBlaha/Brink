@@ -49,7 +49,7 @@ export function createWorkspaceMock(seedPins: number) {
   let connected = seedPins > 0 || new URLSearchParams(window.location.search).get("auth") === "1";
   SEEDS.slice(0, seedPins).forEach(([title, kind, emoji, notionId], i) => {
     const icon = emoji ? { emoji: { _0: emoji } } : { none: {} };
-    const config = kind === "dataSource" ? { config: { doneProperty: "Done", doneKind: "checkbox" as const, showDone: false } } : {};
+    const config = kind === "dataSource" ? { config: { doneProperty: "Done", doneKind: "checkbox" as const, dateProperty: "Due", showDone: false } } : {};
     pins = addPin(pins, { id: `pin-${i}`, notionId, kind, title, icon, order: 0, ...config });
   });
   const counter = { n: 0 };

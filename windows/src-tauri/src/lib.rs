@@ -7,6 +7,7 @@ pub mod deeplink;
 pub mod error;
 pub mod hotkeys;
 pub mod logging;
+pub mod notify;
 pub mod notion;
 pub mod paths;
 pub mod queue;
@@ -106,10 +107,14 @@ pub fn run() {
             tray::tray_flyout_toggle,
             tray::tray_flyout_hide,
             clipboard::clipboard_read,
-            deeplink::deeplink_ready
+            deeplink::deeplink_ready,
+            commands::notify::notify_status,
+            commands::notify::notify_pending,
+            commands::notify::notify_apply
         ])
         .setup(|app| {
             commands::setup(app.handle());
+            commands::notify::setup(app.handle());
             window::notch_window::setup(app.handle());
             capture::setup(app.handle());
             tray::setup(app.handle());

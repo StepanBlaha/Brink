@@ -12,6 +12,8 @@ export interface DeepLinkPorts {
   toast(message: string, isError: boolean): void;
   contentChanged(pinId: string): void;
   now(): Date;
+  /** `brink://notify?action=done|snooze|open&pinId=&itemId=` from a toast button. */
+  notify?(params: Record<string, string>): void;
 }
 
 /** Routes one `brink://` URL (plan 3.l). Returns whether it was understood. */
@@ -23,7 +25,11 @@ export async function handleDeepLink(raw: string, p: DeepLinkPorts): Promise<boo
     else p.toast("That pin no longer exists", true);
     return true;
   }
-  if (link.kind !== "capture") return true; // oauth and notify are dormant until M6/M8
+  if (link.kind === "notify") {
+    p.notify?.(link.params);
+    return true;
+  }
+  if (link.kind !== "capture") return true; // oauth is dormant until M8
   const planned = planInbox(
     { text: link.text, ...(link.url ? { url: link.url } : {}), ...(link.pinId ? { pinId: link.pinId } : {}),
       pins: p.pins(), ...(p.quickCaptureLastPinId() ? { fallbackID: p.quickCaptureLastPinId()! } : {}) },

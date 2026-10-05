@@ -118,3 +118,14 @@ Source: `docs/WINDOWS-PORT.md` section 2.1. Dated entries below the table record
 - **Paste** with text ending in a newline at a line start inserts the whole lines above and the line keeps its identity (Mac `paste` test). Copy numbers numbered items within the copied slice.
 - **Playwright deferred again.** The demo-script check ("[] Ship the beta", "## Next", bold, "/to" + Enter) ran through headless Chrome over CDP against the Vite page `#/editordemo`; screenshots in `docs/screens/m5b/`. Text-level tests run on a real `EditorView` in jsdom (`src/test/pmHost.ts`).
 - **Esc in the slash menu** stops propagation so the panel does not fold. Link popover (Ctrl+K), find, images, drag handle and footer are M5c/M5d.
+
+## 2026-10-05 M6 peek, badges, Today, reminders, sounds
+
+- **Toast delivery.** `windows` crate `ScheduledToastNotification` (no tauri-plugin-notification). Rust keeps a registry (`%LOCALAPPDATA%\Brink\notify.json`) of scheduled requests; TS plans and reconciles through `notify_pending` / `notify_apply` / `notify_status`. Non-Windows uses a logging no-op. Windows code type-checked for msvc in a scratch crate.
+- **Ids.** `ScheduledToastNotification.Id` is limited to 16 characters, so Id = FNV-1a hex of the identifier; Tag = identifier (hashed `h.<hex>` above 64); Group = pinId. Removal matches on Tag.
+- **Actions.** All three toast actions use `activationType="protocol"` with `brink://notify?action=done|snooze|open&pinId=&itemId=` (plan 3.f adapted); the hub handles them through the deep-link path. Snooze content is rebuilt from the loaded summary (title, "<pin> · Due ..."), fallback "Reminder".
+- **AUMID.** Registered under `HKCU\Software\Classes\AppUserModelId\cz.stepanblaha.brink` at startup (dev and installed); the installer shortcut is M10.
+- **Autoplay.** `additionalBrowserArgs` on the notch window sets `--autoplay-policy=no-user-gesture-required`.
+- **Pill measures the strip items including Today** (Mac parity: Today summary has total = open, done = 0).
+- **Debug.** `localStorage brink.debug.snoozeSeconds` shortens the 1 h snooze in dev; `?summaries=demo` seeds fake summaries in the browser mock and keeps network services off.
+- **Not wired.** Tray window still has stub `summaries`/`tick`; hub listens for `sound://tick` and `pin://content-changed` events for other windows. Real-Windows toast checks are manual.

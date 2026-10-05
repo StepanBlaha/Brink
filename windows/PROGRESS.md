@@ -73,3 +73,13 @@
 - [ ] Playwright and Windows screenshot vs `marketing/screenshots/03-editor.png` (deferred, see DECISIONS)
 - [ ] Link popover, find, images, drag handle, move-block keys, footer: M5c/M5d
 - [ ] Windows CI green (see commit follow-up)
+
+## M6 Peek, badges, live pill, summaries, Today, reminders, sounds (2026-10-05)
+- [x] PinSummaryTests, ReminderTodayTests ported (`domain/store/*.test.ts`); summary service tests: cache first, 0.4 s / 0.6 s stagger, 300 s interval, one in flight per pin, 6 child-bearing blocks (`services/pinSummaryService.test.ts`).
+- [x] Peek with real data and ticking, badges (open / due today), pill label 7/12 vs 58% (`pillModel.test.ts`), reminder peek 3 s (`phaseMachine.test.ts`).
+- [x] Today pin `brink.today` first, "Hide Today" menu, overdue red, 30 s refresh, 450 ms tick-out, snooze removes row (`today/todayModel.test.ts`).
+- [x] Reminders: planner cap 64, morning summary, service rules (kept toasts, stale snoozes, debounce 1.5/0.3/1.0 s), Done / Snooze 3600 s / Open (`reminderService.test.ts`); Rust registry + toast XML tests; msvc check of delivery.
+- [x] Tick sound: 1764 samples, peak <= 0.18 x 0.5, 80 ms throttle (`tickSound.test.ts`, `sound.test.ts`).
+- [x] Screenshots (Vite page, headless Chrome, reduce=1): `docs/screens/m6/` peek-right, strip-top, strip-left, pill-percent, pill-line. Today panel, tick and snooze menu checked in the browser pane (not saved).
+- [ ] Only on real Windows: toast with Mark done / Snooze / Open, click while Brink is closed, Focus Assist, autoplay of the tick from a toast action.
+- [ ] Windows CI green (see commit follow-up)

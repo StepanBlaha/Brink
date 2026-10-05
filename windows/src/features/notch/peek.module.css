@@ -10,7 +10,11 @@
 }
 .title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sub { color: var(--text-2); margin-bottom: 4px; }
-.item { display: flex; align-items: center; gap: 8px; height: 20px; color: rgba(255, 255, 255, 0.9); white-space: nowrap; overflow: hidden; }
-.box { flex: none; width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--checkbox-border); }
+.item {
+  display: flex; align-items: center; gap: 8px; width: 100%; height: 20px; padding: 0; border: 0; background: transparent;
+  color: rgba(255, 255, 255, 0.9); font: inherit; text-align: left; white-space: nowrap; overflow: hidden; cursor: pointer;
+}
+.itemText { overflow: hidden; text-overflow: ellipsis; }
+.box { display: grid; place-items: center; flex: none; width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--checkbox-border); color: #fff; }
 .checked { background: var(--accent); border-color: var(--accent); }
-.done { color: var(--text-2); text-decoration: line-through; }
+.done { color: var(--text-2); text-decoration: line-through; overflow: hidden; text-overflow: ellipsis; }

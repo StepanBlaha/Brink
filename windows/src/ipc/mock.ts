@@ -17,6 +17,7 @@ export function installMockIPC(): void {
     if (handled !== undefined) return handled;
     if (cmd === "app_version") return { marketing: "0.10.0", build: "2" };
     if (cmd === "queue_pending_count") return 0;
+    if (cmd === "queue_submit") return { kind: "saved" };
     if (cmd === "settings_get") return settings;
     if (cmd === "settings_set") {
       settings = { ...settings, ...((payload as { partial?: Partial<Settings> } | undefined)?.partial ?? {}) };

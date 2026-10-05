@@ -2,6 +2,7 @@
 
 pub mod auth;
 pub mod cache;
+pub mod notify;
 pub mod notion_cmds;
 pub mod pins;
 pub mod queue;

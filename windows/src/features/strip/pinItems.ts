@@ -20,6 +20,11 @@ export interface PinItem {
   notionId: string;
 }
 
+/** The built-in virtual Today pin: not stored, injected first in the strip while `showTodayPin` is on. */
+export const TODAY_ITEM: PinItem = {
+  id: TODAY_PIN_ID, title: "Today", icon: { kind: "emoji", value: "\u2600\uFE0F" }, isDatabase: false, isToday: true, notionId: "",
+};
+
 export interface GroupItem {
   id: string;
   name: string;

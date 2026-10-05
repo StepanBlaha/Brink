@@ -160,3 +160,40 @@ describe("peek", () => {
     expect(m.state.peekPinId).toBeNull();
   });
 });
+
+describe("reminder peek", () => {
+  it("unfolds the strip, peeks the pin for 3 s, then folds back", () => {
+    m.reminderPeek("p1");
+    expect(m.state.phase).toBe("strip");
+    expect(m.state.peekPinId).toBeNull();
+    vi.advanceTimersByTime(150);
+    expect(m.state.peekPinId).toBe("p1");
+    m.pointerMoved(away); // the pointer events must not fold it early
+    vi.advanceTimersByTime(2990);
+    expect(m.state.peekPinId).toBe("p1");
+    expect(m.state.phase).toBe("strip");
+    vi.advanceTimersByTime(20);
+    expect(m.state.peekPinId).toBeNull();
+    expect(m.state.phase).toBe("resting");
+  });
+
+  it("stays in the strip when the cursor is there", () => {
+    m.pointerMoved(inStrip);
+    m.reminderPeek("p1");
+    vi.advanceTimersByTime(3200);
+    expect(m.state.peekPinId).toBeNull();
+    expect(m.state.phase).toBe("strip");
+  });
+
+  it("does nothing while a panel is open, and a click cancels it", () => {
+    m.selectPin("a");
+    m.reminderPeek("p1");
+    vi.advanceTimersByTime(4000);
+    expect(m.state).toMatchObject({ phase: "expanded", selectedPinId: "a", peekPinId: null });
+    m.collapse(true);
+    m.reminderPeek("p1");
+    m.selectPin("b");
+    vi.advanceTimersByTime(4000);
+    expect(m.state).toMatchObject({ phase: "expanded", selectedPinId: "b", peekPinId: null });
+  });
+});

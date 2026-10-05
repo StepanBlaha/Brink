@@ -34,7 +34,12 @@ export const initialPhaseState: PhaseState = {
   peekPinId: null,
 };
 
-type TimerName = "collapseTimer" | "dwellTimer" | "dismissTimer";
+type TimerName = "collapseTimer" | "dwellTimer" | "dismissTimer" | "reminderTimer";
+
+/** A reminder fired: the strip shows the peek card for this long (DockController.peekForReminder). */
+export const REMINDER_PEEK_MS = 3000;
+/** Gives a freshly unfolded strip time to mount its icons before the card is placed. */
+const REMINDER_PEEK_LEAD_MS = 150;
 
 /** DockController's phase logic with its timers. Pure of DOM; drive it with events. */
 export class PhaseMachine {
@@ -43,6 +48,7 @@ export class PhaseMachine {
   private collapseTimer: ReturnType<typeof setTimeout> | null = null;
   private dwellTimer: ReturnType<typeof setTimeout> | null = null;
   private dismissTimer: ReturnType<typeof setTimeout> | null = null;
+  private reminderTimer: ReturnType<typeof setTimeout> | null = null;
   private cardHovered = false;
 
   constructor(private readonly opts: PhaseOptions) {}
@@ -77,7 +83,7 @@ export class PhaseMachine {
       }
     } else if (phase === "strip") {
       if (z.strip || z.peek || this.opts.isBlocked?.()) this.clear("collapseTimer");
-      else this.scheduleCollapse();
+      else if (!this.reminderTimer) this.scheduleCollapse();
     } else this.clear("collapseTimer");
   }
 
@@ -164,9 +170,28 @@ export class PhaseMachine {
   }
 
   private clearPeek(): void {
+    this.clear("reminderTimer");
     this.clear("dwellTimer");
     this.clear("dismissTimer");
     this.cardHovered = false;
+  }
+
+  /** A reminder fired while running: unfold the strip with the peek card on that pin for 3 s. */
+  reminderPeek(id: string): void {
+    if (this.state.phase === "expanded") return;
+    this.clearPeek();
+    this.clear("collapseTimer");
+    this.clear("reminderTimer");
+    if (this.state.phase === "resting") this.setPhase("strip");
+    this.reminderTimer = setTimeout(() => {
+      this.set({ peekPinId: id });
+      this.reminderTimer = setTimeout(() => {
+        this.reminderTimer = null;
+        if (this.state.peekPinId === id) this.set({ peekPinId: null });
+        const z = this.zones;
+        if (this.state.phase === "strip" && !this.opts.isBlocked?.() && !z.strip && !z.peek) this.setPhase("resting");
+      }, REMINDER_PEEK_MS);
+    }, REMINDER_PEEK_LEAD_MS);
   }
 
   // Debug helpers: jump straight to a state (screenshots without moving the real mouse).
@@ -185,6 +210,7 @@ export class PhaseMachine {
 
   dispose(): void {
     this.clear("collapseTimer");
+    this.clear("reminderTimer");
     this.clearPeek();
   }
 }

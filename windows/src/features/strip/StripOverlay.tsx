@@ -89,8 +89,17 @@ export function StripOverlay({ overlay, edge, keptOpenPinId, onKeepOpen, onEditV
     return <GroupsMenu {...pos} items={items} />;
   }
 
+  if (isTodayId(overlay.pinId)) {
+    const hide: MenuEntry[] = [
+      { kind: "item", id: "hide", label: "Hide Today", onSelect: () => {
+        ignore(useSettingsStore.getState().update({ showTodayPin: false }));
+        onUnpinned(overlay.pinId);
+      } },
+    ];
+    return <Menu {...pos} label="Today menu" items={hide} />;
+  }
   const pin = pins.find((p) => p.id === overlay.pinId);
-  if (!pin || isTodayId(pin.id)) return null;
+  if (!pin) return null;
   const items: MenuEntry[] = [
     { kind: "item", id: "keep", label: keptOpenPinId === pin.id ? "Keep open ✓" : "Keep open", onSelect: () => onKeepOpen(pin.id) },
     { kind: "item", id: "icon", label: "Change Icon…", disabled: true, onSelect: () => {} },

@@ -15,6 +15,7 @@
     "windows": [
       {
         "label": "notch",
+        "additionalBrowserArgs": "--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --autoplay-policy=no-user-gesture-required",
         "title": "Brink",
         "url": "index.html#/notch",
         "width": 900,
