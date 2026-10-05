@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11.0 — 2026-10-05
+
+### New
+- **Apple Notes.** Use Brink with Apple Notes as well as Notion. Pin a Notes folder or a single note, read and edit notes in the panel, add notes that sync to your iPhone through iCloud, and capture into Notes with ⌥⇧Space. Connect it in Settings → Connection. Notes with tables or attachments open read-only, with "Open in Notes".
+- **Open a task as a page.** Click a database task (or the arrow on hover) to open its page in the panel, with a back button and "Open in Notion". Also from the Today view, the hover peek and the menu-bar list. Rename moved to right-click.
+
+### Fixed
+- ⌥⌘V (paste into the last page) now finds the page you opened last.
+
 ## 0.10.0 — 2026-09-30
 
 ### New
