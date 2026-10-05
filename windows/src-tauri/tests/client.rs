@@ -45,7 +45,7 @@ async fn gives_up_after_exhausting_retries_on_repeated_429s() {
         c.retrieve_data_source("ds-1").await.unwrap_err(),
         NotionError::RateLimited
     );
-    assert_eq!(s.received_requests().await.unwrap().len(), 4);
+    assert_eq!(s.received_requests().await.unwrap().len(), 6);
 }
 
 struct Stamp(Arc<Mutex<Vec<Instant>>>);
@@ -129,7 +129,7 @@ async fn sends_version_and_bearer_headers() {
 }
 
 #[tokio::test]
-async fn retries_a_5xx_once_then_maps_the_body() {
+async fn retries_a_5xx_three_times_with_backoff_then_maps_the_body() {
     let s = MockServer::start().await;
     Mock::given(method("GET"))
         .respond_with(
@@ -150,16 +150,17 @@ async fn retries_a_5xx_once_then_maps_the_body() {
             message: "down".into()
         }
     );
-    assert!(t.elapsed() >= Duration::from_millis(450));
-    assert_eq!(s.received_requests().await.unwrap().len(), 2);
+    let waited = t.elapsed();
+    assert!(waited >= Duration::from_millis(3400), "backoff waits");
+    assert_eq!(s.received_requests().await.unwrap().len(), 4);
 }
 
 #[tokio::test]
-async fn retry_counter_is_shared_between_429_and_5xx() {
+async fn retry_budgets_are_separate_for_429_and_5xx() {
     let s = MockServer::start().await;
     Mock::given(method("GET"))
         .respond_with(ResponseTemplate::new(429).insert_header("Retry-After", "0"))
-        .up_to_n_times(1)
+        .up_to_n_times(2)
         .mount(&s)
         .await;
     Mock::given(method("GET"))
@@ -179,9 +180,24 @@ async fn retry_counter_is_shared_between_429_and_5xx() {
     );
     assert_eq!(
         s.received_requests().await.unwrap().len(),
-        2,
-        "no 5xx retry after a 429"
+        6,
+        "2 x 429, then 1 + 3 retries on 500"
     );
+}
+
+#[tokio::test]
+async fn network_failures_retry_with_backoff_then_error() {
+    let s = MockServer::start().await;
+    let uri = s.uri();
+    drop(s);
+    let t = Instant::now();
+    let e = client(&uri, Some("t"))
+        .retrieve_data_source("x")
+        .await
+        .unwrap_err();
+    assert!(matches!(e, NotionError::Network(_)));
+    let waited = t.elapsed();
+    assert!(waited >= Duration::from_millis(3400), "3 backoff waits");
 }
 
 #[tokio::test]

@@ -8,6 +8,7 @@ import { engineConfig, type EngineTimings } from "./engineConfig";
 import { DecodingError, humanMessage, isGone, isTransient, rawMessage } from "./engineErrors";
 import { comparable, freshImageUrl, insertImage, prepareBlocks } from "./engineImages";
 import type { EditorDocPort, EngineApi, EngineCache } from "./ports";
+import { backupMarkdown } from "./pageBackup";
 import { plan } from "./syncPlanner";
 import { syncedParagraph, withContent, type DocParagraph, type EditorSyncOp, type SyncedParagraph } from "./types";
 import { apiType } from "../markdown/paragraphKind";
@@ -73,6 +74,7 @@ export class PageEditorEngine {
   private syncedGeneration = 0;
   private lastPassFailed = false;
   private massDeleteConfirmed = false;
+  private lastBackup: string | null = null;
   private listeners = new Set<() => void>();
 
   constructor(o: EngineOptions) {
@@ -340,6 +342,18 @@ export class PageEditorEngine {
     return ops.reduce((n, o) => (o.t === "delete" ? n + count(o.blockId) : n), 0);
   }
 
+  /** Destructive pass: keep a local copy of the last confirmed page first. Never fails the save. */
+  private async backupBeforeDelete(): Promise<void> {
+    try {
+      const markdown = backupMarkdown(this.previous);
+      if (!this.api.backupPage || markdown === this.lastBackup) return;
+      await this.api.backupPage(this.pageId, markdown);
+      this.lastBackup = markdown;
+    } catch (e) {
+      this.log("error", `page backup failed: ${rawMessage(e)}`);
+    }
+  }
+
   /** One plan + execute pass. False if it failed (status already set). */
   private async runPass(): Promise<boolean> {
     let generation = this.doc.editGeneration;
@@ -376,6 +390,7 @@ export class PageEditorEngine {
     }
     this.massDeleteConfirmed = false;
     this.pendingMassDelete = null;
+    if (deletes >= 1) await this.backupBeforeDelete();
 
     if (ops.length === 0) {
       this.syncedGeneration = generation;

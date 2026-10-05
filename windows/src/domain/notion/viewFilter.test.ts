@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { JsonValue } from "./json";
 import { filterJSON, sortsJSON, viewFilterRequestJSON, type ViewFilter, type ViewSort } from "./viewFilter";
 
-// 2026-09-28 at UTC midnight, deterministic regardless of TZ.
-const referenceDate = new Date(Date.UTC(2026, 8, 28));
+// 2026-09-28 at local midnight, deterministic regardless of TZ.
+const referenceDate = new Date(2026, 8, 28);
 
 let n = 0;
 const f = (o: Omit<ViewFilter, "id">): ViewFilter => ({ id: `f${++n}`, ...o });
@@ -76,5 +76,15 @@ describe("ViewFilter / ViewSort JSON", () => {
       { property: "Due", direction: "ascending" },
     ]);
     expect(sortsJSON([])).toBeNull();
+  });
+
+  it("relative date filters use the local calendar day, not UTC", () => {
+    const lateEvening = new Date(2026, 8, 28, 23, 59, 30);
+    const early = new Date(2026, 8, 28, 0, 0, 30);
+    for (const now of [lateEvening, early]) {
+      expect(j(viewFilterRequestJSON(f({ property: "Due", op: "dateIsToday" }), now))["date"]["equals"]).toBe("2026-09-28");
+      const week = j(viewFilterRequestJSON(f({ property: "Due", op: "dateWithinNext7Days" }), now));
+      expect(week["and"][1]["date"]["on_or_before"]).toBe("2026-10-05");
+    }
   });
 });

@@ -29,7 +29,7 @@ export function installMockIPC(): void {
     if (fromDemo !== undefined) return fromDemo;
     const handled = workspace(cmd, args);
     if (handled !== undefined) return handled;
-    if (cmd === "app_version") return { marketing: "0.11.0", build: "3" };
+    if (cmd === "app_version") return { marketing: "0.11.1", build: "3" };
     if (cmd === "queue_pending_count") return 0;
     if (cmd === "autostart_status") return autostart;
     if (cmd === "autostart_set") {

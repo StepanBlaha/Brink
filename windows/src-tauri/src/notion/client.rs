@@ -14,6 +14,13 @@ use tokio::time::Instant;
 pub const API_VERSION: &str = "2025-09-03";
 pub const BASE_URL: &str = "https://api.notion.com/v1";
 pub const MIN_SPACING: Duration = Duration::from_millis(340);
+/// Per-request timeout (connect plus response).
+pub const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
+/// 429 retries (each waits out `Retry-After`); a separate budget from 5xx/network failures.
+pub const MAX_RATE_LIMIT_RETRIES: u32 = 5;
+/// 5xx and network-failure retries, with exponential backoff.
+pub const MAX_SERVER_RETRIES: u32 = 3;
+const BACKOFF_BASE: Duration = Duration::from_millis(500);
 
 pub type TokenProvider = Arc<dyn Fn() -> Option<String> + Send + Sync>;
 /// Called once on a 401 with the rejected token; true means a fresh token is available.
@@ -50,7 +57,7 @@ impl NotionClient {
 
     pub fn with_base_url(token: TokenProvider, base_url: impl Into<String>) -> Self {
         let http = reqwest::Client::builder()
-            .timeout(Duration::from_secs(60))
+            .timeout(REQUEST_TIMEOUT)
             .build()
             .expect("reqwest client");
         Self {
@@ -102,7 +109,8 @@ impl NotionClient {
         query: &[(&str, String)],
         body: Body,
     ) -> Result<Vec<u8>, NotionError> {
-        let mut attempt = 0u32;
+        let mut rate_retries = 0u32;
+        let mut server_retries = 0u32;
         let mut did_refresh = false;
         loop {
             let token = (self.token)()
@@ -130,10 +138,19 @@ impl NotionClient {
             };
 
             self.limiter.acquire().await;
-            let resp = req
-                .send()
-                .await
-                .map_err(|e| NotionError::Network(e.without_url().to_string()))?;
+            let resp = match req.send().await {
+                Ok(r) => r,
+                Err(e) => {
+                    let err = NotionError::Network(e.without_url().to_string());
+                    if server_retries >= MAX_SERVER_RETRIES {
+                        return Err(err);
+                    }
+                    self.log(&format!("{method} {path} -> network error, retrying"));
+                    tokio::time::sleep(BACKOFF_BASE * 2u32.pow(server_retries)).await;
+                    server_retries += 1;
+                    continue;
+                }
+            };
             let status = resp.status().as_u16();
             let retry_after = resp
                 .headers()
@@ -150,20 +167,20 @@ impl NotionClient {
             match status {
                 200..=299 => return Ok(data),
                 429 => {
-                    if attempt >= 3 {
+                    if rate_retries >= MAX_RATE_LIMIT_RETRIES {
                         return Err(NotionError::RateLimited);
                     }
                     let wait = Duration::from_secs_f64(retry_after.unwrap_or(1.0).max(0.0));
                     self.limiter.delay_until(Instant::now() + wait).await;
                     tokio::time::sleep(wait).await;
-                    attempt += 1;
+                    rate_retries += 1;
                 }
                 500..=599 => {
-                    if attempt >= 1 {
+                    if server_retries >= MAX_SERVER_RETRIES {
                         return Err(decode_api_error(&data, status));
                     }
-                    tokio::time::sleep(Duration::from_millis(500)).await;
-                    attempt += 1;
+                    tokio::time::sleep(BACKOFF_BASE * 2u32.pow(server_retries)).await;
+                    server_retries += 1;
                 }
                 401 => {
                     if !did_refresh {

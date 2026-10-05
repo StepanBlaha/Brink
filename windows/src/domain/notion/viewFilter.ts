@@ -92,9 +92,10 @@ export interface ViewSort {
   ascending: boolean;
 }
 
-/** UTC calendar date, parity with `ISO8601DateFormatter` (plan section 9 item 6). */
+/** Local calendar date (`yyyy-MM-dd`): Notion date-only values are local dates, so "today" is the local day. */
 function isoDate(d: Date): string {
-  return d.toISOString().slice(0, 10);
+  const p = (n: number): string => String(n).padStart(2, "0");
+  return `${String(d.getFullYear()).padStart(4, "0")}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
 
 /** Adds days on the local calendar (Swift `Calendar.current`), as the Mac does. */

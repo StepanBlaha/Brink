@@ -14,6 +14,8 @@ export interface EngineApi {
   /** updateBlock / deleteBlock go through the queue (offline-safe, FIFO). */
   queueSubmit(op: Operation, retainOnTransientFailure: boolean): Promise<QueueOutcome>;
   /** Uploads an image and returns the file upload id. */
+  /** Saves the last-known page Markdown before a deleting save (best effort; errors are ignored). */
+  backupPage?(pageId: string, markdown: string): Promise<void>;
   uploadFile(data: Uint8Array, filename: string, contentType: string): Promise<string>;
 }
 

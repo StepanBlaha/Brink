@@ -222,6 +222,11 @@ export function cacheSave(pinId: string, kind: CacheKind, json: JsonValue): Prom
   return invoke("cache_save", { pinId, kind, json });
 }
 
+/** Pre-delete page backup (`<data>/backups/<pageId>-<timestamp>.md`, newest 20 per page). */
+export function pageBackup(pageId: string, markdown: string): Promise<void> {
+  return invoke("page_backup", { pageId, markdown });
+}
+
 export function cacheClear(pinId: string, kind: CacheKind): Promise<void> {
   return invoke("cache_clear", { pinId, kind });
 }

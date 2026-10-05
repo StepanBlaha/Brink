@@ -123,3 +123,11 @@
 - [x] Polish: `visibleInterval` for all pollers, brand scan of all src strings, README features and screenshots.
 - [ ] Only on real Windows: see the real-Windows checklist in the M9 commit follow-up (Narrator, High Contrast, text size slider, demo backdrop stacking, `record-demo.ps1`, 150 % morph at 60 fps, idle CPU and working set, row page from tray and peek).
 - [ ] Windows CI green (see commit follow-up)
+
+## 0.11.1 (2026-10-05, mirrors the Mac fixes)
+- [x] Version 0.11.1 in `package.json`, `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml`, `Cargo.lock`, browser mock `app_version` (branding test checks the first two against repo `VERSION`).
+- [x] Page backup: before any save pass that deletes at least one block, the engine writes the last confirmed page as Markdown through the `page_backup` command to `%APPDATA%\Brink\backups\<pageId>-<timestamp>.md` (newest 20 per page kept). Best effort: errors are logged, never fail the save. `domain/editor/pageBackup.ts`, `store/backup.rs`, tests `pageBackup.test.ts`, `tests/backup.rs`.
+- [x] Local calendar day: the `dateIsToday` / `dateIsBeforeToday` / `dateWithinNext7Days` filters sent `toISOString()` (UTC), so late evening or early morning asked Notion for the wrong day. They use the local `yyyy-MM-dd` now. Today view, badges and reminders already used local dates; `localDay.test.ts` pins that.
+- [x] Notion client: 30 s request timeout (was 60); separate budgets: 429 waits `Retry-After` up to 5 retries, 5xx and network errors back off 0.5/1/2 s up to 3 retries (network errors were not retried before). The queue has no retry loop of its own, so nothing is counted twice. `tests/client.rs` updated.
+- [x] Quick capture uses the editor's shared `domain/markdown/markdownParser`; `captureMarkdown.ts` keeps its public API (re-exports). Tests unchanged and green.
+- [ ] Rust not run locally (no toolchain on the dev Mac); verified by Windows CI.

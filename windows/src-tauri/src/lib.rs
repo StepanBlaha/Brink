@@ -96,6 +96,7 @@ pub fn run() {
             commands::cache::cache_load,
             commands::cache::cache_save,
             commands::cache::cache_clear,
+            commands::cache::page_backup,
             commands::cache::cover_get,
             commands::queue::queue_submit,
             commands::queue::queue_process,

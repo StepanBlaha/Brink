@@ -46,3 +46,19 @@ pub async fn cover_get(
         .await
         .map_err(|m| AppError::new("cover", m))
 }
+
+/// Writes a pre-delete page backup under `<data>/backups`. The editor ignores failures.
+#[tauri::command]
+pub async fn page_backup(
+    state: State<'_, AppState>,
+    page_id: String,
+    markdown: String,
+) -> Result<(), AppError> {
+    let since_epoch = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH);
+    let now_ms = since_epoch.map_or(0, |d| d.as_millis());
+    let dir = state.paths.data.join("backups");
+    match crate::store::backup::write_backup(&dir, &page_id, &markdown, now_ms) {
+        Ok(_) => Ok(()),
+        Err(e) => Err(AppError::new("backup", e.to_string())),
+    }
+}

@@ -3,7 +3,7 @@ import type { SyncedParagraph } from "../domain/editor/types";
 import { decodeBlock } from "../domain/notion/block";
 import type { JsonValue } from "../domain/notion/json";
 import {
-  cacheLoad, cacheSave, notionAppendBlocks, notionBlockChildren, notionRetrieveBlock, notionRetrievePage, queueSubmit, uploadImage,
+  cacheLoad, cacheSave, notionAppendBlocks, notionBlockChildren, notionRetrieveBlock, notionRetrievePage, pageBackup, queueSubmit, uploadImage,
 } from "../ipc/commands";
 
 /** The real engine ports over the Tauri commands. */
@@ -12,6 +12,7 @@ export const ipcEngineApi: EngineApi = {
   retrievePage: notionRetrievePage,
   retrieveBlock: async (id) => decodeBlock(await notionRetrieveBlock(id)),
   appendBlocks: notionAppendBlocks,
+  backupPage: pageBackup,
   queueSubmit: (op, retain) => queueSubmit(op, retain),
   uploadFile: (data, filename, contentType) => uploadImage({ bytes: Array.from(data) }, filename, contentType),
 };
