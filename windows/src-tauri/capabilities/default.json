@@ -10,7 +10,8 @@
     "settings",
     "onboarding",
     "about",
-    "legal-*"
+    "legal-*",
+    "backdrop"
   ],
   "permissions": [
     "core:default",

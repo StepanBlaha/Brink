@@ -3,18 +3,23 @@ import { useEffect, useState } from "react";
 import { PlusIcon } from "../notch/icons";
 import { DatabaseRow } from "./DatabaseRow";
 import type { DatabaseModel } from "./databaseModel";
+import { RowPageHost } from "./RowPageHost";
 import { useDatabase } from "./useDatabase";
 import styles from "./database.module.css";
 
 export const compactRowLimit = 8;
+/** A database embedded in a page has no bounded frame, so its row page gets a fixed height. */
+export const embeddedPageHeight = 340;
 
 interface Props {
   model: DatabaseModel;
   compact?: boolean;
+  /** The pin whose panel shows this list; a row's page opens in place of it. */
+  pinId?: string;
 }
 
 /** Task list for a database: quick add, checkbox/status rows, date chips, "Show completed". */
-export function DatabaseTaskView({ model, compact = false }: Props) {
+export function DatabaseTaskView({ model, compact = false, pinId = "" }: Props) {
   const s = useDatabase(model);
   const [title, setTitle] = useState("");
   const [all, setAll] = useState(false);
@@ -48,7 +53,7 @@ export function DatabaseTaskView({ model, compact = false }: Props) {
     </>
   );
 
-  return (
+  const listBody = (
     <div className={`${styles.view} ${compact ? styles.compact : ""}`}>
       {compact && <div className={styles.caption}>{s.schema?.name ?? "Tasks"}</div>}
       <form
@@ -74,5 +79,11 @@ export function DatabaseTaskView({ model, compact = false }: Props) {
         <div className={styles.scroll}>{list}</div>
       )}
     </div>
+  );
+
+  return (
+    <RowPageHost pinId={pinId} {...(compact ? { pageHeight: embeddedPageHeight } : {})}>
+      {listBody}
+    </RowPageHost>
   );
 }

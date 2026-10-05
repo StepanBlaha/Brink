@@ -19,21 +19,23 @@ export function Panel({ pin, addFlow, keepOpen, fontScale, onToggleKeepOpen, onC
   const [done, setDone] = useState<Record<string, boolean>>({});
   const title = addFlow ? "Add a page" : (pin?.title ?? "");
   return (
-    <div className={styles.panel} style={{ fontSize: 14 * fontScale }}>
+    <section className={styles.panel} aria-label={title || "Panel"} style={{ fontSize: `calc(${14 * fontScale}px * var(--text-scale, 1))` }}>
       <header className={styles.header}>
         <span className={styles.icon} aria-hidden>
           {addFlow ? <PlusIcon /> : pin?.icon}
         </span>
-        <span className={styles.title}>{title}</span>
+        <h2 className={styles.title}>{title}</h2>
         <button
           type="button"
           className={`${styles.btn} ${keepOpen ? styles.on : ""}`}
           title={keepOpen ? "Unpin panel" : "Keep open"}
+          aria-label="Keep open"
+          aria-pressed={keepOpen}
           onClick={onToggleKeepOpen}
         >
           <PinIcon />
         </button>
-        <button type="button" className={styles.btn} title="Close" onClick={onClose}>
+        <button type="button" className={styles.btn} title="Close" aria-label="Close panel" onClick={onClose}>
           <XIcon />
         </button>
       </header>
@@ -67,6 +69,6 @@ export function Panel({ pin, addFlow, keepOpen, fontScale, onToggleKeepOpen, onC
       <input className={styles.quick} placeholder="Add a task" aria-label="Quick add" />
       </>
       )}
-    </div>
+    </section>
   );
 }

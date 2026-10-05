@@ -5,6 +5,7 @@ import { contents, stagger } from "../../theme/motion";
 import type { NotchScale } from "../../theme/notchMetrics";
 import { PinBadge } from "./PinBadge";
 import { PinIcon } from "./PinIcon";
+import { handleStripKey, pinLabel } from "./roving";
 import type { GroupItem, PinItem } from "./pinItems";
 import styles from "./strip.module.css";
 import { useReorder } from "./useReorder";
@@ -59,6 +60,10 @@ export function Strip(p: Props) {
   const ag = p.activeGroup;
   return (
     <div
+      role="toolbar"
+      aria-label="Pinned pages"
+      aria-orientation={horizontal ? "horizontal" : "vertical"}
+      onKeyDown={(e) => handleStripKey(e, horizontal ? "horizontal" : "vertical")}
       className={`${styles.strip} ${horizontal ? styles.row : styles.col}`}
       style={{
         gap: iconSpacing,
@@ -73,6 +78,9 @@ export function Strip(p: Props) {
           style={{ width: iconSize - 6, height: iconSize - 6, [horizontal ? "marginRight" : "marginBottom"]: 2 }}
           title={ag?.name ?? "All pins"}
           aria-label="Groups"
+          aria-haspopup="menu"
+          data-roving
+          tabIndex={0}
           data-group-switcher
           onClick={(e) => p.onGroupMenu(rectOf(e.currentTarget))}
         >
@@ -92,7 +100,10 @@ export function Strip(p: Props) {
             <motion.button
               type="button"
               title={p.onPeekEnter ? "" : item.title}
-              aria-label={item.title}
+              aria-label={pinLabel(item.title, p.badges?.[item.id] ?? 0)}
+              aria-pressed={p.selectedId === item.id}
+              data-roving
+              tabIndex={!p.showGroupSwitcher && i === 0 ? 0 : -1}
               data-pin={item.id}
               className={`${styles.icon} ${p.selectedId === item.id ? styles.selected : ""}`}
               style={{ width: iconSize, height: iconSize }}
@@ -115,6 +126,8 @@ export function Strip(p: Props) {
         type="button"
         title="Add a page"
         aria-label="Add a page"
+        data-roving
+        tabIndex={-1}
         data-add-pin
         className={`${styles.icon} ${styles.add}`}
         style={{ width: iconSize, height: iconSize }}

@@ -128,11 +128,17 @@ mod imp {
 
 #[tauri::command]
 pub async fn autostart_status() -> Result<Status, AppError> {
+    if crate::demo::is_active() {
+        return Ok(Status::Off);
+    }
     Ok(imp::status())
 }
 
 #[tauri::command]
 pub async fn autostart_set(enabled: bool) -> Result<Status, AppError> {
+    if crate::demo::is_active() {
+        return Ok(Status::Off); // demo mode never touches the Run key
+    }
     let exe = std::env::current_exe().map_err(|e| AppError::new("io", e.to_string()))?;
     imp::set(enabled, &exe)?;
     Ok(imp::status())

@@ -5,8 +5,8 @@
 .recorder { min-width: 150px; height: 30px; padding: 0 10px; border: 0; border-radius: 6px; background: #1c1c1e; color: var(--text); font: inherit; cursor: pointer; text-align: center; }
 .recorder:focus-visible { outline: none; box-shadow: 0 0 0 1px var(--accent); }
 .recording { box-shadow: 0 0 0 1px var(--accent); color: var(--text-2); }
-.error { margin: 0; color: var(--danger); font-size: 12px; text-align: right; }
+.error { margin: 0; color: var(--danger); font-size: calc(12px * var(--text-scale, 1)); text-align: right; }
 .reset { height: 30px; padding: 0 10px; border: 0; border-radius: 6px; background: #2a2a2c; color: var(--text); font: inherit; cursor: pointer; }
 .slot { width: 52px; }
-.badge { grid-column: 1 / -1; justify-self: start; padding: 2px 8px; border-radius: 10px; background: #2a2a2c; color: var(--danger); font-size: 12px; }
-.hint { margin: 0; color: var(--text-2); font-size: 12px; grid-column: 1 / -1; }
+.badge { grid-column: 1 / -1; justify-self: start; padding: 2px 8px; border-radius: 10px; background: #2a2a2c; color: var(--danger); font-size: calc(12px * var(--text-scale, 1)); }
+.hint { margin: 0; color: var(--text-2); font-size: calc(12px * var(--text-scale, 1)); grid-column: 1 / -1; }

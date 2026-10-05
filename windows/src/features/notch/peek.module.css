@@ -10,10 +10,14 @@
 }
 .title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sub { color: var(--text-2); margin-bottom: 4px; }
-.item {
-  display: flex; align-items: center; gap: 8px; width: 100%; height: 20px; padding: 0; border: 0; background: transparent;
-  color: rgba(255, 255, 255, 0.9); font: inherit; text-align: left; white-space: nowrap; overflow: hidden; cursor: pointer;
+.item { display: flex; align-items: center; gap: 8px; width: 100%; height: 20px; color: rgba(255, 255, 255, 0.9); white-space: nowrap; overflow: hidden; }
+.checkBtn { display: grid; place-items: center; flex: none; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.openBtn {
+  flex: 1; min-width: 0; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
 }
+.openBtn:hover { text-decoration: underline; }
+.checkBtn:focus-visible, .openBtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-radius: 3px; }
 .itemText { overflow: hidden; text-overflow: ellipsis; }
 .box { display: grid; place-items: center; flex: none; width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--checkbox-border); color: #fff; }
 .checked { background: var(--accent); border-color: var(--accent); }

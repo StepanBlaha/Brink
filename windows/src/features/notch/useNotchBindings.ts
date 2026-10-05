@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNotchStore } from "../../state/notchStore";
+import { isDemo } from "../demo/demoFlag";
 import { applyDebug } from "./debug";
 import {
   configureWindow,
@@ -112,7 +113,7 @@ export function useNotchBindings({ layout, hitRects, zonesAt, firstPinId, overla
       }
     };
     const w = window as unknown as { __notch?: (c: string) => void };
-    if (import.meta.env.DEV) w.__notch = debug;
+    if (import.meta.env.DEV || isDemo()) w.__notch = debug;
     const start = store.getState().config.phase;
     if (start) queueMicrotask(() => debug(start));
     const subs = [

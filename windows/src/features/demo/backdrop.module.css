@@ -1,0 +1,35 @@
+/* Dusk: branding/BRAND.md. Gradient at 160deg, glow 30% low right, sheen 10% top left, vignette to 16%. */
+.root {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #5c6b9e;
+  pointer-events: none;
+  user-select: none;
+}
+.dusk {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(160deg, #5c6b9e, #9e85a8, #eda88f);
+}
+.glow,
+.sheen,
+.vignette {
+  position: absolute;
+  inset: 0;
+}
+.glow {
+  background: radial-gradient(circle at 72% 95%, rgba(255, 199, 153, 0.3) 0, rgba(255, 199, 153, 0) 50vw);
+}
+.sheen {
+  background: radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.1) 0, rgba(255, 255, 255, 0) 60vw);
+}
+.vignette {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 0, 0, 0) 50vh,
+    rgba(0, 0, 0, 0.16) 71vmax
+  );
+}

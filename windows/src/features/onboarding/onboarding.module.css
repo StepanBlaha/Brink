@@ -7,10 +7,10 @@
 @keyframes slideLeft { from { opacity: 0; transform: translateX(-40px); } }
 .step { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 380px; padding: 0 40px; text-align: center; }
 .icon { margin-bottom: -4px; border-radius: 26px; }
-.big { margin: 6px 0 0; font-size: 28px; font-weight: 600; }
-.title { margin: 0; font-size: 22px; font-weight: 600; }
+.big { margin: 6px 0 0; font-size: calc(28px * var(--text-scale, 1)); font-weight: 600; }
+.title { margin: 0; font-size: calc(22px * var(--text-scale, 1)); font-weight: 600; }
 .tag { margin: 0; color: var(--text-2); }
-.small { margin: 0; color: var(--text-2); font-size: 12px; line-height: 1.5; }
+.small { margin: 0; color: var(--text-2); font-size: calc(12px * var(--text-scale, 1)); line-height: 1.5; }
 .step > .tag + .small { margin-top: 10px; color: var(--text-3); }
 .accentIcon { color: var(--accent); }
 .token { width: 300px; height: 30px; padding: 0 10px; border: 0; border-radius: 6px; outline: none; background: var(--raised); color: var(--text); font: inherit; }
@@ -18,14 +18,14 @@
 .actions { display: flex; gap: 8px; }
 .status { min-height: 32px; }
 .status p { margin: 0; }
-.dim { color: var(--text-2); font-size: 12px; }
-.linkBtn { padding: 0; border: 0; background: none; color: var(--accent); font: inherit; font-size: 12px; cursor: pointer; }
+.dim { color: var(--text-2); font-size: calc(12px * var(--text-scale, 1)); }
+.linkBtn { padding: 0; border: 0; background: none; color: var(--accent); font: inherit; font-size: calc(12px * var(--text-scale, 1)); cursor: pointer; }
 .footer { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; }
 .side { min-width: 60px; }
 .dots { position: absolute; left: 50%; top: 50%; display: flex; align-items: center; gap: 6px; transform: translate(-50%, -50%); pointer-events: none; }
 .dot { width: 6px; height: 6px; border-radius: 3px; background: var(--text-3); transition: width 0.2s, background 0.2s; }
 .dotOn { width: 16px; background: var(--text); }
-.back { height: 28px; padding: 0 12px; border: 0; border-radius: 6px; background: var(--hover); color: var(--text); font: inherit; font-size: 12px; cursor: pointer; }
+.back { height: 28px; padding: 0 12px; border: 0; border-radius: 6px; background: var(--hover); color: var(--text); font: inherit; font-size: calc(12px * var(--text-scale, 1)); cursor: pointer; }
 .primary { height: 30px; padding: 0 14px; border: 0; border-radius: 6px; background: var(--accent); color: var(--on-accent, #fff); font: inherit; font-weight: 600; cursor: pointer; }
 .back:focus-visible, .primary:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--accent); }
 @media (prefers-reduced-motion: reduce) {

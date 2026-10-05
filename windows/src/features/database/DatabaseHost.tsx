@@ -11,5 +11,5 @@ export function DatabaseHost({ pin, ports = ipcPorts }: { pin: Pin; ports?: Data
     () => new DatabaseModel(pin.notionId, pin.config ?? null, pin.id, ports),
     [pin.notionId, pin.config, pin.id, ports],
   );
-  return <DatabaseTaskView model={model} />;
+  return <DatabaseTaskView model={model} pinId={pin.id} />;
 }

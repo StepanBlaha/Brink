@@ -5,6 +5,7 @@ pub mod capture;
 pub mod clipboard;
 pub mod commands;
 pub mod deeplink;
+pub mod demo;
 pub mod error;
 pub mod hotkeys;
 pub mod logging;
@@ -38,6 +39,7 @@ async fn app_version() -> Result<AppVersion, error::AppError> {
 }
 
 pub fn run() {
+    demo::init();
     logging::init();
     tauri::Builder::default()
         .plugin(deeplink::single_instance())
@@ -45,6 +47,10 @@ pub fn run() {
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .invoke_handler(tauri::generate_handler![
             app_version,
+            demo::demo_state,
+            demo::demo_finish,
+            demo::markers::demo_mark,
+            demo::markers::demo_wait,
             shell::open_in_notion,
             shell::show_settings,
             shell::open_url,
@@ -117,6 +123,7 @@ pub fn run() {
             commands::notify::notify_apply,
             commands::windows::window_open,
             commands::windows::system_accent,
+            commands::a11y::text_scale,
             commands::windows::emoji_panel_open,
             autostart::autostart_status,
             autostart::autostart_set,
@@ -128,12 +135,18 @@ pub fn run() {
             commands::notify::setup(app.handle());
             commands::windows::setup(app.handle());
             window::notch_window::setup(app.handle());
+            demo::backdrop::setup(app.handle());
             capture::setup(app.handle());
             tray::setup(app.handle());
             hotkeys::setup(app.handle());
             deeplink::setup(app.handle());
             Ok(())
         })
-        .run(tauri::generate_context!())
-        .expect("error while running Brink");
+        .build(tauri::generate_context!())
+        .expect("error while building Brink")
+        .run(|_, event| {
+            if let tauri::RunEvent::Exit = event {
+                demo::cleanup();
+            }
+        });
 }

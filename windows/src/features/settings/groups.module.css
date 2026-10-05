@@ -7,11 +7,11 @@
 .box { background: var(--raised); }
 .emoji { flex: none; width: 52px; text-align: center; }
 .name { flex: 1; min-width: 0; }
-.count { flex: none; color: var(--text-2); font-size: 11px; }
+.count { flex: none; color: var(--text-2); font-size: calc(11px * var(--text-scale, 1)); }
 .icon { display: grid; flex: none; place-items: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--text-2); cursor: pointer; }
 .icon:hover:not(:disabled) { background: var(--hover); color: var(--text); }
 .icon:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--accent); }
 .icon:disabled { opacity: 0.3; cursor: default; }
 .del { color: var(--danger); }
-.empty { margin: 0; padding: 12px; border-radius: 8px; background: var(--raised); color: var(--text-2); font-size: 12px; }
+.empty { margin: 0; padding: 12px; border-radius: 8px; background: var(--raised); color: var(--text-2); font-size: calc(12px * var(--text-scale, 1)); }
 .add { display: flex; gap: 8px; align-items: center; }

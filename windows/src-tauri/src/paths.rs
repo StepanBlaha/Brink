@@ -43,7 +43,20 @@ pub fn resolve_with(get: &dyn Fn(&str) -> Option<String>) -> Paths {
     }
 }
 
+/// Demo mode layout under `root`: nothing of it touches `%APPDATA%` or `%LOCALAPPDATA%`.
+pub fn demo_paths(root: &std::path::Path) -> Paths {
+    Paths {
+        data: root.join("data"),
+        cache: root.join("cache"),
+        logs: root.join("logs"),
+    }
+}
+
+/// Real folders, or the temp root while demo mode is active.
 pub fn resolve() -> Paths {
+    if crate::demo::is_active() {
+        return demo_paths(&demo_root());
+    }
     resolve_with(&|k| std::env::var(k).ok())
 }
 
@@ -99,6 +112,13 @@ mod tests {
         let p = resolve_with(&env(&[("HOME", "/home/u")]));
         assert_eq!(p.data, PathBuf::from("/home/u/.config/Brink"));
         assert_eq!(p.logs, PathBuf::from("/home/u/.local/share/Brink/logs"));
+    }
+
+    #[test]
+    fn demo_paths_stay_under_the_root() {
+        let p = demo_paths(std::path::Path::new("/t/BrinkDemo-7"));
+        assert_eq!(p.data, PathBuf::from("/t/BrinkDemo-7/data"));
+        assert!(p.cache.starts_with("/t/BrinkDemo-7") && p.logs.starts_with("/t/BrinkDemo-7"));
     }
 
     #[test]

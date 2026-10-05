@@ -1,2 +1,4 @@
 .stage { min-height: 100vh; display: grid; place-items: start center; padding: 24px; background: #202020; font-family: var(--font); }
 .panel { width: 420px; max-height: 520px; display: flex; flex-direction: column; background: #000; border-radius: 14px; padding: 8px 0; color: var(--text); }
+/* Like the notch panel body: a bounded frame, so a row page has room. */
+.fixed { height: 420px; }

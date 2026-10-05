@@ -27,7 +27,13 @@ export function Menu({ x, y, label, items, align, onRect, onClose }: Props) {
   const root = useRef<HTMLDivElement>(null);
   const rows = selectable(items);
 
-  useEffect(() => root.current?.focus(), []);
+  useEffect(() => {
+    const before = document.activeElement as HTMLElement | null;
+    root.current?.focus();
+    return () => {
+      if (before && before !== document.body && before.isConnected) before.focus({ preventScroll: true });
+    };
+  }, []);
 
   const choose = (entry: MenuEntry | undefined) => {
     if (!entry) return;
@@ -62,6 +68,7 @@ export function Menu({ x, y, label, items, align, onRect, onClose }: Props) {
               <button
                 type="button"
                 role="menuitem"
+                data-active={isActive}
                 data-menu-item={entry.id}
                 disabled={entry.kind === "item" && entry.disabled === true}
                 className={`${styles.item} ${isActive ? styles.active : ""} ${entry.kind === "item" && entry.danger ? styles.danger : ""}`}

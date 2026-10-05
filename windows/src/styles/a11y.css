@@ -1,0 +1,34 @@
+/* Accessibility base: focus rings, reduced motion, forced colors (Windows High Contrast), text scale. */
+
+:root { --text-scale: 1; }
+
+/* A visible ring on every keyboard focus. Components with their own ring keep it. */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.brink-pm:focus-visible { outline: none; }
+
+/* Text scaling (Settings, Accessibility, Text size). Set by state/textScale.ts. */
+html { -webkit-text-size-adjust: 100%; }
+
+/* Reduce motion: no transitions or animations anywhere. The Motion springs read the same query. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Windows High Contrast: system colors, a border where the black notch was. */
+@media (forced-colors: active) {
+  :focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
+  body { color: CanvasText; }
+  button, input, select, textarea { forced-color-adjust: auto; border: 1px solid ButtonText; }
+  button:disabled { border-color: GrayText; color: GrayText; }
+  [role="menu"], [role="dialog"] { background: Canvas; color: CanvasText; border: 1px solid CanvasText; }
+  [role="menuitem"]:focus, [role="menuitem"][data-active="true"], [aria-pressed="true"] {
+    background: Highlight; color: HighlightText; forced-color-adjust: none;
+  }
+  svg [fill="var(--notch-black)"] { fill: Canvas; }
+  svg path[stroke] { stroke: CanvasText; }
+}

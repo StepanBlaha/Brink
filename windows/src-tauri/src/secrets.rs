@@ -103,6 +103,13 @@ impl SecretBackend for KeyringBackend {
     }
 }
 
+/// Demo mode: an in-memory backend holding only the fake token (never the real credential).
+pub fn demo_backend(token: &str) -> Box<dyn SecretBackend> {
+    let b = MemoryBackend::new();
+    let _ = b.set(ACCESS, token.as_bytes());
+    Box::new(b)
+}
+
 /// The production backend for this platform.
 pub fn default_backend() -> Box<dyn SecretBackend> {
     #[cfg(any(windows, target_os = "macos"))]

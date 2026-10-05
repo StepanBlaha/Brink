@@ -1,2 +1,2 @@
 .section { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
-.h { margin: 0; font-size: 16px; font-weight: 600; }
+.h { margin: 0; font-size: calc(16px * var(--text-scale, 1)); font-weight: 600; }

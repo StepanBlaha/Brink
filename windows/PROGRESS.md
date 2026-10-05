@@ -114,4 +114,12 @@
 - [x] Rust: `window_open` + `window://open` listener, `autostart_*` (Run key, StartupApproved), `system_accent`, `emoji_panel_open`, build number in `app_version`; unit tests for specs, run value, approval bytes, accent alpha. Tray flyout now uses real counts and the tick (`summaryBridge.test.ts`, `trayWiring.test.ts`).
 - [x] Screenshots (Vite pages, headless Chrome): `docs/screens/m8/`. Icon picker and onboarding steps 2 and 3 checked in the browser pane (not saved).
 - [ ] Only on real Windows: autostart on/off across sign-out and sign-in, Win+. panel inserting into the picker, system accent following Settings, display choice on two monitors, window creation from the tray menu.
+- [x] Windows CI green (run 37343076972)
+
+## M9 Polish, demo mode, accessibility, open task as page (2026-10-05)
+- [x] Demo mode (`--demo`, `BRINK_DEMO=1`, `demo-mode.json`): Rust fake Notion server with Mac seed, temp storage, memory credentials, backdrop, scripted director (`src/features/demo`), `scripts/record-demo.ps1`, `scripts/capture-vite.mjs` (`npm run demo:capture`); tests `tests/demo_server.rs`, director tests; screenshots `docs/screens/m9/`.
+- [x] Open task as page: `RowPageHost/View/Router`, `notionLink` (NotionLinkTests port), row context menu (Open page, Open in Notion, Rename), from Today, embeds, peek and tray (`notch://open-row`).
+- [x] Accessibility: roving strip, labels and roles, live announcer, focus rings, forced colors, reduced motion, text scale, contrast note (DECISIONS).
+- [x] Polish: `visibleInterval` for all pollers, brand scan of all src strings, README features and screenshots.
+- [ ] Only on real Windows: see the real-Windows checklist in the M9 commit follow-up (Narrator, High Contrast, text size slider, demo backdrop stacking, `record-demo.ps1`, 150 % morph at 60 fps, idle CPU and working set, row page from tray and peek).
 - [ ] Windows CI green (see commit follow-up)

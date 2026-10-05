@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useRef, useState } from "react";
+import { isDemo } from "../features/demo/demoFlag";
 import { EditorView } from "prosemirror-view";
 import { TextSelection } from "prosemirror-state";
 import type { BrinkDoc } from "./docPort";
@@ -49,7 +50,7 @@ export function BrinkEditor({ doc, fontScale = 1, onOpenToken, onOverlay, embed,
     });
     viewRef.current = view;
     doc.view = view;
-    if (import.meta.env.DEV) (window as unknown as { __brink: unknown }).__brink = { doc, view };
+    if (import.meta.env.DEV || isDemo()) (window as unknown as { __brink: unknown }).__brink = { doc, view };
     const sub = () => tick();
     doc.listeners.add(sub);
     return () => { doc.listeners.delete(sub); doc.view = null; view.destroy(); viewRef.current = null; };

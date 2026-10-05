@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Block } from "../../domain/notion/block";
 import { span } from "../../domain/notion/richText";
 import type { Operation } from "../../domain/notion/pendingWrite";
@@ -23,6 +23,19 @@ function ports(pins: Pin[], ops: Operation[] = [], token = true): MiniPorts {
     tick: () => {}, contentChanged: () => {},
   };
 }
+
+afterEach(cleanup);
+
+describe("TrayFlyout open item", () => {
+  it("an item title calls onOpenItem with its pin and item", async () => {
+    const onOpenItem = vi.fn();
+    render(<TrayFlyout ports={ports([pin])} onOpenItem={onOpenItem} />);
+    fireEvent.click(screen.getByRole("button", { name: /Inbox/ }));
+    await waitFor(() => screen.getByRole("button", { name: "Open Milk" }));
+    fireEvent.click(screen.getByRole("button", { name: "Open Milk" }));
+    expect(onOpenItem).toHaveBeenCalledWith(expect.objectContaining({ id: "a" }), { id: "t1", title: "Milk" });
+  });
+});
 
 describe("TrayFlyout", () => {
   it("empty states", () => {

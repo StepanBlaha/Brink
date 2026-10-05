@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "sync-version": "node scripts/sync-version.mjs",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "demo:capture": "node scripts/capture-vite.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.12.1",

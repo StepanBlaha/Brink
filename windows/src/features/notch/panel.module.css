@@ -14,8 +14,8 @@
   border-bottom: 1px solid var(--divider);
   flex: none;
 }
-.icon { font-size: 16px; }
-.title { flex: 1; font-weight: 600; font-size: 1.07em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.icon { font-size: calc(16px * var(--text-scale, 1)); }
+.title { margin: 0; flex: 1; font-weight: 600; font-size: 1.07em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .btn {
   display: grid;
   place-items: center;

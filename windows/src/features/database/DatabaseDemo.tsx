@@ -29,7 +29,7 @@ export function DatabaseDemo() {
   }, []);
   return (
     <div className={styles.stage}>
-      <div className={styles.panel}>
+      <div className={`${styles.panel} ${compact ? "" : styles.fixed}`}>
         <DatabaseTaskView model={model} compact={compact} />
       </div>
     </div>

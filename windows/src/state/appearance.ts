@@ -1,6 +1,7 @@
 import { systemAccent } from "../ipc/windowsIpc";
 import { accentHex, hexCss, onAccent } from "../theme/accent";
 import { useSettingsStore } from "./settingsStore";
+import { visibleInterval } from "../services/visibleInterval";
 
 const SYSTEM_POLL_MS = 5000;
 
@@ -15,7 +16,7 @@ export function applyAccent(hex: number, root: HTMLElement = document.documentEl
  */
 export function startAppearance(): () => void {
   let system: number | null = null;
-  let timer: ReturnType<typeof setInterval> | undefined;
+  let timer: (() => void) | undefined;
   const apply = (): void => applyAccent(accentHex(useSettingsStore.getState().settings.accentPreset, system));
   const readSystem = (): void => {
     void systemAccent()
@@ -32,9 +33,9 @@ export function startAppearance(): () => void {
     const wantsSystem = useSettingsStore.getState().settings.accentPreset === "system";
     if (wantsSystem && timer === undefined) {
       readSystem();
-      timer = setInterval(readSystem, SYSTEM_POLL_MS);
+      timer = visibleInterval(readSystem, SYSTEM_POLL_MS);
     } else if (!wantsSystem && timer !== undefined) {
-      clearInterval(timer);
+      timer();
       timer = undefined;
     }
   };
@@ -44,6 +45,6 @@ export function startAppearance(): () => void {
   });
   return () => {
     unsub();
-    if (timer !== undefined) clearInterval(timer);
+    timer?.();
   };
 }

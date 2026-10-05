@@ -3,6 +3,7 @@ import { storedDisplayPreference, type ScreenInfo } from "../../domain/store/dis
 import { screenLabels } from "./screenLabels";
 import { listScreens } from "../notch/useSettingsSync";
 import styles from "./appearance.module.css";
+import { visibleInterval } from "../../services/visibleInterval";
 
 interface Props {
   value: string;
@@ -19,10 +20,10 @@ export function DisplayPicker({ value, onChange, screens: fixed }: Props) {
     let alive = true;
     const read = () => void listScreens().then((s) => alive && setScreens(s)).catch(() => {});
     read();
-    const t = setInterval(read, 3000);
+    const stop = visibleInterval(read, 3000);
     return () => {
       alive = false;
-      clearInterval(t);
+      stop();
     };
   }, [fixed]);
   const labels = screenLabels(screens);

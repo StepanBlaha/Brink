@@ -35,7 +35,7 @@ describe("page host with a cover and an embedded database", () => {
     const { container } = render(<PageHost pageId="pg" api={server.api()} dbPorts={fake.ports} resolveCover={() => Promise.resolve("blob:c")} onOpenToken={() => undefined} />);
     await waitFor(() => expect(screen.getByTestId("cover-strip")).toBeTruthy());
     await waitFor(() => expect(screen.getByText("Show all 11")).toBeTruthy());
-    const titles = [...container.querySelectorAll<HTMLInputElement>(".chip-embed input")].map((i) => i.value).filter((v) => /^Task \d+$/.test(v));
+    const titles = [...container.querySelectorAll<HTMLElement>(".chip-embed button[aria-label^='Open page']")].map((b) => b.textContent ?? "").filter((v) => /^Task \d+$/.test(v));
     expect(titles).toHaveLength(8);
     expect(container.querySelector(".chip.db .chip-label")?.textContent).toContain("Tasks");
   });

@@ -24,3 +24,6 @@ export const emojiPanelOpen = (): Promise<void> => invoke("emoji_panel_open");
 
 /** Onboarding "Add a page": the hub opens the add flow. */
 export const OPEN_ADD_EVENT = "notch://open-add";
+
+/** Windows text size in percent (100 to 225). */
+export const textScale = (): Promise<number> => invoke<number>("text_scale");

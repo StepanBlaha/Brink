@@ -53,9 +53,9 @@
   line-height: 1;
   pointer-events: none;
 }
-.groupLabel { font-size: 12px; font-weight: 600; line-height: 1; }
+.groupLabel { font-size: calc(12px * var(--text-scale, 1)); font-weight: 600; line-height: 1; }
 .prompt { display: flex; flex-direction: column; gap: 6px; padding: 4px; width: 190px; }
-.promptLabel { color: var(--text-2); font-size: 12px; }
+.promptLabel { color: var(--text-2); font-size: calc(12px * var(--text-scale, 1)); }
 .promptInput {
   height: 28px; padding: 0 8px; border: 0; border-radius: 6px; outline: none;
   background: rgba(255, 255, 255, 0.08); color: var(--text); font: inherit;

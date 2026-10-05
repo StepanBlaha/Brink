@@ -3,6 +3,7 @@ import type { Row } from "../domain/notion/row";
 import type { Pin } from "../domain/store/pin";
 import { dayString, summaryFromBlocks, summaryFromRows, type PinSummary } from "../domain/store/pinSummary";
 import { useSummaryStore } from "./summaryStore";
+import { visibleInterval } from "./visibleInterval";
 
 /** Everything the service needs from the outside (Tauri commands in the app, fakes in tests). */
 export interface SummaryPorts {
@@ -29,7 +30,7 @@ export class PinSummaryService {
   private started = false;
   private readonly inFlight = new Set<string>();
   private readonly pendingAgain = new Set<string>();
-  private timer: ReturnType<typeof setInterval> | undefined;
+  private timer: (() => void) | undefined;
   private readonly stagger = new Set<ReturnType<typeof setTimeout>>();
 
   constructor(private readonly ports: SummaryPorts, private readonly now: () => Date = () => new Date()) {}
@@ -39,12 +40,13 @@ export class PinSummaryService {
     this.started = true;
     for (const pin of this.ports.pins()) void this.applyCached(pin);
     this.refreshAll(startStaggerS);
-    this.timer = setInterval(() => this.refreshAll(periodicStaggerS), refreshIntervalMs);
+    this.timer = visibleInterval(() => this.refreshAll(periodicStaggerS), refreshIntervalMs);
   }
 
   stop(): void {
     this.started = false;
-    if (this.timer !== undefined) clearInterval(this.timer);
+    this.timer?.();
+    this.timer = undefined;
     for (const t of this.stagger) clearTimeout(t);
     this.stagger.clear();
   }

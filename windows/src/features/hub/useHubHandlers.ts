@@ -15,6 +15,8 @@ import { reminderService, summaryService } from "../../services/hub";
 import { useSummaryStore } from "../../services/summaryStore";
 import { useSummaryHub } from "./useSummaryHub";
 import { useOnboardingLaunch } from "./useOnboardingLaunch";
+import { OPEN_PIN_EVENT, OPEN_ROW_EVENT, rowPageRouter } from "../database/rowPageRouter";
+import type { RowPageTarget } from "../database/rowPageTarget";
 import { OPEN_ADD_EVENT } from "../../ipc/windowsIpc";
 import { startSummaryBroadcast } from "../../services/summaryBridge";
 
@@ -61,7 +63,9 @@ export function useHubHandlers(machine: PhaseMachine, opts: { onOpenAdd?: () => 
       }),
       on<{ action: string; accelerator: string }>(captureEvents.hotkeyFailed, (e) =>
         toast(`${e.accelerator} is used by another app. Pick a different shortcut in Settings.`, true)),
-      on<{ pinId: string }>("notch://open-pin", (e) => openPin(e.pinId)),
+      on<{ pinId: string }>(OPEN_PIN_EVENT, (e) => openPin(e.pinId)),
+      // Tray flyout: a database row opens as a page in its pin's panel.
+      on<RowPageTarget>(OPEN_ROW_EVENT, (t) => rowPageRouter.open(t)),
       on<{ url: string } | string>(captureEvents.deeplink, (e) => {
         void handleDeepLink(typeof e === "string" ? e : e.url, {
           pins: () => usePinsStore.getState().pins,

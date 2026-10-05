@@ -38,19 +38,20 @@ const SCHEMA = {
   },
 };
 
-const SEEDS: [string, "page" | "dataSource", string, string][] = [
+type Seed = [string, "page" | "dataSource", string, string, string?];
+const SEEDS: Seed[] = [
   ["Tasks", "dataSource", "✅", "ds-tasks"], ["Reading list", "page", "📖", "pg-reading"], ["Notes", "page", "📝", "pg-notes"],
   ["Projects", "dataSource", "🚀", "ds-projects"], ["Ideas", "page", "", "pg-ideas"],
 ];
 
-export function createWorkspaceMock(seedPins: number) {
+export function createWorkspaceMock(seedPins: number, seeds: Seed[] = SEEDS) {
   let pins: Pin[] = [];
   let groups: PinGroup[] = [];
   let connected = seedPins > 0 || new URLSearchParams(window.location.search).get("auth") === "1";
-  SEEDS.slice(0, seedPins).forEach(([title, kind, emoji, notionId], i) => {
+  seeds.slice(0, seedPins).forEach(([title, kind, emoji, notionId, id], i) => {
     const icon = emoji ? { emoji: { _0: emoji } } : { none: {} };
     const config = kind === "dataSource" ? { config: { doneProperty: "Done", doneKind: "checkbox" as const, dateProperty: "Due", showDone: false } } : {};
-    pins = addPin(pins, { id: `pin-${i}`, notionId, kind, title, icon, order: 0, ...config });
+    pins = addPin(pins, { id: id ?? `pin-${i}`, notionId, kind, title, icon, order: 0, ...config });
   });
   const counter = { n: 0 };
   return (cmd: string, a: Record<string, unknown>): unknown => {

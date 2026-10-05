@@ -8,7 +8,7 @@
 .input { flex: 1; background: transparent; border: 0; outline: 0; color: var(--text); font: inherit; }
 .input::placeholder { color: var(--text-3); }
 .list { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 2px; }
-.empty { margin: 30px 0 0; text-align: center; color: var(--text-2); font-size: 12px; }
+.empty { margin: 30px 0 0; text-align: center; color: var(--text-2); font-size: calc(12px * var(--text-scale, 1)); }
 .section {
   width: 100%; display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 8px;
   background: transparent; color: var(--text); border: 0; border-radius: 8px; cursor: pointer; font: inherit; text-align: left;
@@ -18,8 +18,8 @@
 .chevron { color: var(--text-3); transition: transform 0.2s; flex: none; }
 .glyph { width: 20px; text-align: center; flex: none; }
 .title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.count { color: var(--text-2); font-size: 11px; }
-.note { margin: 0; padding: 6px 0 6px 36px; color: var(--text-3); font-size: 12px; }
+.count { color: var(--text-2); font-size: calc(11px * var(--text-scale, 1)); }
+.note { margin: 0; padding: 6px 0 6px 36px; color: var(--text-3); font-size: calc(12px * var(--text-scale, 1)); }
 .item { display: flex; align-items: flex-start; gap: 8px; padding: 4px 8px 4px 28px; }
 .check {
   flex: none; width: 16px; height: 16px; margin-top: 1px; border-radius: 50%; padding: 0;
@@ -29,9 +29,11 @@
 .itemTitle { flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .footer {
   display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px;
-  border-top: 1px solid var(--divider); font-size: 12px;
+  border-top: 1px solid var(--divider); font-size: calc(12px * var(--text-scale, 1));
 }
 .footer button { background: transparent; border: 0; color: var(--text-2); cursor: pointer; font: inherit; }
 .footer button:hover:not(:disabled) { color: var(--text); }
 .footer button:disabled { opacity: 0.4; cursor: default; }
 .error { flex: 1; color: var(--danger); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center; }
+.itemOpen { padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.itemOpen:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-radius: 3px; }

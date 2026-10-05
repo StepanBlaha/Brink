@@ -1,5 +1,8 @@
 import { mockIPC } from "@tauri-apps/api/mocks";
 import { createWorkspaceMock } from "./mockWorkspace";
+import { DEMO_PIN_SEEDS, DEMO_SETTINGS } from "../features/demo/demoContent";
+import { demoFromSearch } from "../features/demo/demoFlag";
+import { createDemoNotionMock } from "../features/demo/demoMock";
 import { defaultSettings, type Settings } from "./types";
 
 /** True when running inside a Tauri webview. */
@@ -9,12 +12,22 @@ export function isTauri(): boolean {
 
 /** Browser dev (`npm run dev:web`): answer commands with canned data. `?pins=0` starts empty. */
 export function installMockIPC(): void {
-  let settings: Settings = { ...defaultSettings };
+  (window as unknown as Record<string, unknown>)["__BRINK_MOCK_IPC__"] = true;
+  const demo = demoFromSearch(window.location.search);
+  const demoNotion = demo.enabled ? createDemoNotionMock() : undefined;
+  let settings: Settings = { ...defaultSettings, ...(demo.enabled ? DEMO_SETTINGS : {}) };
   let autostart = "off";
   const pinsParam = Number(new URLSearchParams(window.location.search).get("pins") ?? 5);
-  const workspace = createWorkspaceMock(Number.isNaN(pinsParam) ? 5 : Math.min(Math.max(pinsParam, 0), 5));
+  const count = Number.isNaN(pinsParam) ? 5 : Math.min(Math.max(pinsParam, 0), 5);
+  const workspace = createWorkspaceMock(demo.enabled ? 4 : count, demo.enabled ? DEMO_PIN_SEEDS : undefined);
   mockIPC((cmd, payload) => {
-    const handled = workspace(cmd, (payload ?? {}) as Record<string, unknown>);
+    const args = (payload ?? {}) as Record<string, unknown>;
+    if (cmd === "demo_state") return demo;
+    if (cmd === "demo_mark") return null;
+    if (cmd === "demo_wait") return false;
+    const fromDemo = demoNotion?.(cmd, args);
+    if (fromDemo !== undefined) return fromDemo;
+    const handled = workspace(cmd, args);
     if (handled !== undefined) return handled;
     if (cmd === "app_version") return { marketing: "0.11.0", build: "3" };
     if (cmd === "queue_pending_count") return 0;
@@ -25,6 +38,7 @@ export function installMockIPC(): void {
     }
     if (cmd === "launched_at_login") return false;
     if (cmd === "system_accent") return 0x0078d4;
+    if (cmd === "text_scale") return Number(new URLSearchParams(window.location.search).get("textscale") ?? 100);
     if (cmd === "oauth_available") return false;
     if (cmd === "queue_submit") return { kind: "saved" };
     if (cmd === "settings_get") return settings;

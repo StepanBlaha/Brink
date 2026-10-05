@@ -26,6 +26,6 @@ export function EmbeddedDatabase({ databaseId, ports = ipcPorts }: Props) {
       live = false;
     };
   }, [databaseId, ports]);
-  if (model) return <DatabaseTaskView model={model} compact />;
+  if (model) return <DatabaseTaskView model={model} compact pinId={`embedded-${databaseId}`} />;
   return <div className={styles.loading}>{error ?? "Loading…"}</div>;
 }

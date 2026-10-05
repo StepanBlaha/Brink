@@ -31,9 +31,9 @@
 }
 .item:hover, .active { background: var(--hover); }
 .danger { color: var(--danger); }
-.check { width: 14px; flex: none; color: var(--text-2); font-size: 11px; text-align: center; }
+.check { width: 14px; flex: none; color: var(--text-2); font-size: calc(11px * var(--text-scale, 1)); text-align: center; }
 .label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.chev { color: var(--text-2); font-size: 15px; transition: transform 0.12s ease-out; }
+.chev { color: var(--text-2); font-size: calc(15px * var(--text-scale, 1)); transition: transform 0.12s ease-out; }
 .open { transform: rotate(90deg); }
 .divider { height: 1px; margin: 4px 2px; background: var(--divider); }
 .sub { padding-left: 12px; }

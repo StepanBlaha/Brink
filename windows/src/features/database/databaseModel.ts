@@ -9,6 +9,7 @@ import type { DatabaseConfig } from "../../domain/store/pin";
 import { parseDate } from "./dates";
 import { errorText, isNotFound, type DatabasePorts } from "./ports";
 import { buildFilter, buildSorts, inferConfig } from "./queryBuilder";
+import { visibleInterval } from "../../services/visibleInterval";
 
 export interface DatabaseState {
   rows: Row[];
@@ -35,7 +36,7 @@ export class DatabaseModel {
   readonly config: DatabaseConfig | null;
   private state: DatabaseState;
   private listeners = new Set<() => void>();
-  private pollTimer: ReturnType<typeof setInterval> | null = null;
+  private pollTimer: (() => void) | null = null;
   private loadSeq = 0;
 
   constructor(
@@ -119,11 +120,11 @@ export class DatabaseModel {
 
   startPolling(): void {
     this.stopPolling();
-    this.pollTimer = setInterval(() => void this.load(false), pollMs);
+    this.pollTimer = visibleInterval(() => void this.load(false), pollMs);
   }
 
   stopPolling(): void {
-    if (this.pollTimer) clearInterval(this.pollTimer);
+    this.pollTimer?.();
     this.pollTimer = null;
   }
 

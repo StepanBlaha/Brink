@@ -3,6 +3,7 @@ import { aggregateToday, type TodayDigest } from "../../domain/store/todayAggreg
 import { useSummaryStore } from "../../services/summaryStore";
 import { usePinsStore } from "../../state/pinsStore";
 import { TodayModel, type TodayPorts } from "./todayModel";
+import { visibleInterval } from "../../services/visibleInterval";
 
 /** Everything due today or overdue across the database pins, from the live stores. */
 export function currentDigest(now: Date = new Date()): TodayDigest {
@@ -13,8 +14,7 @@ export function currentDigest(now: Date = new Date()): TodayDigest {
 export function useClock(ms: number): Date {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), ms);
-    return () => clearInterval(t);
+    return visibleInterval(() => setNow(new Date()), ms);
   }, [ms]);
   return now;
 }

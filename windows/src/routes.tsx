@@ -9,6 +9,7 @@ import { TrayRoute } from "./features/tray/TrayRoute";
 import { AboutWindow } from "./features/about/AboutWindow";
 import { LegalWindow } from "./features/about/LegalWindow";
 import { OnboardingWindow } from "./features/onboarding/OnboardingWindow";
+import { DemoBackdrop } from "./features/demo/DemoBackdrop";
 import { NotchRoute } from "./features/notch/NotchRoute";
 
 export const ROUTES = [
@@ -45,5 +46,6 @@ export function renderRoute(hash: string): ReactElement {
   if (name === "about") return <AboutWindow />;
   if (name === "legal") return <LegalWindow doc={arg} />;
   if (name === "onboarding") return <OnboardingWindow />;
+  if (name === "backdrop") return <DemoBackdrop />;
   return <Placeholder name={name} />;
 }

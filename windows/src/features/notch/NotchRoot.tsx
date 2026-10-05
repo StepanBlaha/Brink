@@ -28,6 +28,7 @@ import { useNotchLayout } from "./useNotchLayout";
 import { useHubHandlers } from "../hub/useHubHandlers";
 import { digestItems } from "../../domain/store/todayAggregator";
 import { sound, itemActions } from "../../services/hub";
+import { rowPageRouter } from "../database/rowPageRouter";
 import { TodayHost } from "../today/TodayHost";
 import { peekItemCount } from "./peekModel";
 import { useSummaryView } from "./useSummaryView";
@@ -37,6 +38,7 @@ import {
   rectContains,
   rectMidY,
 } from "./notchGeometry";
+import { NotchAnnouncer } from "./NotchAnnouncer";
 import { IconPicker } from "../iconPicker/IconPicker";
 import { bodyRectFor, clampedExpandedCenter, hotRect, maxPanelSize, peekRect } from "./notchLayout";
 
@@ -163,6 +165,13 @@ export function NotchRoot() {
     if (owner) void itemActions.markDone(owner, itemId);
   };
 
+  /** Peek title click: a database row opens as a page, anything else just opens the pin. */
+  const openPeekItem = (pinId: string, itemId: string, title: string, openPin: () => void) => {
+    const isRows = isTodayId(pinId) || storedPins.find((p) => p.id === pinId)?.kind === "dataSource";
+    if (isRows) rowPageRouter.open({ pinId, rowId: itemId, title });
+    else openPin();
+  };
+
   const shapeVisible = !(phase === "resting" && layout.pillStyle === "hidden");
   const rail = (animate: boolean, group: boolean) => (
     <Strip
@@ -240,6 +249,7 @@ export function NotchRoot() {
       data-phase={phase}
       data-edge={layout.edge}
     >
+      <NotchAnnouncer state={ps} titleOf={(id) => (id === TODAY_ITEM.id ? "Today" : storedPins.find((p) => p.id === id)?.title)} />
       <NotchShape layout={layout} phase={phase} reduce={reduce || resize.resizing} outline={config.outline} visible={shapeVisible}>
         <PillProgress
           rect={bodyRectFor(layout, "resting")}
@@ -279,6 +289,7 @@ export function NotchRoot() {
             onHover={(h) => machine.peekCardHover(h)}
             onOpen={() => peekIcon && select(peekPin, peekIcon)}
             onCheck={(itemId) => checkPeekItem(peekPin.id, itemId)}
+            onOpenItem={(itemId, title) => openPeekItem(peekPin.id, itemId, title, () => peekIcon && select(peekPin, peekIcon))}
           />
         )}
       </AnimatePresence>

@@ -3,4 +3,4 @@
 .row { display: flex; align-items: center; justify-content: space-between; max-width: 340px; color: var(--text); }
 .select { height: 28px; padding: 0 8px; border: 0; border-radius: 6px; outline: none; background: var(--raised); color: var(--text); font: inherit; color-scheme: dark; }
 .select:focus-visible { box-shadow: 0 0 0 1px var(--accent); }
-.warn { margin: 0; color: var(--danger); font-size: 12px; }
+.warn { margin: 0; color: var(--danger); font-size: calc(12px * var(--text-scale, 1)); }

@@ -18,12 +18,14 @@ interface Props {
   onOpen: () => void;
   /** Ticking an item marks it done (the hub plays the tick and queues the write). */
   onCheck: (itemId: string) => void;
+  /** Title click: open that item's page (database rows) or the pin. */
+  onOpenItem?: (itemId: string, title: string) => void;
 }
 
 const ORIGIN = { right: "100% 50%", left: "0% 50%", top: "50% 0%" } as const;
 
 /** Hover peek card: title, "N open" and up to three next items with real checkboxes. */
-export function Peek({ title, summary, rect, edge, fontScale, reduce, onHover, onOpen, onCheck }: Props) {
+export function Peek({ title, summary, rect, edge, fontScale, reduce, onHover, onOpen, onCheck, onOpenItem }: Props) {
   const scale = reduce ? 1 : 0.92;
   // Ticked here but not yet gone from the refreshed summary.
   const [checked, setChecked] = useState<Set<string>>(() => new Set());
@@ -48,22 +50,36 @@ export function Peek({ title, summary, rect, edge, fontScale, reduce, onHover, o
       {peekItems(summary).map((t) => {
         const on = checked.has(t.id);
         return (
-          <button
-            key={t.id}
-            type="button"
-            className={styles.item}
-            title={on ? "Done" : "Mark done"}
-            aria-pressed={on}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (on) return;
-              setChecked((s) => new Set(s).add(t.id));
-              onCheck(t.id);
-            }}
-          >
-            <span className={`${styles.box} ${on ? styles.checked : ""}`}>{on && <CheckIcon width={8} height={8} />}</span>
-            <span className={on ? styles.done : styles.itemText}>{t.title}</span>
-          </button>
+          <div key={t.id} className={styles.item}>
+            <button
+              type="button"
+              className={styles.checkBtn}
+              title={on ? "Done" : "Mark done"}
+              aria-label={`${on ? "Done" : "Mark done"}: ${t.title}`}
+              aria-pressed={on}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (on) return;
+                setChecked((s) => new Set(s).add(t.id));
+                onCheck(t.id);
+              }}
+            >
+              <span className={`${styles.box} ${on ? styles.checked : ""}`}>{on && <CheckIcon width={8} height={8} />}</span>
+            </button>
+            <button
+              type="button"
+              className={`${styles.openBtn} ${on ? styles.done : styles.itemText}`}
+              title="Open"
+              aria-label={`Open ${t.title}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onOpenItem) onOpenItem(t.id, t.title);
+                else onOpen();
+              }}
+            >
+              {t.title}
+            </button>
+          </div>
         );
       })}
     </motion.div>

@@ -1,12 +1,15 @@
 import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { Row } from "../../domain/notion/row";
 import { list as listSpring, instant } from "../../theme/motion";
 import { CheckIcon } from "../notch/icons";
-import { ContextMenu, type MenuItem } from "./ContextMenu";
+import { openInNotion } from "../../ipc/commands";
 import { chipText, isOverdue } from "./dates";
 import type { DatabaseModel } from "./databaseModel";
 import { DatePopover } from "./DatePopover";
+import { useOpenRowPage } from "./rowPageContext";
+import { RowContextMenu } from "./RowContextMenu";
+import { RowChevron, RowTitle } from "./RowTitle";
 import styles from "./database.module.css";
 
 interface Props {
@@ -18,26 +21,19 @@ interface Props {
 export function DatabaseRow({ model, row, animatingOut }: Props) {
   const reduce = useReducedMotion() ?? false;
   const transition = reduce ? instant : listSpring;
-  const [text, setText] = useState(row.title);
   const [datePicker, setDatePicker] = useState(false);
+  const [renaming, setRenaming] = useState(false);
   const chipRef = useRef<HTMLButtonElement>(null);
+  const titleRef = useRef<HTMLButtonElement>(null);
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
-  useEffect(() => setText(row.title), [row.title]);
+  const openRowPage = useOpenRowPage();
+  const openPage = (from?: HTMLElement | null) => openRowPage?.(row.id, row.title, from ?? titleRef.current);
 
   const done = model.isDone(row);
   const status = model.statusName(row);
   const hasDateProp = model.config?.dateProperty !== undefined;
   const date = model.date(row);
   const hasTime = model.dateHasTime(row);
-
-  const commit = () => void model.rename(row.id, text);
-  const menuItems: (MenuItem | "divider")[] = [
-    { label: "Later today (+3h)", disabled: !hasTime, onSelect: () => void model.snooze(row.id, "laterToday") },
-    { label: "Tomorrow", onSelect: () => void model.snooze(row.id, "tomorrow") },
-    { label: "Next week (Monday)", onSelect: () => void model.snooze(row.id, "nextWeek") },
-    "divider",
-    { label: "Pick date…", onSelect: () => setDatePicker(true) },
-  ];
 
   return (
     <motion.div
@@ -48,7 +44,6 @@ export function DatabaseRow({ model, row, animatingOut }: Props) {
       exit={{ opacity: 0, x: 8 }}
       transition={transition}
       onContextMenu={(e) => {
-        if (!hasDateProp) return;
         e.preventDefault();
         setMenu({ x: e.clientX, y: e.clientY });
       }}
@@ -66,16 +61,17 @@ export function DatabaseRow({ model, row, animatingOut }: Props) {
           {done && <CheckIcon width={10} height={10} />}
         </button>
       )}
-      <input
-        className={`${styles.title} ${done ? styles.doneText : ""}`}
-        value={text}
-        aria-label="Task title"
-        onChange={(e) => setText(e.target.value)}
-        onBlur={commit}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") e.currentTarget.blur();
-          if (e.key === "Escape") setText(row.title);
+      <RowTitle
+        ref={titleRef}
+        title={row.title}
+        done={done}
+        renaming={renaming}
+        onOpen={openPage}
+        onCommit={(t) => {
+          setRenaming(false);
+          void model.rename(row.id, t);
         }}
+        onCancel={() => setRenaming(false)}
       />
       {status && <span className={styles.pill}>{status}</span>}
       {hasDateProp && (
@@ -99,7 +95,17 @@ export function DatabaseRow({ model, row, animatingOut }: Props) {
           )}
         </span>
       )}
-      {menu && <ContextMenu x={menu.x} y={menu.y} title="Snooze" items={menuItems} onClose={() => setMenu(null)} />}
+      <RowChevron onOpen={() => openPage()} />
+      {menu && (
+        <RowContextMenu
+          {...menu}
+          onClose={() => setMenu(null)}
+          onOpenPage={() => openPage()}
+          onOpenInNotion={() => void openInNotion(row.id).catch(() => {})}
+          {...(model.isReadOnly ? {} : { onRename: () => setRenaming(true) })}
+          {...(hasDateProp ? { snooze: { hasTime, onSnooze: (o) => void model.snooze(row.id, o), onPickDate: () => setDatePicker(true) } } : {})}
+        />
+      )}
     </motion.div>
   );
 }

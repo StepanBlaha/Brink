@@ -1,13 +1,15 @@
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import type { SnoozeOption } from "../../domain/capture/snooze";
 import type { TodayItem } from "../../domain/store/todayAggregator";
-import { instant, list } from "../../theme/motion";
-import { CheckIcon } from "../notch/icons";
 import { ContextMenu } from "../database/ContextMenu";
+import { RowPageHost } from "../database/RowPageHost";
+import { TODAY_PIN_ID } from "../strip/pinItems";
+import { TodayRow } from "./TodayRow";
 import styles from "./today.module.css";
-import { REFRESH_EVERY_MS, todayDateLabel, type TodayModel } from "./todayModel";
+import { REFRESH_EVERY_MS, type TodayModel } from "./todayModel";
 import { useClock, useDigest } from "./useToday";
+import { visibleInterval } from "../../services/visibleInterval";
 
 interface Props {
   model: TodayModel;
@@ -25,13 +27,13 @@ export function TodayView({ model, hasDatabasePins, reduce, refresh }: Props) {
   const [menu, setMenu] = useState<{ item: TodayItem; x: number; y: number } | null>(null);
   useEffect(() => {
     refresh();
-    const t = setInterval(refresh, REFRESH_EVERY_MS);
-    return () => clearInterval(t);
+    return visibleInterval(refresh, REFRESH_EVERY_MS);
   }, [refresh]);
   useEffect(() => model.prune(), [model, digest]);
   const sections = model.visibleSections();
   const snooze = (item: TodayItem, o: SnoozeOption) => () => model.snooze(item, o);
   return (
+    <RowPageHost pinId={TODAY_PIN_ID}>
     <div className={styles.view}>
       <div className={styles.header}>Today {"·"} {model.openCount()} open</div>
       {sections.length === 0 ? (
@@ -48,41 +50,15 @@ export function TodayView({ model, hasDatabasePins, reduce, refresh }: Props) {
                 {s.items.map((item) => {
                   const checked = model.isChecked(item.id);
                   return (
-                    <motion.div
+                    <TodayRow
                       key={item.id}
-                      className={styles.row}
-                      layout={!reduce}
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 30 }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={reduce ? instant : list}
-                    >
-                      <button
-                        type="button"
-                        className={`${styles.check} ${checked ? styles.checked : ""} ${item.isOverdue && !checked ? styles.overdueBox : ""}`}
-                        aria-label={`Mark ${item.title} done`}
-                        aria-pressed={checked}
-                        onClick={() => model.toggleDone(item)}
-                      >
-                        {checked && <CheckIcon width={10} height={10} />}
-                      </button>
-                      <span className={`${styles.title} ${checked ? styles.struck : ""}`}>{item.title}</span>
-                      <span className={`${styles.date} ${item.isOverdue ? styles.overdue : ""}`}>
-                        {todayDateLabel(item.due, item.hasTime, now)}
-                      </span>
-                      <button
-                        type="button"
-                        className={styles.snooze}
-                        title="Snooze"
-                        aria-label={`Snooze ${item.title}`}
-                        onClick={(e) => {
-                          const r = e.currentTarget.getBoundingClientRect();
-                          setMenu({ item, x: r.left, y: r.bottom + 4 });
-                        }}
-                      >
-                        <MoonIcon />
-                      </button>
-                    </motion.div>
+                      item={item}
+                      checked={checked}
+                      now={now}
+                      reduce={reduce}
+                      onToggle={() => model.toggleDone(item)}
+                      onSnoozeButton={(x, y) => setMenu({ item, x, y })}
+                    />
                   );
                 })}
               </AnimatePresence>
@@ -104,13 +80,6 @@ export function TodayView({ model, hasDatabasePins, reduce, refresh }: Props) {
         />
       )}
     </div>
-  );
-}
-
-function MoonIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-    </svg>
+    </RowPageHost>
   );
 }

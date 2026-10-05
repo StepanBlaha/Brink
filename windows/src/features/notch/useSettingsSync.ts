@@ -4,6 +4,7 @@ import { parseDisplayPreference, resolveDisplay, type ScreenInfo } from "../../d
 import { useNotchStore } from "../../state/notchStore";
 import { useSettingsStore } from "../../state/settingsStore";
 import { inTauri } from "./notchBridge";
+import { visibleInterval } from "../../services/visibleInterval";
 
 const DISPLAY_POLL_MS = 1500;
 
@@ -51,10 +52,10 @@ export function useSettingsSync(): void {
       }
     };
     void resolve();
-    const timer = setInterval(() => void resolve(), DISPLAY_POLL_MS);
+    const stop = visibleInterval(() => void resolve(), DISPLAY_POLL_MS);
     return () => {
       alive = false;
-      clearInterval(timer);
+      stop();
     };
   }, [s.displayPreference]);
 }

@@ -6,14 +6,20 @@ import { showSettings } from "../../ipc/commands";
 import { contents } from "../../theme/motion";
 import { ChevronLeftIcon } from "../common/icons";
 import type { Pin } from "../../domain/store/pin";
-import { MiniListModel, type MiniPorts } from "./miniListModel";
+import { OPEN_PIN_EVENT, OPEN_ROW_EVENT } from "../database/rowPageRouter";
+import { MiniListModel, type MiniItem, type MiniPorts } from "./miniListModel";
 import styles from "./tray.module.css";
 
 const pinGlyph = (p: Pin): string =>
   "emoji" in p.icon ? p.icon.emoji._0 : (p.title.trim()[0] ?? "•").toUpperCase();
 
 /** The tray flyout (MiniListView): add field, collapsible pin sections, check-off rows, footer. */
-export function TrayFlyout({ ports, onOpenInNotch }: { ports: MiniPorts; onOpenInNotch?: (id: string) => void }) {
+export function TrayFlyout({ ports, onOpenInNotch, onOpenItem }: {
+  ports: MiniPorts;
+  onOpenInNotch?: (id: string) => void;
+  /** Title click: database rows open as a page in the notch, other pins just open. */
+  onOpenItem?: (pin: Pin, item: MiniItem) => void;
+}) {
   const model = useMemo(() => new MiniListModel(ports), [ports]);
   useSyncExternalStore(model.subscribe, model.getVersion);
   const sections = model.sections;
@@ -30,7 +36,13 @@ export function TrayFlyout({ ports, onOpenInNotch }: { ports: MiniPorts; onOpenI
   const openInNotch = () => {
     if (!target) return;
     if (onOpenInNotch) onOpenInNotch(target.id);
-    else void emit("notch://open-pin", { pinId: target.id });
+    else void emit(OPEN_PIN_EVENT, { pinId: target.id });
+    void trayFlyoutHide().catch(() => {});
+  };
+  const openItem = (pin: Pin, item: MiniItem) => {
+    if (onOpenItem) onOpenItem(pin, item);
+    else if (pin.kind === "dataSource") void emit(OPEN_ROW_EVENT, { pinId: pin.id, rowId: item.id, title: item.title }).catch(() => {});
+    else void emit(OPEN_PIN_EVENT, { pinId: pin.id }).catch(() => {});
     void trayFlyoutHide().catch(() => {});
   };
   const empty = sections.length === 0;
@@ -76,7 +88,15 @@ export function TrayFlyout({ ports, onOpenInNotch }: { ports: MiniPorts; onOpenI
                     {rows.map((item) => (
                       <motion.div key={item.id} className={styles.item} layout exit={{ opacity: 0, x: -12 }} transition={contents}>
                         <button type="button" className={styles.check} aria-label={`Complete ${item.title}`} onClick={() => void model.check(item, pin)} />
-                        <span className={styles.itemTitle}>{item.title}</span>
+                        <button
+                          type="button"
+                          className={`${styles.itemTitle} ${styles.itemOpen}`}
+                          title={pin.kind === "dataSource" ? "Open page" : "Open in notch"}
+                          aria-label={`Open ${item.title}`}
+                          onClick={() => openItem(pin, item)}
+                        >
+                          {item.title}
+                        </button>
                       </motion.div>
                     ))}
                   </AnimatePresence>
