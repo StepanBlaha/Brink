@@ -187,11 +187,10 @@ async fn retry_budgets_are_separate_for_429_and_5xx() {
 
 #[tokio::test]
 async fn network_failures_retry_with_backoff_then_error() {
-    let s = MockServer::start().await;
-    let uri = s.uri();
-    drop(s);
+    // Nothing listens on port 1: connection refused (a freed mock port could be reused by a
+    // parallel test).
     let t = Instant::now();
-    let e = client(&uri, Some("t"))
+    let e = client("http://127.0.0.1:1", Some("t"))
         .retrieve_data_source("x")
         .await
         .unwrap_err();
