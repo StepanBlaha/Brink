@@ -4,7 +4,7 @@ import { arr, isObject, str, type JsonObject } from "./json";
 export interface RichTextItem {
   plain_text: string;
   href?: string | null;
-  annotations?: { bold?: boolean; italic?: boolean; strikethrough?: boolean; underline?: boolean; code?: boolean };
+  annotations?: { bold?: boolean; italic?: boolean; strikethrough?: boolean; underline?: boolean; code?: boolean; color?: string };
 }
 
 /** A run of text with Markdown-style formatting. Same JSON shape as the Swift Codable struct. */
@@ -15,6 +15,10 @@ export interface RichTextSpan {
   strikethrough: boolean;
   code: boolean;
   link?: string;
+  /** Kept through edits (Mac dropped it, PORT 9.12). Omitted when false. */
+  underline?: boolean;
+  /** Notion color name; omitted for "default". */
+  color?: string;
 }
 
 export const chunkLimit = 2000;
@@ -28,6 +32,8 @@ export function span(text: string, o: Partial<Omit<RichTextSpan, "text">> = {}):
     code: o.code ?? false,
   };
   if (o.link !== undefined) s.link = o.link;
+  if (o.underline) s.underline = true;
+  if (o.color !== undefined && o.color !== "default") s.color = o.color;
   return s;
 }
 
@@ -52,6 +58,8 @@ export function spansFrom(items: RichTextItem[]): RichTextSpan[] {
       strikethrough: i.annotations?.strikethrough ?? false,
       code: i.annotations?.code ?? false,
       ...(i.href ? { link: i.href } : {}),
+      ...(i.annotations?.underline ? { underline: true } : {}),
+      ...(i.annotations?.color ? { color: i.annotations.color } : {}),
     }),
   );
 }
@@ -84,7 +92,10 @@ export function encodeSpans(spans: RichTextSpan[], limit: number = chunkLimit): 
       return {
         type: "text",
         text: box,
-        annotations: { bold: s.bold, italic: s.italic, strikethrough: s.strikethrough, underline: false, code: s.code },
+        annotations: {
+          bold: s.bold, italic: s.italic, strikethrough: s.strikethrough, underline: s.underline === true, code: s.code,
+          ...(s.color !== undefined ? { color: s.color } : {}),
+        },
       };
     }),
   );
@@ -99,6 +110,8 @@ export function decodeSpans(v: unknown): RichTextSpan[] {
       strikethrough: o["strikethrough"] === true,
       code: o["code"] === true,
       ...(typeof o["link"] === "string" ? { link: o["link"] } : {}),
+      ...(o["underline"] === true ? { underline: true } : {}),
+      ...(typeof o["color"] === "string" ? { color: o["color"] } : {}),
     }),
   );
 }
@@ -106,5 +119,7 @@ export function decodeSpans(v: unknown): RichTextSpan[] {
 export function encodeSpanJSON(s: RichTextSpan): JsonObject {
   const o: JsonObject = { text: s.text, bold: s.bold, italic: s.italic, strikethrough: s.strikethrough, code: s.code };
   if (s.link !== undefined) o["link"] = s.link;
+  if (s.underline) o["underline"] = true;
+  if (s.color !== undefined) o["color"] = s.color;
   return o;
 }

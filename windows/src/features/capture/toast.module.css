@@ -1,0 +1,8 @@
+.root { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: flex-start; pointer-events: none; }
+.pill {
+  margin-top: 6px; padding: 9px 16px; border-radius: 999px; background: var(--notch);
+  border: 1px solid var(--divider); color: var(--text); font: 500 13px var(--font);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45); max-width: 400px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.error { color: var(--danger); }

@@ -85,6 +85,28 @@ describe("DatabaseModel", () => {
     expect(model.getState().rows.some((r) => r.title === "Online task")).toBe(true);
   });
 
+  it("quick add parses natural dates into the date property (EN and CS)", async () => {
+    const now = new Date(2026, 8, 29, 10, 0);
+    const { fake, model } = make(checkboxCfg);
+    await model.load();
+    await model.quickAdd("Milk tomorrow 5pm", now);
+    await model.quickAdd("Zavolat v pátek", now);
+    await model.quickAdd("Plain task", now);
+    expect(fake.ops.slice(-3)).toEqual([
+      { kind: "createRow", dataSourceId: "ds-sprint", title: "Milk", extra: [{ name: "Due", value: { type: "date", date: { start: "2026-09-30T17:00:00+02:00" } } }] },
+      { kind: "createRow", dataSourceId: "ds-sprint", title: "Zavolat", extra: [{ name: "Due", value: { type: "date", date: { start: "2026-10-02" } } }] },
+      { kind: "createRow", dataSourceId: "ds-sprint", title: "Plain task", extra: [] },
+    ]);
+  });
+
+  it("quick add without any date property keeps the phrase in the title", async () => {
+    const { fake, model } = make({ ...checkboxCfg, doneKind: "checkbox" });
+    const bare = new DatabaseModel("ds", null, "k", fake.ports, { ...sprintSchema, properties: sprintSchema.properties.filter((p) => p.type !== "date") });
+    await bare.quickAdd("Milk tomorrow", new Date(2026, 8, 29, 10, 0));
+    expect(fake.ops.at(-1)).toMatchObject({ title: "Milk tomorrow", extra: [] });
+    expect(model).toBeTruthy();
+  });
+
   it("marking done fades the row for 0.8 s then removes it", async () => {
     const { model } = make(checkboxCfg);
     await model.load();

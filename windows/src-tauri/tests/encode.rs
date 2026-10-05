@@ -37,6 +37,8 @@ fn spans_keep_annotations_links_and_underline_false() {
         strikethrough: true,
         code: false,
         link: Some("https://x.y".into()),
+        underline: false,
+        color: None,
     };
     assert_eq!(
         encode_spans(&[span])[0],
@@ -168,5 +170,23 @@ fn position_request_json_cases() {
     assert_eq!(
         position_request_json(&BlockPosition::After { id: "x".into() }),
         Some(json!({"type":"after_block","after_block":{"id":"x"}}))
+    );
+}
+
+#[test]
+fn spans_keep_underline_and_color() {
+    let span = RichTextSpan {
+        text: "u".into(),
+        bold: false,
+        italic: false,
+        strikethrough: false,
+        code: false,
+        link: None,
+        underline: true,
+        color: Some("red".into()),
+    };
+    assert_eq!(
+        encode_spans(&[span])[0]["annotations"],
+        json!({"bold":false,"italic":false,"strikethrough":false,"underline":true,"code":false,"color":"red"})
     );
 }

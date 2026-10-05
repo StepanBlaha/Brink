@@ -45,7 +45,7 @@ fn protocol_registered(_scheme: &str) -> bool {
 }
 
 #[cfg(target_os = "windows")]
-fn open_url(url: &str) -> Result<(), AppError> {
+pub fn launch_url(url: &str) -> Result<(), AppError> {
     use windows::core::{w, HSTRING};
     use windows::Win32::UI::Shell::ShellExecuteW;
     use windows::Win32::UI::WindowsAndMessaging::SW_SHOWNORMAL;
@@ -68,7 +68,7 @@ fn open_url(url: &str) -> Result<(), AppError> {
 }
 
 #[cfg(not(target_os = "windows"))]
-fn open_url(url: &str) -> Result<(), AppError> {
+pub fn launch_url(url: &str) -> Result<(), AppError> {
     let program = if cfg!(target_os = "macos") {
         "open"
     } else {
@@ -86,11 +86,31 @@ fn open_url(url: &str) -> Result<(), AppError> {
 pub async fn open_in_notion(notion_id: String) -> Result<(), AppError> {
     let (scheme_url, https_url) =
         notion_urls(&notion_id).ok_or_else(|| AppError::new("invalid", "Not a Notion id."))?;
-    open_url(if protocol_registered("notion") {
+    launch_url(if protocol_registered("notion") {
         &scheme_url
     } else {
         &https_url
     })
+}
+
+/// Only web links and mail links may be opened from the frontend.
+pub fn is_allowed_url(url: &str) -> bool {
+    let lower = url.trim().to_ascii_lowercase();
+    ["http://", "https://", "mailto:"]
+        .iter()
+        .any(|p| lower.starts_with(p))
+        && !url.chars().any(char::is_control)
+}
+
+#[tauri::command]
+pub async fn open_url(url: String) -> Result<(), AppError> {
+    if !is_allowed_url(&url) {
+        return Err(AppError::new(
+            "invalid",
+            "Only http, https and mailto links.",
+        ));
+    }
+    launch_url(url.trim())
 }
 
 /// Shows and focuses the settings window (created hidden-or-visible by `tauri.conf.json`).
@@ -121,6 +141,17 @@ mod tests {
             h,
             "https://www.notion.so/a1b2c3d4000040008000".to_string() + "0123456789ab"
         );
+    }
+
+    #[test]
+    fn open_url_allow_list() {
+        assert!(is_allowed_url("https://brinknotch.site/#faq"));
+        assert!(is_allowed_url("HTTP://x.y"));
+        assert!(is_allowed_url("mailto:a@b.c?subject=Hi"));
+        assert!(!is_allowed_url("file:///C:/Windows/notepad.exe"));
+        assert!(!is_allowed_url("javascript:alert(1)"));
+        assert!(!is_allowed_url("brink://pin/1"));
+        assert!(!is_allowed_url("https://x.y/\n--evil"));
     }
 
     #[test]

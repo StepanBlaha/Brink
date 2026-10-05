@@ -76,3 +76,36 @@ Source: `docs/WINDOWS-PORT.md` section 2.1. Dated entries below the table record
 - **Icons**: three inline Lucide paths in `common/icons.tsx`; custom lucide/SF symbol pin icons render as a colored placeholder until the M8 picker.
 - **Panel size** writes `settings.panelSizes` through `settings_set` (clamped on read) rather than `panel_size_set`.
 - **Mock IPC** (`?pins=0` for an empty workspace) now has an in-memory workspace for pins, groups, auth and search.
+
+## 2026-10-05 M7 capture, dates, hotkeys, tray (TypeScript side)
+
+- **Markdown seam.** `domain/capture/captureMarkdown.ts` is a faithful port of Swift `MarkdownParser` behind a `MarkdownPort`, because M5a's `domain/markdown` was not available. Capture and clipboard tests compare against the port, so swapping the default to the M5a parser needs no test change.
+- **NaturalDate** uses the local zone (Vitest pins `TZ=Europe/Prague` in `vitest.config.ts`). The NSDataDetector fallback is dropped (plan 9 item 21). ISO month 13 is rejected instead of rolling over.
+- **Database quick add** (M4 deferral) now parses natural dates into the pin's date property, else the schema's first date property; no date property keeps the phrase in the title.
+- **Clipboard append** reads `settings.lastOpenedPinID`, the key the hub writes when a pin is expanded (plan 9 item 2 not copied). Covered by `clipboardAppend.test.ts`.
+- **Hub** (`features/hub/useHubHandlers.ts`, mounted in `NotchRoot`) handles `hotkey://fired`, `hotkey://failed` (toast), `deeplink://open`, `notch://open-pin`, tray count. "Open in notch" in the flyout emits `notch://open-pin` from JS.
+- **Tray counts.** Summaries are M6, so the tray tooltip count and section counts use loaded items until then.
+- **Capture destination** is a native `<select>` styled as a chip (the window is only 150 px tall, a popup menu would be clipped).
+- **CaptureTests "wire"** (request body on the wire) is covered by the existing Rust `create_row` endpoint tests plus `planCapture` tests.
+
+## 2026-10-05 M7 Rust
+
+- **Hotkey errors** are codes: `inUse`, `invalid`, `winKey`, `noModifier`, `reserved`, `unknown`. Accelerators are stored canonically (Ctrl, Alt, Shift, key); `hotkey://failed` for `openPinN` carries the first failing concrete combo (e.g. `Alt+3`). Failures at startup are emitted before the UI may listen, so the UI should also read `hotkeys_status`.
+- **Resting pill item** toggles `pillStyle` between `hidden` and `line` (Mac behaviour: show restores `line`, not the previous dot/percent). Label flips "Resting pill: Show/Hide".
+- **About, Privacy, Terms** from the tray menu emit `window://open {name}` (`about`, `legal:privacy`, `legal:terms`) for the M8 `window_open` path; Help and Feedback use `open_url` targets from Links.swift.
+- **Tray click right after a blur-hide** (under 250 ms) only closes the flyout. With `menuBarListEnabled` off, left click pops the native menu. Tray icon is the app icon until the white/dark glyph ships (M8/M10). Extra event `tray://shown` lets the flyout replay its scale-in.
+- **Deep links**: the argv of the first launch is processed 0.9 s after setup (so the capture webview can receive `capture://prefill`); single-instance forwards later launches. No `deep-link` feature on single-instance; argv is parsed by `deeplink/args.rs`.
+- **NSIS hooks** write HKCU keys for `.txt/.md/.url` ("Send to Brink") and `brink`; the bundler also registers the scheme from `plugins.deep-link`, the values are identical.
+- Full-crate msvc check is not possible on the Mac (ring needs MSVC headers); the new Windows-only lines reuse existing `win32.rs` calls.
+
+## 2026-10-05 M5a editor model, planner, engine
+
+- **Scope split.** `ParagraphSyntax`, `MarkdownParser`, `MarkdownSerializer`, planner, engine (+images) and the pure parts of `WYSIWYGTests`, `MoveBlockTests` and `EditorFeatureTests` are ported with their cases. The text-level cases of `EditorDocumentTests` and `WYSIWYGTests` (typing, Enter, Backspace, undo of a shortcut, paste/copy in a text view) need the real ProseMirror state and move to M5b, as the plan says.
+- **Ports.** The engine takes `EngineApi` (block children, page, append, queue submit, upload) and `EditorDocPort`, never `invoke` directly; the app wires them to `ipc/commands.ts` in M5b/PageView. `src/test/fakeNotion.ts` is the `FakeNotionServer` route table behind an `EngineApi`, `src/test/editorHost.ts` the array-model host.
+- **Underline and color kept (PORT 9.12).** `RichTextSpan` got optional `underline` and `color` (TS and Rust, omitted from JSON when default so queue fixtures are unchanged). `SpanRuns.key` appends `\0u|color` per run only when a run has either, so changing only those is an update. Markdown copy still ignores them.
+- **Mass-delete guard counts blocks (PORT 9.3).** `deletes` = top-most delete ops plus their nested descendants in `previous`; thresholds unchanged (>= 3 and more than half of the non-token blocks).
+- **Cache.** `editor-doc` cache stores `SyncedParagraph[]` as JSON with plain span text (PORT 9.1); kinds are `{t: ...}` objects, not the Swift `Codable` shape.
+- **Strings.** Status "Offline, will retry" (plan), hint text from the Swift source ("Delete it in Notion."), no em dash anywhere. "Gone" = the Rust notFound message or "archived" (PORT 9.15).
+- **Insert and image uploads** go through `EngineApi.appendBlocks` / `uploadFile` (Tauri `notion_append_blocks` / `upload_image` in the app); update and delete use `queue_submit(retainOnTransientFailure: false)`.
+- **Moves.** `blockMoves.ts` holds the index math of `moveBlock`, `maxDepth`, up/down targets; editors apply the plan. A trailing empty text paragraph is not movable (Mac: no characters).
+- **Covers.** The cover cache key test stays in Rust (`store/covers.rs`, M1).

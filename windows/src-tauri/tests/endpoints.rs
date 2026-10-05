@@ -16,6 +16,8 @@ fn span(t: &str) -> RichTextSpan {
         strikethrough: false,
         code: false,
         link: None,
+        underline: false,
+        color: None,
     }
 }
 

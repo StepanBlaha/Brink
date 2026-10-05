@@ -49,6 +49,36 @@
         "visible": false
       },
       {
+        "label": "toast",
+        "title": "Brink toast",
+        "url": "index.html#/toast",
+        "width": 420,
+        "height": 64,
+        "transparent": true,
+        "decorations": false,
+        "shadow": false,
+        "resizable": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "focus": false,
+        "visible": false
+      },
+      {
+        "label": "tray",
+        "title": "Brink tray",
+        "url": "index.html#/tray",
+        "width": 320,
+        "height": 440,
+        "transparent": true,
+        "decorations": false,
+        "shadow": false,
+        "resizable": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "focus": false,
+        "visible": false
+      },
+      {
         "label": "settings",
         "title": "Brink Settings",
         "url": "index.html#/settings",
@@ -60,6 +90,13 @@
     ],
     "security": {
       "csp": "default-src 'self'; img-src 'self' data: blob: https:; connect-src 'self' ipc: http://ipc.localhost http://127.0.0.1:1420 ws://127.0.0.1:1420; style-src 'self' 'unsafe-inline'"
+    }
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["brink"]
+      }
     }
   },
   "bundle": {
@@ -78,7 +115,8 @@
     ],
     "windows": {
       "nsis": {
-        "installMode": "currentUser"
+        "installMode": "currentUser",
+        "installerHooks": "installer/hooks.nsh"
       },
       "webviewInstallMode": {
         "type": "downloadBootstrapper"

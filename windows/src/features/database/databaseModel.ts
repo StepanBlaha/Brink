@@ -1,3 +1,4 @@
+import { parseNaturalDate } from "../../domain/capture/naturalDate";
 import { isoString, snoozeTarget, type SnoozeOption } from "../../domain/capture/snooze";
 import type { DataSourceSchema } from "../../domain/notion/dataSourceSchema";
 import { doneStatusOptionNames } from "../../domain/notion/dataSourceSchema";
@@ -205,13 +206,25 @@ export class DatabaseModel {
     }, animateOutMs);
   }
 
-  /** Plain title (natural dates arrive with M7 / NaturalDate). Inserts `temp-<uuid>` at 0. */
-  async quickAdd(title: string): Promise<void> {
-    const trimmed = title.trim();
-    if (!trimmed) return;
+  /** The date property quick add parses into: the pin's, else the schema's first date property. */
+  private get quickDateProperty(): string | null {
+    return this.config?.dateProperty ?? this.state.schema?.properties.find((p) => p.type === "date")?.name ?? null;
+  }
+
+  /** Natural dates ("tomorrow 5pm", "v pátek") fill the date property. Inserts `temp-<uuid>` at 0. */
+  async quickAdd(title: string, now: Date = new Date()): Promise<void> {
+    const parsed = parseNaturalDate(title, now);
+    const dateProp = this.quickDateProperty;
+    const useDate = dateProp !== null && parsed.date !== null;
+    const text = useDate ? parsed.cleanTitle : title.trim();
+    if (!text) return;
+    const extra: PropertyUpdate[] = useDate
+      ? [{ name: dateProp, value: { type: "date", date: { start: isoString(parsed.date!, parsed.hasTime) } } }]
+      : [];
     const tempId = `temp-${crypto.randomUUID()}`;
-    this.set({ rows: [{ id: tempId, icon: { type: "none" }, title: trimmed, properties: {} }, ...this.state.rows] });
-    const out = await this.ports.queue.submit({ kind: "createRow", dataSourceId: this.dataSourceId, title: trimmed, extra: [] });
+    const properties = Object.fromEntries(extra.map((u) => [u.name, u.value]));
+    this.set({ rows: [{ id: tempId, icon: { type: "none" }, title: text, properties }, ...this.state.rows] });
+    const out = await this.ports.queue.submit({ kind: "createRow", dataSourceId: this.dataSourceId, title: text, extra });
     if (out.kind === "failed") {
       this.set({ errorMessage: out.message, rows: this.state.rows.filter((r) => r.id !== tempId) });
     } else if (out.kind === "queued") {

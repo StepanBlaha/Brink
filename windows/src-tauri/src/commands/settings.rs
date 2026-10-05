@@ -22,6 +22,8 @@ pub async fn settings_set(
         .set(&partial)
         .map_err(invalid)?;
     emit(&app, "settings://changed", v.clone());
+    crate::hotkeys::on_settings_changed(&app, &v);
+    crate::tray::on_settings_changed(&app, &v);
     Ok(v)
 }
 

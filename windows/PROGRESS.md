@@ -46,3 +46,22 @@
 - [x] Rust `shell.rs`: `open_in_notion` (notion:// when registered, else https; unit tests), `show_settings`; Windows code type-checked for msvc in a scratch crate
 - [ ] Playwright and Windows screenshots (`docs/screens/m3/`) deferred; browser-pane checks done on Mac
 - [ ] Windows CI green (see commit follow-up)
+
+## M7 Quick capture, natural dates, clipboard, hotkeys, tray, deep links (2026-10-05)
+- [x] NaturalDateTests all tables in `domain/capture/naturalDate.test.ts` (TZ=Europe/Prague pinned in vitest.config.ts, now 2026-09-29 10:00), CaptureTests in `capture.test.ts`, SharedData capture and toggle mapping, MiniListTests (`store/miniList.test.ts`), `deepLink.test.ts`.
+- [x] Database quick add parses natural dates (`databaseModel.test.ts`: EN and CS, no date property).
+- [x] Capture window (560x150 card, destination chip with "☰ " prefix, live date chip, Enter / Ctrl+Enter / Esc; `captureModel.test.ts`, `CaptureView.test.tsx`), toast route, tray flyout (`miniListModel.test.ts`, `TrayFlyout.test.tsx`).
+- [x] Clipboard append reads `lastOpenedPinID` (`hub/clipboardAppend.test.ts`: URL, multiline, image, empty, no page pin, offline, failed). Hub handles hotkeys, `brink://` (`deepLinkHandler.test.ts`), startup hotkey failures via `hotkeys_status`.
+- [x] Hotkeys domain and Shortcuts UI (`store/hotkeys.test.ts`, recorder suspends bindings, conflict messages, in-use badge).
+- [x] Rust: hotkeys, capture/toast placement, tray (flyout position), clipboard, deep link argv, NSIS hooks; 142 cargo tests, clippy and fmt clean.
+- [x] Screenshots (Vite page, headless Chrome): `docs/screens/m7/capture.png`, `tray.png`.
+- [ ] Only on real Windows: global hotkeys firing, tray click positions at 100/150/200 %, `brink://` from Win+R (running and cold), "Send to Brink" context menu, toast click-through.
+- [ ] Windows CI green (see commit follow-up)
+
+## M5a Editor model, planner, engine (2026-10-05)
+- [x] Ported: `domain/markdown/*` (paragraphKind, paragraphSyntax, markdownParser, markdownSerializer, spanRuns, slashCommand, listNumbering, inputShortcuts, markdownImport), `domain/editor/*` (types, syncPlanner, plannerOrder, engine, engineImages, engineConfig, blockConvert, blockMoves, ports), `src/test/{fakeNotion,editorHost}.ts`.
+- [x] Vitest: ParagraphSyntax, MarkdownParser, MarkdownSerializer, EditorSyncPlanner, MoveBlock (planner + commands on the array host), PageEditorEngine (editsAreSaved with the exact 4 requests, emptyLines + refresh, nesting, debounce, transient, token restore, mass delete, toggle/callout, typed to-do), ImageBlock (engine part), EditorFeature (slash, toggle/callout, kinds, collapse, cover decode), pure parts of WYSIWYG (shortcut tables, inline matches, numbering, paste/copy round trip).
+- [x] `engineConfig.ts` constants with a test each: debounce 700 ms, poll 45 s, quiet 5 s, retry 15 s, max 5 passes, hint 4 s.
+- [x] Fixes from PORT 9: underline/color kept (also Rust), mass-delete counts nested children, cache holds plain text.
+- [ ] Text-level EditorDocumentTests / WYSIWYGTests cases (type, Enter, Backspace, undo of shortcuts, paste in a text view): M5b on the real ProseMirror state.
+- [ ] Windows CI green (see commit follow-up)

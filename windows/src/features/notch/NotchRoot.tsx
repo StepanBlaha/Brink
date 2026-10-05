@@ -23,6 +23,7 @@ import { PillProgress } from "./Pill";
 import styles from "./notch.module.css";
 import { useNotchBindings } from "./useNotchBindings";
 import { useNotchLayout } from "./useNotchLayout";
+import { useHubHandlers } from "../hub/useHubHandlers";
 import {
   type Rect,
   insetRect,
@@ -118,6 +119,7 @@ export function NotchRoot() {
   }, [overlay]);
   const overlayControl = useMemo(() => ({ isOpen: () => overlayOpen.current, dismiss: () => setOverlay(null) }), []);
   const machine = useNotchBindings({ layout, hitRects, zonesAt, firstPinId: items[0]?.id ?? "", overlay: overlayControl });
+  useHubHandlers(machine);
 
   const select = (pin: { id: string }, icon: Rect) => {
     setIconMid(layout.edge === "top" ? null : rectMidY(icon));

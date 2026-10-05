@@ -1,7 +1,11 @@
 //! Brink for Windows: Rust core. Later milestones fill the modules in.
 
+pub mod capture;
+pub mod clipboard;
 pub mod commands;
+pub mod deeplink;
 pub mod error;
+pub mod hotkeys;
 pub mod logging;
 pub mod notion;
 pub mod paths;
@@ -9,6 +13,7 @@ pub mod queue;
 pub mod secrets;
 pub mod shell;
 pub mod store;
+pub mod tray;
 pub mod window;
 
 use serde::Serialize;
@@ -31,10 +36,14 @@ async fn app_version() -> Result<AppVersion, error::AppError> {
 pub fn run() {
     logging::init();
     tauri::Builder::default()
+        .plugin(deeplink::single_instance())
+        .plugin(tauri_plugin_deep_link::init())
+        .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .invoke_handler(tauri::generate_handler![
             app_version,
             shell::open_in_notion,
             shell::show_settings,
+            shell::open_url,
             commands::auth::auth_status,
             commands::auth::auth_save_token,
             commands::auth::auth_disconnect,
@@ -86,11 +95,26 @@ pub fn run() {
             window::notch_window::notch_request_focus,
             window::notch_window::notch_release_focus,
             window::notch_window::notch_reduce_motion,
-            window::notch_window::debug_window_styles
+            window::notch_window::debug_window_styles,
+            hotkeys::hotkeys_apply,
+            hotkeys::hotkeys_suspend,
+            hotkeys::hotkeys_status,
+            capture::capture_show,
+            capture::capture_hide,
+            capture::toast_show,
+            tray::tray_set_count,
+            tray::tray_flyout_toggle,
+            tray::tray_flyout_hide,
+            clipboard::clipboard_read,
+            deeplink::deeplink_ready
         ])
         .setup(|app| {
             commands::setup(app.handle());
             window::notch_window::setup(app.handle());
+            capture::setup(app.handle());
+            tray::setup(app.handle());
+            hotkeys::setup(app.handle());
+            deeplink::setup(app.handle());
             Ok(())
         })
         .run(tauri::generate_context!())

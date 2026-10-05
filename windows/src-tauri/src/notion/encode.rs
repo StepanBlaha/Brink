@@ -37,14 +37,14 @@ pub fn encode_spans(spans: &[RichTextSpan]) -> Vec<Value> {
                 if let Some(link) = &s.link {
                     text.insert("link".into(), json!({ "url": link }));
                 }
-                json!({
-                    "type": "text",
-                    "text": text,
-                    "annotations": {
-                        "bold": s.bold, "italic": s.italic, "strikethrough": s.strikethrough,
-                        "underline": false, "code": s.code,
-                    },
-                })
+                let mut annotations = json!({
+                    "bold": s.bold, "italic": s.italic, "strikethrough": s.strikethrough,
+                    "underline": s.underline, "code": s.code,
+                });
+                if let Some(color) = &s.color {
+                    annotations["color"] = json!(color);
+                }
+                json!({"type": "text", "text": text, "annotations": annotations})
             })
         })
         .collect()

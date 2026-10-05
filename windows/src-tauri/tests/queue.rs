@@ -278,6 +278,8 @@ async fn every_operation_kind_executes_against_the_right_endpoint() {
         strikethrough: false,
         code: false,
         link: None,
+        underline: false,
+        color: None,
     };
     let ops = vec![
         Operation::CreateRow {
