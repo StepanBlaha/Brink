@@ -6,6 +6,11 @@ struct TodayView: View {
     let model: TodayModel
 
     var body: some View {
+        RowPageHost(pinID: TodayPin.id) { listBody }
+    }
+
+    @ViewBuilder
+    private var listBody: some View {
         let sections = model.visibleSections
         VStack(alignment: .leading, spacing: 0) {
             header
@@ -79,6 +84,11 @@ private struct TodayRow: View {
     let onToggle: () -> Void
     let onSnooze: (SnoozeOption) -> Void
 
+    @State private var isHovering = false
+    @Environment(\.openRowPage) private var openRowPage
+
+    private func openPage() { openRowPage?(item.id, item.title) }
+
     var body: some View {
         HStack(spacing: 8) {
             Button(action: onToggle) { checkbox }
@@ -90,8 +100,9 @@ private struct TodayRow: View {
                 .strikethrough(isChecked)
                 .foregroundStyle(isChecked ? Theme.Color.secondaryText : Theme.Color.text)
                 .lineLimit(1)
-
-            Spacer(minLength: 8)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+                .onTapGesture { openPage() }
 
             Text(dateLabel)
                 .font(Theme.Font.small)
@@ -111,10 +122,27 @@ private struct TodayRow: View {
             .menuIndicator(.hidden)
             .fixedSize()
             .help("Snooze")
+
+            Button(action: openPage) {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(Theme.Color.secondaryText)
+                    .frame(width: 16, height: 16)
+            }
+            .buttonStyle(.notion)
+            .focusEffectDisabled()
+            .opacity(isHovering ? 1 : 0)
+            .animation(Theme.Motion.crossfade, value: isHovering)
+            .help("Open page")
         }
         .padding(.horizontal, Theme.Metrics.hPadding)
         .frame(height: Theme.Metrics.rowHeight)
         .notionHover()
+        .onHover { isHovering = $0 }
+        .contextMenu {
+            Button("Open page") { openPage() }
+            Button("Open in Notion") { RowPageRouter.openInNotion(id: item.id) }
+        }
     }
 
     private var checkbox: some View {

@@ -33,6 +33,7 @@ struct NotchRootView: View {
     let onChangeIcon: (PinItem) -> Void
     var onEditView: (PinItem) -> Void = { _ in }
     let onCheckPeekItem: (String, String) -> Void
+    var onOpenPeekItem: (String, String, String) -> Void = { _, _, _ in }
     let onTogglePin: () -> Void
     let onClosePanel: () -> Void
     let onOpenInNotion: () -> Void
@@ -158,7 +159,8 @@ struct NotchRootView: View {
             if phase == .strip, let peekPinID, let pin = pins.first(where: { $0.id == peekPinID }) {
                 let summary = PinSummaryService.shared.summary(for: peekPinID)
                 let rect = layout.peekRect(peekFrame: peekFrame, itemCount: summary?.nextItems.count ?? 0)
-                PeekTooltip(title: pin.title, summary: summary, onCheck: { itemID in onCheckPeekItem(pin.id, itemID) })
+                PeekTooltip(title: pin.title, summary: summary, onCheck: { itemID in onCheckPeekItem(pin.id, itemID) },
+                             onOpenItem: { itemID, title in onOpenPeekItem(pin.id, itemID, title) })
                     .frame(width: rect.width)
                     .contentShape(Rectangle())
                     .onHover(perform: onPeekCardHover)

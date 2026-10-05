@@ -4,6 +4,8 @@ import NotionKit
 struct MiniListView: View {
     let model: MiniListModel
     var onOpenInNotch: (String) -> Void
+    /// Title click: open the pin in the notch, then this item's page (database rows only).
+    var onOpenItem: (Pin, MiniItem) -> Void = { _, _ in }
     var onSettings: () -> Void
 
     @FocusState private var fieldFocused: Bool
@@ -79,7 +81,10 @@ struct MiniListView: View {
                     HStack(spacing: 8) {
                         NotionCheckbox(isDone: false) { model.check(item, in: pin) }
                         Text(item.title).font(Theme.Font.body).foregroundStyle(Theme.Color.text).lineLimit(2)
-                        Spacer(minLength: 0)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .contentShape(Rectangle())
+                            .onTapGesture { onOpenItem(pin, item) }
+                            .help(pin.kind == .dataSource ? "Open page" : "Open in notch")
                     }
                     .padding(.leading, 28).padding(.trailing, 8).padding(.vertical, 4)
                     .transition(.opacity.combined(with: .move(edge: .leading)))

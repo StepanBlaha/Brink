@@ -6,6 +6,8 @@ import NotionKit
 /// and a "show completed" toggle. Used both as a pinned panel's body and embedded inside a page.
 struct DatabaseTaskView: View {
     @Bindable var model: DatabaseViewModel
+    /// The pin whose panel shows this list; a row's page opens in place of it.
+    var pinID: String = ""
     var compact: Bool = false
 
     @State private var newTaskTitle = ""
@@ -18,6 +20,10 @@ struct DatabaseTaskView: View {
     }
 
     var body: some View {
+        RowPageHost(pinID: pinID, pageHeight: compact ? 340 : nil) { listBody }
+    }
+
+    private var listBody: some View {
         VStack(alignment: .leading, spacing: 0) {
             if compact {
                 Text(model.schema?.name ?? "Tasks")
@@ -168,6 +174,10 @@ private struct DatabaseRowView: View {
 
     @State private var titleText: String
     @State private var showDatePopover = false
+    @State private var isHovering = false
+    @State private var isRenaming = false
+    @FocusState private var titleFocused: Bool
+    @Environment(\.openRowPage) private var openRowPage
 
     init(model: DatabaseViewModel, row: Row) {
         self.model = model
@@ -189,19 +199,7 @@ private struct DatabaseRowView: View {
                 .focusEffectDisabled()
             }
 
-            TextField("", text: $titleText)
-                .textFieldStyle(.plain)
-                .font(Theme.Font.body)
-                .strikethrough(isDone)
-                .foregroundStyle(isDone ? Theme.Color.secondaryText : Theme.Color.text)
-                .onSubmit {
-                    Task { await model.rename(row.id, title: titleText) }
-                }
-                .onChange(of: row.title) { _, newValue in
-                    titleText = newValue
-                }
-
-            Spacer(minLength: 8)
+            titleView
 
             if let statusName = model.statusName(row) {
                 statusPill(statusName)
@@ -210,11 +208,75 @@ private struct DatabaseRowView: View {
             if model.config?.dateProperty != nil {
                 dateChip
             }
+
+            openChevron
         }
         .padding(.horizontal, Theme.Metrics.hPadding)
         .frame(height: Theme.Metrics.rowHeight)
         .notionHover()
-        .contextMenu { snoozeMenu }
+        .onHover { isHovering = $0 }
+        .contextMenu {
+            Button("Open page") { openPage() }
+            Button("Open in Notion") { RowPageRouter.openInNotion(id: row.id) }
+            Divider()
+            if !model.isReadOnly { Button("Rename") { startRenaming() } }
+            snoozeMenu
+        }
+    }
+
+    private func openPage() { openRowPage?(row.id, row.title) }
+
+    private func startRenaming() {
+        isRenaming = true
+        titleFocused = true
+    }
+
+    /// Click the title (or the empty space after it) to open the page; Rename edits it in place.
+    @ViewBuilder
+    private var titleView: some View {
+        if isRenaming {
+            TextField("", text: $titleText)
+                .textFieldStyle(.plain)
+                .font(Theme.Font.body)
+                .foregroundStyle(Theme.Color.text)
+                .focused($titleFocused)
+                .onSubmit {
+                    isRenaming = false
+                    Task { await model.rename(row.id, title: titleText) }
+                }
+                .onChange(of: titleFocused) { _, focused in
+                    if !focused { isRenaming = false }
+                }
+                .onExitCommand {
+                    titleText = row.title
+                    isRenaming = false
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            Text(row.title.isEmpty ? "Untitled" : row.title)
+                .font(Theme.Font.body)
+                .strikethrough(isDone)
+                .foregroundStyle(isDone ? Theme.Color.secondaryText : Theme.Color.text)
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+                .onTapGesture { openPage() }
+                .onChange(of: row.title) { _, newValue in titleText = newValue }
+        }
+    }
+
+    private var openChevron: some View {
+        Button(action: openPage) {
+            Image(systemName: "chevron.right")
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(Theme.Color.secondaryText)
+                .frame(width: 16, height: 16)
+        }
+        .buttonStyle(.notion)
+        .focusEffectDisabled()
+        .opacity(isHovering ? 1 : 0)
+        .animation(Theme.Motion.crossfade, value: isHovering)
+        .help("Open page")
     }
 
     private var snoozeMenu: some View {

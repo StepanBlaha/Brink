@@ -11,7 +11,7 @@ struct EmbeddedDatabaseView: View {
     var body: some View {
         Group {
             if let model {
-                DatabaseTaskView(model: model, compact: true)
+                DatabaseTaskView(model: model, pinID: "embedded-\(databaseId)", compact: true)
             } else if let errorMessage {
                 Text(errorMessage)
                     .font(Theme.Font.small)

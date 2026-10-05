@@ -42,6 +42,8 @@ struct NotchActions {
     var onEditView: (PinItem) -> Void = { _ in }
     /// Tick an item shown in the hover peek: (pin id, item id).
     let onCheckPeekItem: (String, String) -> Void
+    /// Open a peek item's title: (pin id, item id, item title).
+    var onOpenPeekItem: (String, String, String) -> Void = { _, _, _ in }
     let onTogglePin: () -> Void
     let onClosePanel: () -> Void
     let onOpenInNotion: () -> Void
@@ -92,6 +94,7 @@ struct NotchHostView: View {
             onChangeIcon: actions.onChangeIcon,
             onEditView: actions.onEditView,
             onCheckPeekItem: actions.onCheckPeekItem,
+            onOpenPeekItem: actions.onOpenPeekItem,
             onTogglePin: actions.onTogglePin,
             onClosePanel: actions.onClosePanel,
             onOpenInNotion: actions.onOpenInNotion,

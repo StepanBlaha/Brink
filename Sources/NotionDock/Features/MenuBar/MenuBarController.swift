@@ -49,6 +49,13 @@ final class MenuBarController: NSObject {
         let view = MiniListView(model: model, onOpenInNotch: { [weak self] id in
             self?.popover.performClose(nil)
             NotificationCenter.default.post(name: .openPinInNotchRequested, object: id)
+        }, onOpenItem: { [weak self] pin, item in
+            self?.popover.performClose(nil)
+            if pin.kind == .dataSource {
+                RowPageRouter.shared.open(RowPageTarget(pinID: pin.id, rowID: item.id, title: item.title))
+            } else {
+                NotificationCenter.default.post(name: .openPinInNotchRequested, object: pin.id)
+            }
         }, onSettings: { [weak self] in
             self?.popover.performClose(nil)
             self?.onSettings?()

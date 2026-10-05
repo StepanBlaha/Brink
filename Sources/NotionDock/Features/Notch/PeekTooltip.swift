@@ -7,6 +7,8 @@ struct PeekTooltip: View {
     let title: String
     let summary: PinSummary?
     var onCheck: (String) -> Void = { _ in }
+    /// Title click: (item id, item title).
+    var onOpenItem: (String, String) -> Void = { _, _ in }
 
     /// Ticked here but not yet gone from the refreshed summary.
     @State private var checkedIDs: Set<String> = []
@@ -32,11 +34,11 @@ struct PeekTooltip: View {
             if !items.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
                     ForEach(items, id: \.id) { item in
-                        PeekItemRow(title: item.title, isChecked: checkedIDs.contains(item.id)) {
+                        PeekItemRow(title: item.title, isChecked: checkedIDs.contains(item.id), onCheck: {
                             guard !checkedIDs.contains(item.id) else { return }
                             withAnimation(Theme.Motion.contents) { _ = checkedIDs.insert(item.id) }
                             onCheck(item.id)
-                        }
+                        }, onOpen: { onOpenItem(item.id, item.title) })
                         .transition(Theme.Motion.rowTransition)
                     }
                 }
@@ -62,10 +64,11 @@ private struct PeekItemRow: View {
     let title: String
     let isChecked: Bool
     let onCheck: () -> Void
+    let onOpen: () -> Void
 
     var body: some View {
-        Button(action: onCheck) {
-            HStack(spacing: 6) {
+        HStack(spacing: 6) {
+            Button(action: onCheck) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 3)
                         .fill(isChecked ? Theme.Color.accent : .clear)
@@ -79,18 +82,24 @@ private struct PeekItemRow: View {
                     }
                 }
                 .frame(width: 12, height: 12)
+            }
+            .buttonStyle(.notion)
+            .focusEffectDisabled()
+            .help(isChecked ? "Done" : "Mark done")
+
+            Button(action: onOpen) {
                 Text(title)
                     .font(Theme.Font.small)
                     .foregroundStyle(isChecked ? Theme.Color.secondaryText : Theme.Color.text.opacity(0.9))
                     .strikethrough(isChecked)
                     .lineLimit(1)
-                Spacer(minLength: 0)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
             }
-            .contentShape(Rectangle())
+            .buttonStyle(.notion)
+            .focusEffectDisabled()
+            .help("Open")
         }
-        .buttonStyle(.notion)
-        .focusEffectDisabled()
-        .help(isChecked ? "Done" : "Mark done")
     }
 }
 

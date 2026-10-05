@@ -40,6 +40,7 @@ extension DemoDirector {
         case "phase": dock.demoSetPhase(NotchPhase.named(arg(words, 1)))
         case "open": dock.demoOpen(pinID: arg(words, 1))
         case "addflow": dock.demoOpenAddFlow(database: arg(words, 1) == "db")
+        case "row": RowPageRouter.shared.open(RowPageTarget(pinID: arg(words, 1), rowID: arg(words, 2), title: words.dropFirst(3).joined(separator: " ")))
         case "peek": dock.demoShowPeek(pinID: arg(words, 1) == "none" ? nil : arg(words, 1))
         case "mouse":
             DemoMode.mouseOverride = arg(words, 1) == "none" ? nil : CGPoint(x: num(words, 1), y: num(words, 2))

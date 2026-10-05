@@ -252,6 +252,14 @@ final class DockController {
             onCheckPeekItem: { [weak self] pinID, itemID in
                 self?.checkSummaryItem(pinID: pinID, itemID: itemID)
             },
+            onOpenPeekItem: { [weak self] pinID, itemID, title in
+                guard let self else { return }
+                if self.pin(withPinItemID: pinID)?.kind == .dataSource {
+                    RowPageRouter.shared.open(RowPageTarget(pinID: pinID, rowID: itemID, title: title))
+                } else {
+                    NotificationCenter.default.post(name: .openPinInNotchRequested, object: pinID)
+                }
+            },
             onTogglePin: { [weak self] in
                 self?.isPanelPinned.toggle()
                 self?.refreshContent()
@@ -752,7 +760,7 @@ final class DockController {
                     .foregroundStyle(Theme.Color.secondaryText)
                     .padding())
             }
-            return AnyView(DatabaseTaskView(model: model))
+            return AnyView(DatabaseTaskView(model: model, pinID: pin.id))
         }
     }
 
@@ -1076,6 +1084,7 @@ extension DockController {
 extension DockController {
     fileprivate func startReminders() {
         ItemActions.shared.configure(appModel: appModel)
+        RowPageRouter.shared.configure(appModel: appModel)
         ReminderService.shared.start(appModel: appModel)
         NotificationCenter.default.addObserver(forName: .reminderPeekRequested, object: nil, queue: .main) { [weak self] note in
             guard let pinID = note.object as? String else { return }
