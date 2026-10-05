@@ -325,7 +325,7 @@ export class PageEditorEngine {
     for (const t of [this.retryTimer, this.hintTimer]) if (t !== null) clearTimeout(t);
     this.retryTimer = null;
     this.hintTimer = null;
-    this.listeners.clear();
+    // Subscribers unsubscribe themselves (React StrictMode re-runs effects on the same engine).
   }
 
   // ---- executor ----

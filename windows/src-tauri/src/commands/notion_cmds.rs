@@ -178,3 +178,51 @@ pub async fn upload_image(
 ) -> Result<String, AppError> {
     upload(&state, UploadArgs { path, bytes }, &filename, &content_type).await
 }
+
+/// Image types the editor accepts from a file drop.
+const DROP_IMAGE_EXTENSIONS: &[&str] = &[
+    "png", "jpg", "jpeg", "gif", "webp", "heic", "tif", "tiff", "bmp",
+];
+/// Same limit as the engine's single-part upload.
+const DROP_IMAGE_LIMIT: u64 = 20 * 1024 * 1024;
+
+pub fn is_drop_image(path: &str) -> bool {
+    std::path::Path::new(path)
+        .extension()
+        .and_then(|e| e.to_str())
+        .is_some_and(|e| DROP_IMAGE_EXTENSIONS.contains(&e.to_ascii_lowercase().as_str()))
+}
+
+/// Raw bytes of a dropped image file (WebView2 hides file drops from the DOM, Tauri gives paths).
+/// Only image extensions are readable. Too large: error kind `tooLarge`, message = byte count.
+#[tauri::command]
+pub async fn read_image_file(path: String) -> Result<tauri::ipc::Response, AppError> {
+    if !is_drop_image(&path) {
+        return Err(invalid("Not an image file."));
+    }
+    let len = tokio::fs::metadata(&path)
+        .await
+        .map_err(|e| invalid(format!("Could not read the file: {e}")))?
+        .len();
+    if len > DROP_IMAGE_LIMIT {
+        return Err(AppError::new("tooLarge", len.to_string()));
+    }
+    let data = tokio::fs::read(&path)
+        .await
+        .map_err(|e| invalid(format!("Could not read the file: {e}")))?;
+    Ok(tauri::ipc::Response::new(data))
+}
+
+#[cfg(test)]
+mod drop_tests {
+    use super::*;
+
+    #[test]
+    fn only_images_may_be_read() {
+        assert!(is_drop_image("C:\\Users\\me\\pic.JPG"));
+        assert!(is_drop_image("/tmp/a.webp"));
+        assert!(!is_drop_image("/etc/passwd"));
+        assert!(!is_drop_image("C:\\secrets.txt"));
+        assert!(!is_drop_image("png"));
+    }
+}

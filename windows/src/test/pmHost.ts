@@ -55,8 +55,8 @@ export class PMHost {
     }
   }
 
-  key(key: string, mods: { ctrl?: boolean; shift?: boolean } = {}): boolean {
-    const ev = new KeyboardEvent("keydown", { key, ctrlKey: mods.ctrl ?? false, shiftKey: mods.shift ?? false, bubbles: true, cancelable: true });
+  key(key: string, mods: { ctrl?: boolean; shift?: boolean; alt?: boolean } = {}): boolean {
+    const ev = new KeyboardEvent("keydown", { key, ctrlKey: mods.ctrl ?? false, shiftKey: mods.shift ?? false, altKey: mods.alt ?? false, bubbles: true, cancelable: true });
     return this.view.someProp("handleKeyDown", (f) => f(this.view, ev)) ?? false;
   }
   enter(): void { this.key("Enter"); }

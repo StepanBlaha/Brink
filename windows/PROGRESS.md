@@ -83,3 +83,20 @@
 - [x] Screenshots (Vite page, headless Chrome, reduce=1): `docs/screens/m6/` peek-right, strip-top, strip-left, pill-percent, pill-line. Today panel, tick and snooze menu checked in the browser pane (not saved).
 - [ ] Only on real Windows: toast with Mark done / Snooze / Open, click while Brink is closed, Focus Assist, autoplay of the tick from a toast action.
 - [ ] Windows CI green (see commit follow-up)
+
+## M5c Drag handle, move keys, mass-delete guard, footer (2026-10-05)
+- [x] `keymap/moveBlock.ts` (`moveBlockTr`, Alt+Shift+Up/Down), `plugins/dragHandle.ts` (pointer events, 3 px threshold, depth = source + round(dx / 24), 2 px accent line with dot, click selects the block), `EditorFooter.tsx` (Saved / Saving... / Offline, will retry / error, "Delete N blocks in Notion").
+- [x] Vitest: MoveBlockTests UI parts on a real `EditorView` (`moveBlock.test.ts`), drag math and pointer sequence (`dragHandle.test.ts`), guard counting nested children and DELETEs after confirming, status copy without em dashes (`footer.test.tsx`).
+- [ ] Playwright drag test deferred (headless Chrome over CDP drove it instead: `docs/screens/m5cd/drag.png`).
+
+## M5d Find, cover, images, links, embedded databases (2026-10-05)
+- [x] Find (`plugins/find.ts`, `FindBar.tsx`): diacritic-insensitive, non-overlapping, "i of n", Enter / Shift+Enter, F3, Ctrl+G, Esc, prefill from a selection under 200 chars, decorations only.
+- [x] Cover strip 56 px with gradient (`CoverStrip.tsx`, bytes via `cover_get`; key and 403 refetch were M1 Rust).
+- [x] Images: paste and DOM drop (`plugins/images.ts`), Tauri drops via new `read_image_file` command (image extensions only, 20 MB cap), `ImageBlock` and `UploadingChip` node views, expired URL refreshed once, 21 MB error, order kept for several images (`images.test.ts`).
+- [x] Link popover Ctrl+K (needs a selection like the Mac), Ctrl+click opens the link (`link.test.ts`).
+- [x] Embedded `child_database`: chip header opens Notion, M4 `EmbeddedDatabase` mounts under it (`coverEmbed.test.tsx`).
+- [x] Rich-text check: the demo fixture held literal asterisks (not a bug); `richTextLoad.test.ts` proves bold, italic, code, link, underline and color load as marks. The demo now seeds real annotations.
+- [x] Screenshots: `docs/screens/m5cd/` (editor, find, link, drag, embed).
+- [ ] Only on real Windows: dropping a file from Explorer, pasting a screenshot from the clipboard.
+- [ ] Windows CI green (see commit follow-up)
+

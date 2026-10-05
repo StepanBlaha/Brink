@@ -129,3 +129,15 @@ Source: `docs/WINDOWS-PORT.md` section 2.1. Dated entries below the table record
 - **Pill measures the strip items including Today** (Mac parity: Today summary has total = open, done = 0).
 - **Debug.** `localStorage brink.debug.snoozeSeconds` shortens the 1 h snooze in dev; `?summaries=demo` seeds fake summaries in the browser mock and keeps network services off.
 - **Not wired.** Tray window still has stub `summaries`/`tick`; hub listens for `sound://tick` and `pin://content-changed` events for other windows. Real-Windows toast checks are manual.
+
+## 2026-10-05 M5c+M5d drag, guard, find, cover, images, links
+
+- **Rich text on load is fine.** The `**beta**` in the M5b screenshot was a literal in the demo fixture (the fake server stores `text` as plain). Pipeline decode -> spans -> marks is covered by `richTextLoad.test.ts`.
+- **Engine `dispose()` keeps listeners.** Subscribers unsubscribe themselves; clearing them broke the footer and cover under React StrictMode (effects re-run on the same engine).
+- **Drag handle** lives inside the editor host (pointer events on `window` while dragging). Hidden (collapsed) blocks are skipped as drop targets; a drop into the block's own subtree is a no-op.
+- **Move keeps node identity**: the moved nodes keep their attrs, so ids survive and the planner recreates the moved block (no duplicate).
+- **Dropped files** arrive as Tauri paths (`dragDropEnabled`), read by Rust `read_image_file` (image extensions only, error kind `tooLarge` with the byte count above 20 MB). DOM paste and drop use `File` directly.
+- **Link popover** needs a selection (Mac beeps without). Ctrl+click opens a link through the allow-listed `open_url`.
+- **Embedded database** renders under its chip inside the node view with a React root; the chip title still opens Notion.
+- **Find bar** is sticky inside the scroller. Keys: Ctrl+F, F3 / Ctrl+G (Shift = previous).
+

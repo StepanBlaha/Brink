@@ -66,6 +66,7 @@ pub fn run() {
             commands::notion_cmds::notion_delete_block,
             commands::notion_cmds::notion_upload_file,
             commands::notion_cmds::upload_image,
+            commands::notion_cmds::read_image_file,
             commands::pins::pins_get,
             commands::pins::pins_add,
             commands::pins::pins_remove,

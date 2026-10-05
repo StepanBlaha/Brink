@@ -9,6 +9,8 @@ import { NON_EDIT } from "./identityPlugin";
 import { schema } from "./schema";
 import { snapshot } from "./snapshot";
 
+export interface ImageFile { data: Uint8Array; filename: string; contentType: string }
+
 /** The ProseMirror implementation of the engine's `EditorDocPort` (PORT 3.c.1). */
 export class BrinkDoc implements EditorDocPort {
   state: EditorState;
@@ -18,6 +20,12 @@ export class BrinkDoc implements EditorDocPort {
   onLocalEdit: (() => void) | null = null;
   /** Observers of every state change (React, status). */
   readonly listeners = new Set<() => void>();
+  /** Object URLs of images uploaded in this session, by file upload id (shown until the next load). */
+  readonly localImages = new Map<string, string>();
+  /** A fresh signed URL for an image block whose file URL expired (403). */
+  freshImageUrl: ((blockId: string) => Promise<string | null>) | null = null;
+  /** Images pasted or dropped; `afterIndex` is the block they go below. */
+  onImages: ((files: ImageFile[], afterIndex: number) => void) | null = null;
 
   constructor(private readonly plugins: Plugin[], readonly stamps: Map<string, string>, synced: SyncedParagraph[] = []) {
     this.state = EditorState.create({ doc: docFromSynced(synced), schema, plugins });
