@@ -20,10 +20,10 @@ export interface PlacementPayload {
 
 const SIZE_SCALE = { small: 0.85, medium: 1, large: 1.2 } as const;
 
-export function configureWindow(edge: NotchEdge, pinCount: number, size: keyof typeof SIZE_SCALE): void {
+export function configureWindow(edge: NotchEdge, pinCount: number, size: keyof typeof SIZE_SCALE, monitor: number | null = null): void {
   if (!inTauri()) return;
   void invoke("notch_configure", {
-    config: { edge, pinCount, sizeScale: SIZE_SCALE[size], monitor: null },
+    config: { edge, pinCount, sizeScale: SIZE_SCALE[size], monitor },
   });
 }
 

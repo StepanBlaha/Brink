@@ -1,5 +1,6 @@
 //! Brink for Windows: Rust core. Later milestones fill the modules in.
 
+pub mod autostart;
 pub mod capture;
 pub mod clipboard;
 pub mod commands;
@@ -16,6 +17,8 @@ pub mod shell;
 pub mod store;
 pub mod tray;
 pub mod window;
+#[cfg(target_os = "windows")]
+pub mod winreg;
 
 use serde::Serialize;
 
@@ -30,7 +33,7 @@ pub struct AppVersion {
 async fn app_version() -> Result<AppVersion, error::AppError> {
     Ok(AppVersion {
         marketing: env!("CARGO_PKG_VERSION").to_string(),
-        build: "0".to_string(),
+        build: env!("BRINK_BUILD").to_string(),
     })
 }
 
@@ -111,11 +114,19 @@ pub fn run() {
             deeplink::deeplink_ready,
             commands::notify::notify_status,
             commands::notify::notify_pending,
-            commands::notify::notify_apply
+            commands::notify::notify_apply,
+            commands::windows::window_open,
+            commands::windows::system_accent,
+            commands::windows::emoji_panel_open,
+            autostart::autostart_status,
+            autostart::autostart_set,
+            autostart::launched_at_login,
+            autostart::open_startup_settings
         ])
         .setup(|app| {
             commands::setup(app.handle());
             commands::notify::setup(app.handle());
+            commands::windows::setup(app.handle());
             window::notch_window::setup(app.handle());
             capture::setup(app.handle());
             tray::setup(app.handle());

@@ -1,5 +1,7 @@
 import { decodeBlocks } from "../../domain/notion/block";
 import { queueSubmit, notionBlockChildren, cacheLoad } from "../../ipc/commands";
+import { soundTick } from "../../ipc/soundIpc";
+import { announceContentChanged, receivedCounts } from "../../services/summaryBridge";
 import { useAuthStore, isConnected } from "../../state/authStore";
 import { useGroupsStore } from "../../state/groupsStore";
 import { usePinsStore } from "../../state/pinsStore";
@@ -16,7 +18,7 @@ export function createTrayPorts(): MiniPorts {
     groups: () => useGroupsStore.getState().groups,
     activeGroupId: () => useSettingsStore.getState().settings.activeGroupID,
     lastOpenedPinId: () => useSettingsStore.getState().settings.lastOpenedPinID,
-    summaries: () => ({}),
+    summaries: receivedCounts,
     hasToken: () => isConnected(useAuthStore.getState().status),
     async cachedBlocks(pinId) {
       const json = await cacheLoad(pinId, "blocks");
@@ -32,7 +34,7 @@ export function createTrayPorts(): MiniPorts {
       return m;
     },
     submit: (op) => queueSubmit(op),
-    tick: () => {},
-    contentChanged: () => {},
+    tick: soundTick,
+    contentChanged: announceContentChanged,
   };
 }

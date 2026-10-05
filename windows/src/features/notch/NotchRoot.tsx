@@ -37,6 +37,7 @@ import {
   rectContains,
   rectMidY,
 } from "./notchGeometry";
+import { IconPicker } from "../iconPicker/IconPicker";
 import { bodyRectFor, clampedExpandedCenter, hotRect, maxPanelSize, peekRect } from "./notchLayout";
 
 /** The single notch window root: morphing shape, phase bodies, peek card, hit rects. */
@@ -60,6 +61,7 @@ export function NotchRoot() {
   const [overlay, setOverlay] = useState<Overlay | null>(null);
   const [overlayRect, setOverlayRect] = useState<Rect | null>(null);
   const [editPinId, setEditPinId] = useState<string | undefined>(undefined);
+  const [iconPinId, setIconPinId] = useState<string | undefined>(undefined);
   const panelSizes = useSettingsStore((st) => st.settings.panelSizes);
   const base0 = useNotchLayout(items.length);
   const stored = ps.selectedPinId ? panelSizes[ps.selectedPinId] : undefined;
@@ -131,7 +133,7 @@ export function NotchRoot() {
   }, [overlay]);
   const overlayControl = useMemo(() => ({ isOpen: () => overlayOpen.current, dismiss: () => setOverlay(null) }), []);
   const machine = useNotchBindings({ layout, hitRects, zonesAt, firstPinId: items[0]?.id ?? "", overlay: overlayControl });
-  useHubHandlers(machine);
+  useHubHandlers(machine, { onOpenAdd: () => { setEditPinId(undefined); setIconPinId(undefined); } });
 
   const select = (pin: { id: string }, icon: Rect) => {
     setIconMid(layout.edge === "top" ? null : rectMidY(icon));
@@ -146,6 +148,7 @@ export function NotchRoot() {
   const addPin = (icon: Rect) => {
     setIconMid(layout.edge === "top" ? null : rectMidY(icon));
     setEditPinId(undefined);
+    setIconPinId(undefined);
     machine.openAddFlow();
   };
   const reorder = (item: PinItem, stripIndex: number) => {
@@ -196,7 +199,9 @@ export function NotchRoot() {
       animate={{ opacity: 1 }}
       transition={reduce ? instant : crossfade}
     >
-      {ps.addFlow ? (
+      {ps.addFlow && iconPinId ? (
+        <IconPicker pinId={iconPinId} onClose={() => { setIconPinId(undefined); machine.collapse(true); }} />
+      ) : ps.addFlow ? (
         <AddFlow editPinId={editPinId} onClose={() => machine.collapse(true)} />
       ) : (
       <Panel
@@ -300,6 +305,12 @@ export function NotchRoot() {
           }}
           onEditView={(id) => {
             setEditPinId(id);
+            setIconPinId(undefined);
+            machine.openAddFlow();
+          }}
+          onChangeIcon={(id) => {
+            setIconPinId(id);
+            setEditPinId(undefined);
             machine.openAddFlow();
           }}
           onUnpinned={(id) => ps.selectedPinId === id && machine.collapse(true)}

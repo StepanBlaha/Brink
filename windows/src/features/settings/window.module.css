@@ -1,0 +1,7 @@
+.window { display: flex; height: 100vh; background: #121212; color: var(--text); font: 13px/1.4 var(--font); }
+.sidebar { display: flex; flex: none; flex-direction: column; gap: 2px; width: 150px; padding: 12px 8px; background: #1a1a1c; border-right: 1px solid var(--divider); }
+.tab { display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 10px; border: 0; border-radius: 6px; background: none; color: var(--text-2); font: inherit; text-align: left; cursor: pointer; }
+.tab:hover { background: var(--hover); color: var(--text); }
+.tab:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--accent); }
+.tabOn, .tabOn:hover { background: var(--selected); color: var(--text); }
+.body { flex: 1; min-width: 0; overflow-y: auto; }

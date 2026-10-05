@@ -1,0 +1,14 @@
+.page { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
+.stack { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.tokenRow { display: flex; gap: 8px; width: 100%; }
+.input { flex: 1; min-width: 0; height: 30px; padding: 0 10px; border: 0; border-radius: 6px; outline: none; background: var(--raised); color: var(--text); font: inherit; }
+.input:focus { box-shadow: 0 0 0 1px var(--accent); }
+.actions { display: flex; gap: 8px; }
+.card { padding: 10px; border-radius: 10px; background: color-mix(in srgb, var(--hover) 50%, transparent); color: var(--text); }
+.note { margin: 0; color: var(--text-2); font-size: 12px; line-height: 1.4; }
+.ok { margin: 0; color: var(--success); font-size: 12px; }
+.err { margin: 0; color: var(--danger); font-size: 12px; }
+.centered { text-align: center; }
+.rule { width: 100%; height: 1px; margin: 0; border: 0; background: var(--divider); }
+.link { padding: 0; border: 0; background: none; color: var(--accent); font: inherit; font-size: 12px; text-align: left; cursor: pointer; }
+.link:focus-visible { outline: none; text-decoration: underline; }

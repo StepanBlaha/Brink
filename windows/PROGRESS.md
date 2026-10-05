@@ -105,3 +105,13 @@
 - [x] NSIS bundle config (per-user, hooks), version sync, `windows-release.yml` (draft only, optional signing), winget templates + `render.sh`, `RELEASING.md`.
 - [x] Website: Mac/Windows chooser (`windowsAvailable: false`), FAQ, llms.txt, JSON-LD flag, `legal/PRIVACY.md` Windows section; lint, typecheck, build green.
 - [ ] Not done on purpose: no release published, no winget submission, no signing secrets, MSI/MSIX, SmartScreen check on a clean VM, CHANGELOG Windows section, TERMS wording.
+
+## M8 Settings, appearance, groups, icons, onboarding, About, autostart (2026-10-05)
+- [x] Settings window 560x540 with sidebar Connection / Appearance / General / Groups / Shortcuts (`features/settings/*`, `SettingsWindow.test.tsx`); Appearance: accent presets (+ Windows system accent), size, dock edge (top stays centered, hint shown), outline, display, badge, pill (+ 7/12 or 58%), pill progress, launch at sign-in (`AppearanceSection.test.tsx`, `StartupRow.test.tsx`, `state/appearance.test.ts`, `useSettingsSync.test.tsx`). General: sounds + Test, Today, reminders (hour, morning summary, peek), tray list and count, Show welcome again (`GeneralSection.test.tsx`).
+- [x] Connection: "secret_..." / "Token saved", Save, Test ("Connected. Brink can see N items."), Disconnect, Notion sign-in hidden while `oauth_available` is false (`ConnectionSection.test.tsx`). Groups: list with emoji, name, count, reorder, delete (ungroups), add (`GroupsSection.test.tsx`); switcher "Manage..." opens Groups.
+- [x] Icon picker (Emoji 8 columns + search + "Also set as page icon in Notion" + Win+. panel, Symbol Lucide 6 columns + swatches, Letter, Reset) in the notch (`iconPicker/*.test.*`, `pinIconSymbol.test.tsx`).
+- [x] Onboarding 460x440 (3 steps, dots on their own layer, Back, primary labels, shows when due and not on autostart): `OnboardingWindow.test.tsx`, `onboarding.test.ts`, `useOnboardingLaunch.test.tsx`. About 340x420 and legal windows from the bundled `legal/*.md` (`AboutWindow.test.tsx`, `legalMarkdown.test.ts`).
+- [x] Rust: `window_open` + `window://open` listener, `autostart_*` (Run key, StartupApproved), `system_accent`, `emoji_panel_open`, build number in `app_version`; unit tests for specs, run value, approval bytes, accent alpha. Tray flyout now uses real counts and the tick (`summaryBridge.test.ts`, `trayWiring.test.ts`).
+- [x] Screenshots (Vite pages, headless Chrome): `docs/screens/m8/`. Icon picker and onboarding steps 2 and 3 checked in the browser pane (not saved).
+- [ ] Only on real Windows: autostart on/off across sign-out and sign-in, Win+. panel inserting into the picker, system accent following Settings, display choice on two monitors, window creation from the tray menu.
+- [ ] Windows CI green (see commit follow-up)

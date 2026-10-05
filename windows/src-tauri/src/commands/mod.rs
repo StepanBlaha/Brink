@@ -8,6 +8,7 @@ pub mod pins;
 pub mod queue;
 pub mod settings;
 pub mod state;
+pub mod windows;
 
 pub use state::AppState;
 

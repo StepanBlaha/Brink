@@ -10,6 +10,7 @@ export function isTauri(): boolean {
 /** Browser dev (`npm run dev:web`): answer commands with canned data. `?pins=0` starts empty. */
 export function installMockIPC(): void {
   let settings: Settings = { ...defaultSettings };
+  let autostart = "off";
   const pinsParam = Number(new URLSearchParams(window.location.search).get("pins") ?? 5);
   const workspace = createWorkspaceMock(Number.isNaN(pinsParam) ? 5 : Math.min(Math.max(pinsParam, 0), 5));
   mockIPC((cmd, payload) => {
@@ -17,6 +18,14 @@ export function installMockIPC(): void {
     if (handled !== undefined) return handled;
     if (cmd === "app_version") return { marketing: "0.10.0", build: "2" };
     if (cmd === "queue_pending_count") return 0;
+    if (cmd === "autostart_status") return autostart;
+    if (cmd === "autostart_set") {
+      autostart = (payload as { enabled?: boolean } | undefined)?.enabled ? "enabled" : "off";
+      return autostart;
+    }
+    if (cmd === "launched_at_login") return false;
+    if (cmd === "system_accent") return 0x0078d4;
+    if (cmd === "oauth_available") return false;
     if (cmd === "queue_submit") return { kind: "saved" };
     if (cmd === "settings_get") return settings;
     if (cmd === "settings_set") {

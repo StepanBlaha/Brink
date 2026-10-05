@@ -45,6 +45,7 @@ export function useSummaryHub(machine: PhaseMachine): void {
     });
     const subs = [
       on<null>("sound://tick", () => void sound.tick()),
+      on<null>("sound://test", () => void sound.play()),
       on<string | { pinId?: string } | null>("pin://content-changed", (p) =>
         summaryService.contentDidChange(typeof p === "string" ? p : (p?.pinId ?? undefined))),
     ];

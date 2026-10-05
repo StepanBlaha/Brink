@@ -51,11 +51,7 @@ pub async fn deeplink_ready(app: AppHandle, state: State<'_, DeepLinks>) -> Resu
 }
 
 pub fn show_settings(app: &AppHandle) {
-    if let Some(w) = app.get_webview_window("settings") {
-        let _ = w.show();
-        let _ = w.unminimize();
-        let _ = w.set_focus();
-    }
+    let _ = crate::commands::windows::open(app, "settings", None);
 }
 
 /// Runs the actions of one launch (`args` excludes the executable).

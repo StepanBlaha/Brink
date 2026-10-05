@@ -4,6 +4,8 @@ import { defineConfig } from "vitest/config";
 process.env["TZ"] = "Europe/Prague";
 
 export default defineConfig({
+  // `legal/*.md` sits above the project root.
+  server: { fs: { allow: [".."] } },
   test: {
     environment: "jsdom",
     include: ["src/**/*.test.{ts,tsx}"],

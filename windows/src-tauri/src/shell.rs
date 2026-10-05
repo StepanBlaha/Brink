@@ -1,7 +1,7 @@
 //! Opening Notion pages and showing the settings window.
 
 use crate::error::AppError;
-use tauri::{AppHandle, Manager};
+use tauri::AppHandle;
 
 /// `(notion:// URL, https URL)` for a page or database id; `None` when the id is not a UUID-ish string.
 pub fn notion_urls(notion_id: &str) -> Option<(String, String)> {
@@ -113,17 +113,10 @@ pub async fn open_url(url: String) -> Result<(), AppError> {
     launch_url(url.trim())
 }
 
-/// Shows and focuses the settings window (created hidden-or-visible by `tauri.conf.json`).
+/// Shows and focuses the settings window (built on demand, `commands::windows`).
 #[tauri::command]
 pub async fn show_settings(app: AppHandle) -> Result<(), AppError> {
-    let w = app
-        .get_webview_window("settings")
-        .ok_or_else(|| AppError::new("window", "No settings window."))?;
-    w.show()
-        .map_err(|e| AppError::new("window", e.to_string()))?;
-    let _ = w.unminimize();
-    w.set_focus()
-        .map_err(|e| AppError::new("window", e.to_string()))
+    crate::commands::windows::open(&app, "settings", None)
 }
 
 #[cfg(test)]

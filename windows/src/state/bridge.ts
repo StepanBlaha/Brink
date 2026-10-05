@@ -1,6 +1,7 @@
 import type { UnlistenFn } from "@tauri-apps/api/event";
 import { on, stateEvents } from "../ipc/events";
 import type { QueueState, Settings } from "../ipc/types";
+import { startAppearance } from "./appearance";
 import { useAuthStore } from "./authStore";
 import { useGroupsStore } from "./groupsStore";
 import { usePinsStore } from "./pinsStore";
@@ -36,5 +37,9 @@ export async function startBridge(): Promise<() => void> {
 export async function initState(): Promise<() => void> {
   const stop = await startBridge();
   await hydrateAll();
-  return stop;
+  const stopAppearance = startAppearance();
+  return () => {
+    stopAppearance();
+    stop();
+  };
 }

@@ -86,7 +86,76 @@
         "width": 560,
         "height": 540,
         "center": true,
-        "visible": true
+        "resizable": false,
+        "maximizable": false,
+        "visible": true,
+        "create": false,
+        "theme": "Dark"
+      },
+      {
+        "label": "onboarding",
+        "title": "Welcome to Brink",
+        "url": "index.html#/onboarding",
+        "width": 460,
+        "height": 440,
+        "center": true,
+        "resizable": false,
+        "maximizable": false,
+        "visible": true,
+        "create": false,
+        "theme": "Dark"
+      },
+      {
+        "label": "about",
+        "title": "About Brink",
+        "url": "index.html#/about",
+        "width": 340,
+        "height": 420,
+        "center": true,
+        "resizable": false,
+        "maximizable": false,
+        "visible": true,
+        "create": false,
+        "theme": "Dark"
+      },
+      {
+        "label": "legal-privacy",
+        "title": "Privacy Policy",
+        "url": "index.html#/legal/privacy",
+        "width": 480,
+        "height": 420,
+        "center": true,
+        "resizable": false,
+        "maximizable": false,
+        "visible": true,
+        "create": false,
+        "theme": "Dark"
+      },
+      {
+        "label": "legal-terms",
+        "title": "Terms of Use",
+        "url": "index.html#/legal/terms",
+        "width": 480,
+        "height": 420,
+        "center": true,
+        "resizable": false,
+        "maximizable": false,
+        "visible": true,
+        "create": false,
+        "theme": "Dark"
+      },
+      {
+        "label": "legal-notice",
+        "title": "Acknowledgements",
+        "url": "index.html#/legal/notice",
+        "width": 480,
+        "height": 420,
+        "center": true,
+        "resizable": false,
+        "maximizable": false,
+        "visible": true,
+        "create": false,
+        "theme": "Dark"
       }
     ],
     "security": {
@@ -96,7 +165,9 @@
   "plugins": {
     "deep-link": {
       "desktop": {
-        "schemes": ["brink"]
+        "schemes": [
+          "brink"
+        ]
       }
     }
   },
@@ -121,7 +192,9 @@
       "nsis": {
         "installMode": "currentUser",
         "installerIcon": "icons/icon.ico",
-        "languages": ["English"],
+        "languages": [
+          "English"
+        ],
         "compression": "lzma",
         "installerHooks": "installer/hooks.nsh"
       },

@@ -2,9 +2,19 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Core capabilities for all Brink windows",
-  "windows": ["notch", "capture", "toast", "tray", "settings"],
+  "windows": [
+    "notch",
+    "capture",
+    "toast",
+    "tray",
+    "settings",
+    "onboarding",
+    "about",
+    "legal-*"
+  ],
   "permissions": [
     "core:default",
+    "core:window:allow-close",
     "deep-link:default",
     "global-shortcut:allow-is-registered"
   ]

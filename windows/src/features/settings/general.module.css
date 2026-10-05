@@ -1,0 +1,6 @@
+.page { display: flex; flex-direction: column; gap: 18px; padding: 20px; }
+.group { display: flex; flex-direction: column; gap: 10px; }
+.row { display: flex; align-items: center; justify-content: space-between; max-width: 340px; color: var(--text); }
+.select { height: 28px; padding: 0 8px; border: 0; border-radius: 6px; outline: none; background: var(--raised); color: var(--text); font: inherit; color-scheme: dark; }
+.select:focus-visible { box-shadow: 0 0 0 1px var(--accent); }
+.warn { margin: 0; color: var(--danger); font-size: 12px; }

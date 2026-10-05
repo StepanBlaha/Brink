@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^2.12.1",
+    "lucide-react": "^1.52.0",
     "motion": "^14.0.0",
     "prosemirror-commands": "^1.7.2",
     "prosemirror-history": "^1.5.1",

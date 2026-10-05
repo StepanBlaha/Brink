@@ -1,4 +1,5 @@
 import type { PinIconDisplay } from "./pinItems";
+import { lucideFor } from "../iconPicker/lucideCatalog";
 import styles from "./strip.module.css";
 
 /** `0xRRGGBB` as a CSS color. */
@@ -12,6 +13,12 @@ export function PinIcon({ icon, size = 16 }: { icon: PinIconDisplay; size?: numb
         {icon.value}
       </span>
     );
+  }
+  if (icon.kind === "symbol") {
+    const Glyph = lucideFor(icon.name);
+    if (Glyph) {
+      return <Glyph aria-hidden size={size + 2} strokeWidth={2.2} color={hexColor(icon.colorHex)} />;
+    }
   }
   const d = size + 8;
   return (

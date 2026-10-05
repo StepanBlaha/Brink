@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { openInNotion, showSettings } from "../../ipc/commands";
+import { openInNotion } from "../../ipc/commands";
+import { windowOpen } from "../../ipc/windowsIpc";
 import { ignore } from "../../state/ignore";
 import { useGroupsStore } from "../../state/groupsStore";
 import { usePinsStore } from "../../state/pinsStore";
@@ -23,6 +24,7 @@ interface Props {
   keptOpenPinId: string | null;
   onKeepOpen: (pinId: string) => void;
   onEditView: (pinId: string) => void;
+  onChangeIcon: (pinId: string) => void;
   /** A pin was removed: collapse when it was the open one. */
   onUnpinned: (pinId: string) => void;
   onRect: (r: Rect | null) => void;
@@ -66,7 +68,7 @@ function NewGroupPrompt(p: { x: number; y: number; align: "start" | "end"; onRec
   );
 }
 
-export function StripOverlay({ overlay, edge, keptOpenPinId, onKeepOpen, onEditView, onUnpinned, onRect, onClose }: Props) {
+export function StripOverlay({ overlay, edge, keptOpenPinId, onKeepOpen, onEditView, onChangeIcon, onUnpinned, onRect, onClose }: Props) {
   const pins = usePinsStore((s) => s.pins);
   const groups = useGroupsStore((s) => s.groups);
   const activeGroupID = useSettingsStore((s) => s.settings.activeGroupID);
@@ -84,7 +86,7 @@ export function StripOverlay({ overlay, edge, keptOpenPinId, onKeepOpen, onEditV
       })),
       { kind: "divider", id: "d" },
       { kind: "item", id: "new", label: "New group…", onSelect: () => {} },
-      { kind: "item", id: "manage", label: "Manage…", onSelect: () => ignore(showSettings()) },
+      { kind: "item", id: "manage", label: "Manage…", onSelect: () => ignore(windowOpen("settings", "groups")) },
     ];
     return <GroupsMenu {...pos} items={items} />;
   }
@@ -102,7 +104,7 @@ export function StripOverlay({ overlay, edge, keptOpenPinId, onKeepOpen, onEditV
   if (!pin) return null;
   const items: MenuEntry[] = [
     { kind: "item", id: "keep", label: keptOpenPinId === pin.id ? "Keep open ✓" : "Keep open", onSelect: () => onKeepOpen(pin.id) },
-    { kind: "item", id: "icon", label: "Change Icon…", disabled: true, onSelect: () => {} },
+    { kind: "item", id: "icon", label: "Change Icon…", onSelect: () => onChangeIcon(pin.id) },
     ...(pin.kind === "dataSource" ? [{ kind: "item", id: "edit", label: "Edit View…", onSelect: () => onEditView(pin.id) } as MenuEntry] : []),
     ...(groups.length > 0
       ? [{

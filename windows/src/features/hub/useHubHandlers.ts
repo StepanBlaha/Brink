@@ -14,6 +14,9 @@ import { handleDeepLink } from "./deepLinkHandler";
 import { reminderService, summaryService } from "../../services/hub";
 import { useSummaryStore } from "../../services/summaryStore";
 import { useSummaryHub } from "./useSummaryHub";
+import { useOnboardingLaunch } from "./useOnboardingLaunch";
+import { OPEN_ADD_EVENT } from "../../ipc/windowsIpc";
+import { startSummaryBroadcast } from "../../services/summaryBridge";
 
 const toast = (message: string, isError: boolean): void => void toastShow(message, isError).catch(() => {});
 const contentChanged = (pinId?: string): void => summaryService.contentDidChange(pinId);
@@ -26,7 +29,9 @@ function realPins() {
 }
 
 /** The notch window is the hub (D6): hotkeys, deep links, clipboard append and the tray count. */
-export function useHubHandlers(machine: PhaseMachine): void {
+export function useHubHandlers(machine: PhaseMachine, opts: { onOpenAdd?: () => void } = {}): void {
+  const optsRef = useRef(opts);
+  optsRef.current = opts;
   const ref = useRef(machine);
   ref.current = machine;
   const settings = useSettingsStore((s) => s.settings);
@@ -69,8 +74,11 @@ export function useHubHandlers(machine: PhaseMachine): void {
           notify: (q) => void reminderService.handleAction(q["action"] ?? "open", q["pinId"] ?? "", q["itemId"] ?? ""),
         });
       }),
-      // Tray menu About/Legal: the windows arrive with M8.
-      on<{ name: string }>("window://open", () => {}),
+      // Onboarding "Add a page": open the add flow.
+      on<null>(OPEN_ADD_EVENT, () => {
+        optsRef.current.onOpenAdd?.();
+        ref.current.openAddFlow();
+      }),
     ];
     // Startup registration failures fire before the UI listens: read the status once.
     void (async () => {
@@ -105,6 +113,8 @@ export function useHubHandlers(machine: PhaseMachine): void {
   }, [pins, summaries, settings.menuBarShowOpenCount]);
 
   useSummaryHub(machine);
+  useOnboardingLaunch();
+  useEffect(() => startSummaryBroadcast(), []);
 }
 
 import { useNotchStore } from "../../state/notchStore";

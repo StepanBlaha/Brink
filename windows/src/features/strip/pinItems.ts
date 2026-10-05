@@ -1,3 +1,4 @@
+import { lucideFor } from "../iconPicker/lucideCatalog";
 import type { Pin, PinGroup } from "../../domain/store/pin";
 
 /** Id of the virtual Today pin (M6). It is never stored in pins.json. */
@@ -47,7 +48,10 @@ export function iconDisplayFor(pin: Pin): PinIconDisplay {
         return { kind: "letter", text: c.value, colorHex: c.colorHex };
       case "sfSymbol":
       case "lucide":
-        return { kind: "symbol", name: c.name, colorHex: c.colorHex };
+        // Unknown symbol names fall back to the title's first letter (plan 2.6.4).
+        return lucideFor(c.name)
+          ? { kind: "symbol", name: c.name, colorHex: c.colorHex }
+          : { kind: "letter", text: firstGrapheme(pin.title).toUpperCase() || "•", colorHex: c.colorHex };
     }
   }
   if ("emoji" in pin.icon) return { kind: "emoji", value: pin.icon.emoji._0 };

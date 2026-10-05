@@ -1,0 +1,13 @@
+.page { display: flex; flex-direction: column; gap: 18px; padding: 20px; }
+.accents { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+.accent { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 2px 0; border: 0; border-radius: 6px; background: none; color: var(--text-2); font: inherit; cursor: pointer; }
+.accent:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--accent); }
+.swatch { position: relative; display: block; width: 26px; height: 26px; border-radius: 50%; overflow: hidden; }
+.swatchOn { box-shadow: 0 0 0 2px #121212, 0 0 0 4px var(--text); }
+.half { position: absolute; inset: 0; background: linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, 0.55) 50%); }
+.swatchName { max-width: 100%; overflow: hidden; font-size: 10.5px; text-overflow: ellipsis; white-space: nowrap; }
+.select { max-width: 260px; height: 28px; padding: 0 8px; border: 0; border-radius: 6px; outline: none; background: var(--raised); color: var(--text); font: inherit; }
+.select:focus-visible { box-shadow: 0 0 0 1px var(--accent); }
+.startup { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.note, .warn { margin: 0; font-size: 11.5px; color: var(--text-3); }
+.warn { color: var(--danger); }

@@ -11,11 +11,14 @@ export interface NotchStore {
   nativeReduceMotion: boolean;
   /** Hidden while a D3D full screen app runs, or an auto-hide taskbar covers the notch. */
   hidden: boolean;
+  /** Monitor index for the notch (display preference); null = primary. */
+  monitor: number | null;
   phase: PhaseState;
   setConfig: (c: Partial<NotchConfigParams>) => void;
   setWindowSize: (s: Size) => void;
   setNativeReduceMotion: (v: boolean) => void;
   setHidden: (v: boolean) => void;
+  setMonitor: (m: number | null) => void;
   setPhase: (p: PhaseState) => void;
 }
 
@@ -33,10 +36,12 @@ export const useNotchStore = create<NotchStore>((set) => ({
   windowSize: { width: 900, height: 800 },
   nativeReduceMotion: false,
   hidden: false,
+  monitor: null,
   phase: initialPhaseState,
   setConfig: (c) => set((s) => ({ config: { ...s.config, ...c } })),
   setWindowSize: (windowSize) => set({ windowSize }),
   setNativeReduceMotion: (nativeReduceMotion) => set({ nativeReduceMotion }),
   setHidden: (hidden) => set({ hidden }),
+  setMonitor: (monitor) => set({ monitor }),
   setPhase: (phase) => set({ phase }),
 }));

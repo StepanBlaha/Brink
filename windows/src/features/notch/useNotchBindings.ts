@@ -42,6 +42,7 @@ export function useNotchBindings({ layout, hitRects, zonesAt, firstPinId, overla
   const focusTaken = useRef(false);
   const phase = store((s) => s.phase.phase);
   const { edge, size } = store((s) => s.config);
+  const monitor = store((s) => s.monitor);
   const pins = layout.pinCount;
 
   // Window size follows the viewport (Rust sizes the HWND once per placement).
@@ -52,7 +53,7 @@ export function useNotchBindings({ layout, hitRects, zonesAt, firstPinId, overla
     return () => window.removeEventListener("resize", sync);
   }, [store]);
 
-  useEffect(() => configureWindow(edge, pins, size), [edge, pins, size]);
+  useEffect(() => configureWindow(edge, pins, size, monitor), [edge, pins, size, monitor]);
   useEffect(() => machine.layoutChanged(), [machine, edge, size, layout.windowSize]);
   useEffect(() => sendHitRects(hitRects, phase === "expanded"), [hitRects, phase]);
   useEffect(() => () => machine.dispose(), [machine]);

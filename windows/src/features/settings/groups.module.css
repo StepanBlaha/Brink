@@ -1,0 +1,17 @@
+.page { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
+.list { display: flex; flex-direction: column; margin: 0; padding: 4px; max-height: 240px; overflow-y: auto; border-radius: 8px; background: var(--raised); list-style: none; }
+.row { display: flex; align-items: center; gap: 8px; padding: 3px 4px; border-radius: 6px; }
+.row:hover { background: var(--hover); }
+.field { height: 26px; padding: 0 6px; border: 0; border-radius: 6px; outline: none; background: transparent; color: var(--text); font: inherit; }
+.field:focus { box-shadow: 0 0 0 1px var(--accent); }
+.box { background: var(--raised); }
+.emoji { flex: none; width: 52px; text-align: center; }
+.name { flex: 1; min-width: 0; }
+.count { flex: none; color: var(--text-2); font-size: 11px; }
+.icon { display: grid; flex: none; place-items: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--text-2); cursor: pointer; }
+.icon:hover:not(:disabled) { background: var(--hover); color: var(--text); }
+.icon:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--accent); }
+.icon:disabled { opacity: 0.3; cursor: default; }
+.del { color: var(--danger); }
+.empty { margin: 0; padding: 12px; border-radius: 8px; background: var(--raised); color: var(--text-2); font-size: 12px; }
+.add { display: flex; gap: 8px; align-items: center; }
