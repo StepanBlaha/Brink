@@ -4,7 +4,7 @@ import NotionKit
 /// Handles `.clipboardAppendRequested`: appends the clipboard to the last-opened page pin.
 @MainActor
 final class ClipboardAppendController {
-    static let lastOpenedPinKey = "NotionDock.lastOpenedPinID"
+    static let lastOpenedPinKey = "lastOpenedPinID" // written by Settings.lastOpenedPinID
 
     private let appModel: AppModel
     private var observer: NSObjectProtocol?

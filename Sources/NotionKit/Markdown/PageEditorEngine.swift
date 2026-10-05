@@ -13,7 +13,7 @@ public enum EditorSyncStatus: Equatable, Sendable {
         switch self {
         case .saved: return "Saved"
         case .saving: return "Saving…"
-        case .offline: return "Offline — will retry"
+        case .offline: return "Offline. Will retry."
         case .error(let message): return message
         }
     }
@@ -569,8 +569,8 @@ public final class PageEditorEngine {
 
     private func showRestoredHint(_ count: Int) {
         restoredTokenHint = count == 1
-            ? "Restored a block that can't be deleted here — use Notion."
-            : "Restored \(count) blocks that can't be deleted here — use Notion."
+            ? "Restored a block that can't be deleted here. Delete it in Notion."
+            : "Restored \(count) blocks that can't be deleted here. Delete them in Notion."
         hintTask?.cancel()
         hintTask = Task { [weak self] in
             try? await Task.sleep(nanoseconds: 4_000_000_000)
