@@ -1,6 +1,6 @@
 [package]
 name = "brink"
-version = "0.10.0"
+version = "0.11.0"
 description = "Brink for Windows"
 authors = ["Stepan Blaha"]
 edition = "2021"

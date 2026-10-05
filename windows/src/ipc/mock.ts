@@ -16,7 +16,7 @@ export function installMockIPC(): void {
   mockIPC((cmd, payload) => {
     const handled = workspace(cmd, (payload ?? {}) as Record<string, unknown>);
     if (handled !== undefined) return handled;
-    if (cmd === "app_version") return { marketing: "0.10.0", build: "2" };
+    if (cmd === "app_version") return { marketing: "0.11.0", build: "3" };
     if (cmd === "queue_pending_count") return 0;
     if (cmd === "autostart_status") return autostart;
     if (cmd === "autostart_set") {
