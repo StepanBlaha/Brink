@@ -13,7 +13,8 @@ extension PageEditorEngineTests {
             pageId: "page-1", client: client,
             writeQueue: WriteQueue(fileURL: dir.appendingPathComponent("pending.json")),
             cache: Cache(directory: dir), cacheKey: "pin-1",
-            debounce: 30, remoteQuietPeriod: 0, retryInterval: 600
+            debounce: 30, remoteQuietPeriod: 0, retryInterval: 600,
+            backupDirectory: dir.appendingPathComponent("backups")
         )
     }
 

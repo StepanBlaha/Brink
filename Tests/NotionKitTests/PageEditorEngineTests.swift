@@ -8,15 +8,16 @@ import AppKit
 @MainActor
 @Suite("PageEditorEngine — saving against a fake Notion", .serialized)
 struct PageEditorEngineTests {
-    private func makeEngine(debounce: TimeInterval = 0.7) -> PageEditorEngine {
+    private func makeEngine(debounce: TimeInterval = 0.7, backups: URL? = nil) -> PageEditorEngine {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent("notiondock-tests-\(UUID().uuidString)")
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        let client = NotionClient(tokenProvider: { "test-token" }, session: FakeNotionServer.session)
+        let client = NotionClient(tokenProvider: { "test-token" }, session: FakeNotionServer.session, backoffBase: 0.01)
         return PageEditorEngine(
             pageId: "page-1", client: client,
             writeQueue: WriteQueue(fileURL: dir.appendingPathComponent("pending.json")),
             cache: Cache(directory: dir), cacheKey: "pin-1",
-            debounce: debounce, remoteQuietPeriod: 0, retryInterval: 600
+            debounce: debounce, remoteQuietPeriod: 0, retryInterval: 600,
+            backupDirectory: backups ?? dir.appendingPathComponent("backups")
         )
     }
 
@@ -198,7 +199,7 @@ struct PageEditorEngineTests {
         await engine.load()
         FakeNotionServer.clearLog()
         type(engine.document, "?", at: location(engine.document, of: "Hello world") + 11)
-        FakeNotionServer.failNextWrites(1)
+        FakeNotionServer.failNextWrites(4) // the client itself retries a network error 3 times first
         await engine.syncNow()
         #expect({ if case .offline = engine.status { return true }; return false }())
         #expect(engine.previous.first(where: { $0.blockID == "p1" })?.content == "Hello world")
@@ -208,6 +209,30 @@ struct PageEditorEngineTests {
         #expect(FakeNotionServer.writes.map(\.description) == ["PATCH /v1/blocks/p1"])
         #expect(FakeNotionServer.plainText(of: "p1") == "Hello world?")
         #expect(engine.status == .saved)
+    }
+
+    @Test("a pass that deletes a block writes a backup of the previous page first; edits alone do not")
+    func backupBeforeDelete() async throws {
+        seedPage()
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent("brink-engine-backups-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let engine = makeEngine(backups: dir)
+        await engine.load()
+        let doc = engine.document
+        func backupFiles() -> [URL] {
+            ((try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil)) ?? []).filter { $0.pathExtension == "md" }
+        }
+        type(doc, "!", at: location(doc, of: "Hello world"))
+        await engine.syncNow()
+        #expect(backupFiles().isEmpty)
+
+        replace(doc, location(doc, of: "Last\n"), 5, with: "")
+        await engine.syncNow()
+        let files = backupFiles()
+        #expect(files.count == 1)
+        let text = try String(contentsOf: #require(files.first), encoding: .utf8)
+        #expect(text.contains("Last"))
+        #expect(text.contains("# Title"))
     }
 
     @Test("deleting a token chip line never deletes the block; the chip is restored")

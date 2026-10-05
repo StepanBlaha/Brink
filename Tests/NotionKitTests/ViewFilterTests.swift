@@ -12,6 +12,7 @@ struct ViewFilterTests {
         components.year = 2026
         components.month = 9
         components.day = 28
+        components.hour = 12
         return calendar.date(from: components)!
     }()
 
@@ -81,6 +82,23 @@ struct ViewFilterTests {
         let empty = ViewFilter(property: "Due", op: .dateIsEmpty)
         let jsonEmpty = try encodeToDictionary(#require(empty.requestJSON()))
         #expect((jsonEmpty["date"] as? [String: Any])?["is_empty"] as? Bool == true)
+    }
+
+    @Test("today uses the local calendar day, not the UTC day")
+    func todayIsLocalDay() throws {
+        // 2026-10-05 23:30 in Los Angeles (UTC-7) is already 2026-10-06 in UTC.
+        var la = Calendar(identifier: .gregorian)
+        la.timeZone = TimeZone(identifier: "America/Los_Angeles")!
+        let late = la.date(from: DateComponents(year: 2026, month: 10, day: 5, hour: 23, minute: 30))!
+        let json = try encodeToDictionary(#require(ViewFilter(property: "Due", op: .dateIsToday).requestJSON(referenceDate: late, calendar: la)))
+        #expect((json["date"] as? [String: Any])?["equals"] as? String == "2026-10-05")
+
+        // 2026-10-06 00:30 in Prague (UTC+2) is still 2026-10-05 in UTC.
+        var prague = Calendar(identifier: .gregorian)
+        prague.timeZone = TimeZone(identifier: "Europe/Prague")!
+        let early = prague.date(from: DateComponents(year: 2026, month: 10, day: 6, hour: 0, minute: 30))!
+        let json2 = try encodeToDictionary(#require(ViewFilter(property: "Due", op: .dateIsBeforeToday).requestJSON(referenceDate: early, calendar: prague)))
+        #expect((json2["date"] as? [String: Any])?["before"] as? String == "2026-10-06")
     }
 
     @Test("date is within next 7 days compounds on_or_after / on_or_before with AND")

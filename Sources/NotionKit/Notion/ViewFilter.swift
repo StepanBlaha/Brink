@@ -91,7 +91,7 @@ extension ViewFilter {
     /// at developers.notion.com/reference (checkbox/status/select/date/title/number filter
     /// objects, and the "or" compound filter for "any of"). Returns `nil` if a required value
     /// is missing (e.g. a text-contains filter with an empty string).
-    public func requestJSON(referenceDate: Date = Date()) -> JSONValue? {
+    public func requestJSON(referenceDate: Date = Date(), calendar: Calendar = .current) -> JSONValue? {
         switch op {
         case .checkboxIs:
             return propertyFilter("checkbox", ["equals": .bool(true)])
@@ -114,14 +114,14 @@ extension ViewFilter {
         case .selectIsAnyOf:
             return anyOfFilter(key: "select")
         case .dateIsToday:
-            return propertyFilter("date", ["equals": .string(Self.isoDate(referenceDate))])
+            return propertyFilter("date", ["equals": .string(Self.isoDate(referenceDate, calendar))])
         case .dateIsBeforeToday:
-            return propertyFilter("date", ["before": .string(Self.isoDate(referenceDate))])
+            return propertyFilter("date", ["before": .string(Self.isoDate(referenceDate, calendar))])
         case .dateWithinNext7Days:
-            let end = Calendar.current.date(byAdding: .day, value: 7, to: referenceDate) ?? referenceDate
+            let end = calendar.date(byAdding: .day, value: 7, to: referenceDate) ?? referenceDate
             return .object(["and": .array([
-                propertyFilter("date", ["on_or_after": .string(Self.isoDate(referenceDate))]),
-                propertyFilter("date", ["on_or_before": .string(Self.isoDate(end))]),
+                propertyFilter("date", ["on_or_after": .string(Self.isoDate(referenceDate, calendar))]),
+                propertyFilter("date", ["on_or_before": .string(Self.isoDate(end, calendar))]),
             ])])
         case .dateIsEmpty:
             return propertyFilter("date", ["is_empty": .bool(true)])
@@ -149,10 +149,11 @@ extension ViewFilter {
         return .object(["or": .array(names.map { propertyFilter(key, ["equals": .string($0)]) })])
     }
 
-    private static func isoDate(_ date: Date) -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withFullDate]
-        return formatter.string(from: date)
+    /// Notion date-only strings are local calendar days, so "today" is the user's local day
+    /// (the calendar's time zone), never the UTC day.
+    private static func isoDate(_ date: Date, _ calendar: Calendar) -> String {
+        let c = calendar.dateComponents([.year, .month, .day], from: date)
+        return String(format: "%04d-%02d-%02d", c.year ?? 1970, c.month ?? 1, c.day ?? 1)
     }
 }
 
@@ -174,8 +175,8 @@ public struct ViewSort: Codable, Sendable, Equatable, Identifiable {
 public enum ViewQueryBuilder {
     /// AND-combines every filter with a JSON shape (skipping any missing a required value).
     /// Returns `nil` if there is nothing to filter by.
-    public static func filterJSON(_ filters: [ViewFilter], referenceDate: Date = Date()) -> JSONValue? {
-        let parts = filters.compactMap { $0.requestJSON(referenceDate: referenceDate) }
+    public static func filterJSON(_ filters: [ViewFilter], referenceDate: Date = Date(), calendar: Calendar = .current) -> JSONValue? {
+        let parts = filters.compactMap { $0.requestJSON(referenceDate: referenceDate, calendar: calendar) }
         guard !parts.isEmpty else { return nil }
         if parts.count == 1 { return parts[0] }
         return .object(["and": .array(parts)])

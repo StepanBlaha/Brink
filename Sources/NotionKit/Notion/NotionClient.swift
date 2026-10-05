@@ -15,12 +15,20 @@ public actor NotionClient {
     private let session: URLSession
     private let baseURL = URL(string: "https://api.notion.com/v1")!
     private let rateLimiter = RateLimiter(minSpacing: 0.34)
+    /// Per-request timeout, so a hung connection fails (and retries) instead of stalling a save.
+    static let requestTimeout: TimeInterval = 30
+    /// 429s honor Retry-After and have their own budget; 5xx/network errors back off exponentially.
+    static let maxRateLimitRetries = 5
+    static let maxServerRetries = 3
+    private let backoffBase: TimeInterval
     private let decoder = JSONDecoder()
     private let encoder = JSONEncoder()
 
     public init(tokenProvider: @escaping @Sendable () -> String?,
                 session: URLSession = .shared,
-                onUnauthorized: (@Sendable (_ rejectedToken: String) async -> Bool)? = nil) {
+                onUnauthorized: (@Sendable (_ rejectedToken: String) async -> Bool)? = nil,
+                backoffBase: TimeInterval = 0.5) {
+        self.backoffBase = backoffBase
         self.tokenProvider = tokenProvider
         self.session = session
         self.onUnauthorized = onUnauthorized
@@ -171,7 +179,7 @@ public actor NotionClient {
 
     /// `rawBody` (additive, for multipart file uploads) is sent as is with its own Content-Type
     /// instead of a JSON `body`.
-    func performRequest(method: String, path: String, query: [String: String], body: JSONValue?, rawBody: (data: Data, contentType: String)? = nil, attempt: Int = 0, didRefresh: Bool = false) async throws -> Data {
+    func performRequest(method: String, path: String, query: [String: String], body: JSONValue?, rawBody: (data: Data, contentType: String)? = nil, rateLimitRetries: Int = 0, serverRetries: Int = 0, didRefresh: Bool = false) async throws -> Data {
         guard let token = tokenProvider(), !token.isEmpty else { throw NotionError.missingToken }
 
         var components = URLComponents(url: baseURL.appendingPathComponent(path), resolvingAgainstBaseURL: false)!
@@ -180,6 +188,7 @@ public actor NotionClient {
         }
         var urlRequest = URLRequest(url: components.url!)
         urlRequest.httpMethod = method
+        urlRequest.timeoutInterval = Self.requestTimeout
         urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         urlRequest.setValue(Self.apiVersion, forHTTPHeaderField: "Notion-Version")
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -191,12 +200,23 @@ public actor NotionClient {
 
         await rateLimiter.acquire()
 
+        func retry(rate: Int, server: Int, refreshed: Bool? = nil) async throws -> Data {
+            try await performRequest(method: method, path: path, query: query, body: body, rawBody: rawBody,
+                                     rateLimitRetries: rate, serverRetries: server, didRefresh: refreshed ?? didRefresh)
+        }
         let data: Data
         let response: URLResponse
         do {
             (data, response) = try await session.data(for: urlRequest)
         } catch {
-            throw NotionError.network(error.localizedDescription)
+            let urlError = error as? URLError
+            // A timed-out write may have gone through: only reads are safe to send again.
+            let safe = urlError?.code != .timedOut || Self.isIdempotent(method: method, path: path)
+            guard urlError?.code != .cancelled, safe, serverRetries < Self.maxServerRetries else {
+                throw NotionError.network(error.localizedDescription)
+            }
+            try? await Task.sleep(nanoseconds: Self.backoffNanos(base: backoffBase, retry: serverRetries))
+            return try await retry(rate: rateLimitRetries, server: serverRetries + 1)
         }
         guard let http = response as? HTTPURLResponse else {
             throw NotionError.network("No HTTP response received")
@@ -206,18 +226,18 @@ public actor NotionClient {
         case 200..<300:
             return data
         case 429:
-            guard attempt < 3 else { throw NotionError.rateLimited }
-            let retryAfter = http.value(forHTTPHeaderField: "Retry-After").flatMap(Double.init) ?? 1
+            guard rateLimitRetries < Self.maxRateLimitRetries else { throw NotionError.rateLimited }
+            let retryAfter = min(http.value(forHTTPHeaderField: "Retry-After").flatMap(Double.init) ?? 1, 60)
             await rateLimiter.delay(until: Date().addingTimeInterval(retryAfter))
             try? await Task.sleep(nanoseconds: UInt64(retryAfter * 1_000_000_000))
-            return try await performRequest(method: method, path: path, query: query, body: body, rawBody: rawBody, attempt: attempt + 1, didRefresh: didRefresh)
+            return try await retry(rate: rateLimitRetries + 1, server: serverRetries)
         case 500..<600:
-            guard attempt < 1 else { throw decodeAPIError(data, status: http.statusCode) }
-            try? await Task.sleep(nanoseconds: 500_000_000)
-            return try await performRequest(method: method, path: path, query: query, body: body, rawBody: rawBody, attempt: attempt + 1, didRefresh: didRefresh)
+            guard serverRetries < Self.maxServerRetries else { throw decodeAPIError(data, status: http.statusCode) }
+            try? await Task.sleep(nanoseconds: Self.backoffNanos(base: backoffBase, retry: serverRetries))
+            return try await retry(rate: rateLimitRetries, server: serverRetries + 1)
         case 401:
             if !didRefresh, let onUnauthorized, await onUnauthorized(token) {
-                return try await performRequest(method: method, path: path, query: query, body: body, rawBody: rawBody, attempt: attempt, didRefresh: true)
+                return try await retry(rate: rateLimitRetries, server: serverRetries, refreshed: true)
             }
             throw NotionError.unauthorized
         case 404:
@@ -225,6 +245,15 @@ public actor NotionClient {
         default:
             throw decodeAPIError(data, status: http.statusCode)
         }
+    }
+
+    /// 0.5 s, 1 s, 2 s for retries 0, 1, 2 (scaled by `base / 0.5`).
+    static func backoffNanos(base: TimeInterval, retry: Int) -> UInt64 {
+        UInt64(base * pow(2, Double(retry)) * 1_000_000_000)
+    }
+
+    static func isIdempotent(method: String, path: String) -> Bool {
+        method == "GET" || method == "DELETE" || path == "search" || path.hasSuffix("/query")
     }
 
     private func decodeAPIError(_ data: Data, status: Int) -> NotionError {

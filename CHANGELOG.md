@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.1 — 2026-10-05
+
+### Fixed
+- Brink now saves a local backup of a page before any save that removes blocks, so an accidental delete can be recovered. The newest 20 backups per page are kept in the app's support folder.
+- "Today", "Before today" and "Next 7 days" filters now use your local day instead of UTC, so they no longer flip a few hours early or late near midnight.
+- Slow or dropped connections no longer stall saving. Requests time out after 30 seconds and retry on their own, with more patience when Notion asks to slow down.
+
 ## 0.11.0 — 2026-10-05
 
 ### New

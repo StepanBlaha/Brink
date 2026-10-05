@@ -26,7 +26,7 @@ struct NotionClientTests {
     @Test("gives up after exhausting retries on repeated 429s")
     func exhaustsRetries() async throws {
         MockURLProtocol.reset()
-        for _ in 0..<4 {
+        for _ in 0..<6 {
             MockURLProtocol.queue { _ in
                 .init(status: 429, headers: ["Retry-After": "0"], body: Data())
             }
@@ -35,6 +35,50 @@ struct NotionClientTests {
         await #expect(throws: NotionError.rateLimited) {
             _ = try await client.retrieveDataSource("ds-1")
         }
+    }
+
+    @Test("429 and 5xx retries use separate budgets")
+    func separateRetryBudgets() async throws {
+        MockURLProtocol.reset()
+        // 3 x 429, 3 x 503, then success: would fail if the counters were shared (max 3 or 5 total).
+        for status in [429, 429, 429, 503, 503, 503] {
+            MockURLProtocol.queue { _ in .init(status: status, headers: ["Retry-After": "0"], body: Data()) }
+        }
+        MockURLProtocol.queue { _ in .init(status: 200, headers: [:], body: Data(DataSourceFixtures.schemaResponse.utf8)) }
+        let client = NotionClient(tokenProvider: { "test-token" }, session: MockURLProtocol.session, backoffBase: 0.01)
+        let schema = try await client.retrieveDataSource("ds-1")
+        #expect(schema.id == "ds-1")
+        #expect(MockURLProtocol.timestamps.count == 7)
+    }
+
+    @Test("5xx gives up after 3 retries")
+    func serverErrorBudget() async throws {
+        MockURLProtocol.reset()
+        for _ in 0..<5 { MockURLProtocol.queue { _ in .init(status: 503, headers: [:], body: Data()) } }
+        let client = NotionClient(tokenProvider: { "test-token" }, session: MockURLProtocol.session, backoffBase: 0.01)
+        await #expect(throws: NotionError.self) { _ = try await client.retrieveDataSource("ds-1") }
+        #expect(MockURLProtocol.timestamps.count == 4)
+    }
+
+    @Test("network errors retry up to 3 times with backoff")
+    func networkRetries() async throws {
+        MockURLProtocol.reset() // no handlers: every request fails with a URLError
+        let client = NotionClient(tokenProvider: { "test-token" }, session: MockURLProtocol.session, backoffBase: 0.01)
+        await #expect(throws: NotionError.self) { _ = try await client.retrieveDataSource("ds-1") }
+        #expect(MockURLProtocol.timestamps.count == 4)
+    }
+
+    @Test("requests carry a 30 s timeout")
+    func requestTimeout() async throws {
+        MockURLProtocol.reset()
+        nonisolated(unsafe) var seen: TimeInterval = 0
+        MockURLProtocol.queue { request in
+            seen = request.timeoutInterval
+            return .init(status: 200, headers: [:], body: Data(DataSourceFixtures.schemaResponse.utf8))
+        }
+        let client = NotionClient(tokenProvider: { "test-token" }, session: MockURLProtocol.session)
+        _ = try await client.retrieveDataSource("ds-1")
+        #expect(seen == 30)
     }
 
     @Test("spaces consecutive requests by roughly the minimum interval")

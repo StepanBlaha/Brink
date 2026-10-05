@@ -63,6 +63,8 @@ public final class PageEditorEngine {
     @ObservationIgnored private let pollNanos: UInt64
     @ObservationIgnored private let remoteQuietPeriod: TimeInterval
     @ObservationIgnored private let retryNanos: UInt64
+    /// Where pre-delete backups go (nil = the app's backups folder); tests point it at a temp dir.
+    @ObservationIgnored private let backupDirectory: URL?
 
     @ObservationIgnored private var debounceTask: Task<Void, Never>?
     @ObservationIgnored private var retryTask: Task<Void, Never>?
@@ -88,8 +90,10 @@ public final class PageEditorEngine {
         debounce: TimeInterval = 0.7,
         pollInterval: TimeInterval = 45,
         remoteQuietPeriod: TimeInterval = 5,
-        retryInterval: TimeInterval = 15
+        retryInterval: TimeInterval = 15,
+        backupDirectory: URL? = nil
     ) {
+        self.backupDirectory = backupDirectory
         self.pageId = pageId
         self.client = client
         self.writeQueue = writeQueue
@@ -357,6 +361,9 @@ public final class PageEditorEngine {
         }
         massDeleteConfirmed = false
         pendingMassDelete = nil
+
+        // Destructive pass: keep a local copy of the last confirmed page first (best effort).
+        if deletes >= 1 { PageBackup.write(pageID: pageId, blocks: previous, directory: backupDirectory) }
 
         guard !ops.isEmpty else {
             syncedGeneration = generation
