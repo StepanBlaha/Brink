@@ -54,3 +54,14 @@ Source: `docs/WINDOWS-PORT.md` section 2.1. Dated entries below the table record
 - **Not in M2:** resize grips, virtual-desktop pinning, SystemAccent. Icons are inline SVG until M8; fake pins use emoji.
 - **Debug:** `window.__notch("strip" | "expanded:tasks" | "peek:tasks" | "edge=left" ...)` in dev builds and `?edge=&size=&pill=&outline=1&phase=&backdrop=1` query params.
 - **Verification on Mac** used the Vite page in the browser pane (the real Tauri window was run and showed no errors, but its screenshots would capture the owner's desktop and are not stored).
+
+## 2026-10-05 M4 database task view
+
+- **NaturalDate not ported yet.** Quick add creates plain titles (no "tomorrow" parsing); natural dates arrive with M7. `domain/capture/snooze.ts` holds only the pieces snooze needs (`isoString`, `nextOccurrence`, `snoozeTarget`).
+- **Setup flow deferred.** `DatabaseSetup`, `ViewBuilder`, `FilterRow`, `SortRow` (pinning) are not in M4: saved filters, sorts, view name and show-completed are fully applied from `pin.config`, but the editor for them lands with the pinning UI (M3/M8). The title rule `"<base> · <viewName>"` is applied there.
+- **Not wired into the panel.** `DatabaseHost` (pin -> task view) and `EmbeddedDatabase` (child_database id -> compact view) are ready; the notch `Panel` host belongs to M3 and swaps its placeholder rows for `DatabaseHost`. Embedded view is used by the editor in M5.
+- **Dev page.** `#/dbdemo` (add `?compact=1`) renders the Sprint database on in-memory ports (`fakePorts.ts`), no Tauri needed.
+- **Status pill is read-only** like the Mac; `setStatus` exists in the model (tested) for later UI.
+- **Title edit** commits on Enter or blur (Mac: Enter only); Escape reverts.
+- **Row-out** uses the `list` spring plus the 0.8 s model delay; Reduce Motion uses the instant transition.
+- **Sound tick** on completion is M6.

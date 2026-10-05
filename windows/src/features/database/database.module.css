@@ -1,0 +1,73 @@
+.view { display: flex; flex-direction: column; min-height: 0; height: 100%; font-size: 14px; }
+.compact { height: auto; }
+.caption { padding: 4px 12px 6px; font-size: 0.86em; color: var(--text-2); }
+.scroll { flex: 1; overflow-y: auto; min-height: 0; scrollbar-width: none; }
+.quick { display: flex; align-items: center; gap: 8px; padding: 8px 12px; color: var(--text-3); flex: none; }
+.quick input {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text); font: inherit;
+}
+.quick input::placeholder { color: var(--text-3); }
+.error { padding: 0 12px 6px; font-size: 0.86em; color: var(--danger); }
+.loading, .empty { padding: 24px 12px; text-align: center; color: var(--text-2); }
+.compact .empty { padding: 16px 12px; }
+.row {
+  position: relative; display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px;
+  transition: background-color 0.12s ease-out;
+}
+.row:hover { background: var(--hover); }
+.check {
+  display: grid; place-items: center; flex: none; width: 16px; height: 16px; padding: 0; color: #fff;
+  border: 1.5px solid var(--checkbox-border); border-radius: 3px; background: transparent; cursor: pointer;
+}
+.checked { background: var(--accent); border-color: var(--accent); }
+.title {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text); font: inherit;
+  text-overflow: ellipsis;
+}
+.doneText { color: var(--text-2); text-decoration: line-through; }
+.pill {
+  flex: none; padding: 2px 6px; border-radius: 4px; background: var(--raised); color: var(--text-2);
+  font-size: 0.86em; white-space: nowrap;
+}
+.dateWrap { flex: none; }
+.chip {
+  padding: 0; border: 0; background: transparent; color: var(--text-2); font: inherit; font-size: 0.86em;
+  cursor: pointer; white-space: nowrap;
+}
+.chip:hover { color: var(--text); }
+.overdue, .overdue:hover { color: var(--danger); }
+.link {
+  display: flex; align-items: center; gap: 6px; width: 100%; padding: 6px 12px; border: 0; background: transparent;
+  color: var(--text-2); font: inherit; font-size: 0.86em; text-align: left; cursor: pointer;
+}
+.link:hover { color: var(--text); }
+.miniBox { width: 11px; height: 11px; border: 1px solid var(--checkbox-border); border-radius: 2px; }
+.miniOn { background: var(--accent); border-color: var(--accent); }
+.menu, .datePop {
+  position: fixed; z-index: 50; background: var(--raised); border: 1px solid var(--divider); border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5); color: var(--text); font-size: 0.93em;
+}
+.menu { min-width: 180px; padding: 4px; }
+.menuTitle { padding: 4px 8px; font-size: 0.8em; color: var(--text-3); }
+.menuItem {
+  display: block; width: 100%; padding: 5px 8px; border: 0; border-radius: 4px; background: transparent;
+  color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.menuItem:hover:not(:disabled) { background: var(--hover); }
+.menuItem:disabled { color: var(--text-3); cursor: default; }
+.menuDivider { height: 1px; margin: 4px 0; background: var(--divider); }
+.datePop { width: 224px; padding: 10px; }
+.calHead { display: flex; align-items: center; justify-content: space-between; padding-bottom: 6px; font-weight: 600; }
+.calNav { width: 24px; height: 24px; border: 0; border-radius: 4px; background: transparent; color: var(--text-2); font-size: 16px; cursor: pointer; }
+.calNav:hover { background: var(--hover); color: var(--text); }
+.calGrid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+.calDow { font-size: 0.8em; color: var(--text-3); padding: 2px 0; }
+.calDay { height: 26px; border: 0; border-radius: 13px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.calDay:hover { background: var(--hover); }
+.calToday { color: var(--accent); font-weight: 600; }
+.calSel, .calSel:hover { background: var(--accent); color: #fff; }
+.calClear {
+  display: block; margin: 8px auto 0; border: 0; background: transparent; color: var(--text-2);
+  font: inherit; font-size: 0.86em; cursor: pointer;
+}
+.calClear:hover { color: var(--text); }

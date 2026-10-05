@@ -24,3 +24,13 @@
 - [x] Screenshots (Mac, browser pane): `docs/screens/m2/` right resting/strip/expanded, top strip+peek/expanded, left large expanded with outline
 - [ ] Only on real Windows: HWND styles via `debug_window_styles`, Alt-Tab absence, click-through to a window behind, Notepad focus restore, 100/150/200 % and mixed-DPI screenshots, taskbar auto-hide, idle CPU < 1 %
 - [ ] Windows CI green (see commit follow-up)
+
+## M4 Database task view (2026-10-05)
+- [x] `DatabaseModel` (port of DatabaseViewModel) with injected ports; tests in `databaseModel.test.ts`: done filter (checkbox/status, omitted with showDone) AND saved filters, sorts (saved / date asc / created_time desc), inferConfig, quick add `temp-<uuid>` at 0 + removed on failed, queued -> "Not synced yet: ...", done fades 0.8 s then removes, rollback on failed, status un-done picks first non-done option, rename, snooze, setDate/clear, show completed, 45 s polling, cache first, notFound message.
+- [x] Snooze (`domain/capture/snooze.test.ts`): Later today +3h disabled for date-only, Tomorrow/Next week keep time of day, Monday from Monday goes +7.
+- [x] Date chip labels Today / Tomorrow / `ddd d MMM` + time, red before today, Clear (`dates.test.ts`, UI).
+- [x] UI: quick add, checkbox rows with list-spring exit, rename, date chip + month picker, status pill, snooze context menu, Show completed, compact embedded mode ("Show all N" after 8).
+- [x] Screenshots (Vite page `#/dbdemo`, headless Chrome): `docs/screens/m4/task-view.png`, `compact.png`
+- [ ] Setup flow copy / ViewBuilder UI ("Pin as new view", "Sprint · This week"): deferred, see DECISIONS
+- [ ] Natural-date quick add: waits for NaturalDate port (M7)
+- [ ] Screenshot against the Sprint demo DB on Windows, Windows CI green (see commit follow-up)
