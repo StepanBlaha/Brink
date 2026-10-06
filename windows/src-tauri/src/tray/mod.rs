@@ -131,8 +131,12 @@ pub fn setup(app: &AppHandle) {
     app.manage(TrayState::default());
     app.manage(menu::MenuHandles::default());
     let settings = app.state::<AppState>().settings.lock().unwrap().get();
-    let Ok(native) = menu::build(app, &settings) else {
-        return;
+    let native = match menu::build(app, &settings) {
+        Ok(n) => n,
+        Err(e) => {
+            crate::logging::error(&format!("tray menu failed: {e}"));
+            return;
+        }
     };
     *app.state::<TrayState>().menu.lock().unwrap() = Some(native.clone());
     let mut builder = TrayIconBuilder::with_id("brink")

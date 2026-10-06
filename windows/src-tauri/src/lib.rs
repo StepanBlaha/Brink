@@ -15,6 +15,7 @@ pub mod paths;
 pub mod queue;
 pub mod secrets;
 pub mod shell;
+pub mod startup;
 pub mod store;
 pub mod tray;
 pub mod window;
@@ -22,6 +23,7 @@ pub mod window;
 pub mod winreg;
 
 use serde::Serialize;
+use tauri::Manager;
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -38,9 +40,41 @@ async fn app_version() -> Result<AppVersion, error::AppError> {
     })
 }
 
+/// Subsystems are independent: each logs its own failures and the rest keep going.
+fn setup_app(app: &tauri::AppHandle) {
+    let safe = startup::is_safe(&std::env::args().collect::<Vec<_>>());
+    let step = |name: &str| logging::info(&format!("setup: {name}"));
+    step("state");
+    commands::setup(app);
+    step("notify");
+    commands::notify::setup(app);
+    step("windows");
+    commands::windows::setup(app);
+    step("notch");
+    window::notch_window::setup(app);
+    step("backdrop");
+    demo::backdrop::setup(app);
+    step("capture");
+    capture::setup(app);
+    step("tray");
+    tray::setup(app);
+    if safe {
+        logging::info("setup: hotkeys skipped (--safe)");
+        app.manage(hotkeys::HotkeyState::default());
+    } else {
+        step("hotkeys");
+        hotkeys::setup(app);
+    }
+    step("deeplink");
+    deeplink::setup(app);
+    logging::info("startup ok");
+}
+
 pub fn run() {
+    startup::install_panic_hook();
     demo::init();
     logging::init();
+    startup::log_environment();
     tauri::Builder::default()
         .plugin(deeplink::single_instance())
         .plugin(tauri_plugin_deep_link::init())
@@ -132,19 +166,11 @@ pub fn run() {
             autostart::open_startup_settings
         ])
         .setup(|app| {
-            commands::setup(app.handle());
-            commands::notify::setup(app.handle());
-            commands::windows::setup(app.handle());
-            window::notch_window::setup(app.handle());
-            demo::backdrop::setup(app.handle());
-            capture::setup(app.handle());
-            tray::setup(app.handle());
-            hotkeys::setup(app.handle());
-            deeplink::setup(app.handle());
+            setup_app(app.handle());
             Ok(())
         })
         .build(tauri::generate_context!())
-        .expect("error while building Brink")
+        .unwrap_or_else(|e| startup::fatal_build_error(&e))
         .run(|_, event| {
             if let tauri::RunEvent::Exit = event {
                 demo::cleanup();

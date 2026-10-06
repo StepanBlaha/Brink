@@ -1,8 +1,9 @@
-//! Tiny HKCU read helper shared by autostart and the system accent (Windows only).
+//! Tiny registry read helper shared by autostart and the system accent (Windows only).
 
 use windows::core::PCWSTR;
 use windows::Win32::System::Registry::{
-    RegCloseKey, RegOpenKeyExW, RegQueryValueExW, HKEY, HKEY_CURRENT_USER, KEY_READ,
+    RegCloseKey, RegOpenKeyExW, RegQueryValueExW, HKEY, HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE,
+    KEY_READ,
 };
 
 pub fn wide(s: &str) -> Vec<u16> {
@@ -11,19 +12,20 @@ pub fn wide(s: &str) -> Vec<u16> {
 
 /// `Some(bytes)` of a value under HKCU, `None` when the key or value is missing.
 pub fn read(key: &str, value: &str) -> Option<Vec<u8>> {
+    read_in(HKEY_CURRENT_USER, key, value)
+}
+
+/// Same as [`read`] but under HKLM (Windows version, WebView2 runtime).
+pub fn read_machine(key: &str, value: &str) -> Option<Vec<u8>> {
+    read_in(HKEY_LOCAL_MACHINE, key, value)
+}
+
+fn read_in(root: HKEY, key: &str, value: &str) -> Option<Vec<u8>> {
     let (k, v) = (wide(key), wide(value));
-    // SAFETY: plain registry reads on HKCU; the handle is closed before returning.
+    // SAFETY: plain registry reads; the handle is closed before returning.
     unsafe {
         let mut h = HKEY::default();
-        if RegOpenKeyExW(
-            HKEY_CURRENT_USER,
-            PCWSTR(k.as_ptr()),
-            None,
-            KEY_READ,
-            &mut h,
-        )
-        .is_err()
-        {
+        if RegOpenKeyExW(root, PCWSTR(k.as_ptr()), None, KEY_READ, &mut h).is_err() {
             return None;
         }
         let mut len = 0u32;

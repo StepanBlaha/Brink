@@ -59,7 +59,10 @@ impl NotionClient {
         let http = reqwest::Client::builder()
             .timeout(REQUEST_TIMEOUT)
             .build()
-            .expect("reqwest client");
+            .unwrap_or_else(|e| {
+                crate::logging::error(&format!("http client with timeout failed: {e}"));
+                reqwest::Client::new()
+            });
         Self {
             base_url: base_url.into().trim_end_matches('/').to_string(),
             token,
