@@ -44,15 +44,6 @@ async fn app_version() -> Result<AppVersion, error::AppError> {
 fn setup_app(app: &tauri::AppHandle) {
     let safe = startup::is_safe(&std::env::args().collect::<Vec<_>>());
     let step = |name: &str| logging::info(&format!("setup: {name}"));
-    // The frontend can invoke async commands while setup is still running, so every
-    // state those commands read must exist before any subsystem starts. The modules'
-    // own `manage` calls then become no-ops.
-    app.manage(tray::TrayState::default());
-    app.manage(tray::menu::MenuHandles::default());
-    app.manage(hotkeys::HotkeyState::default());
-    app.manage(capture::ToastGen::default());
-    app.manage(deeplink::DeepLinks::default());
-    app.manage(window::notch_window::NotchState::new());
     step("state");
     commands::setup(app);
     step("notify");
@@ -84,7 +75,16 @@ pub fn run() {
     demo::init();
     logging::init();
     startup::log_environment();
+    // The webview can invoke async commands before the setup hook runs, so every state
+    // that commands read without a `State` argument is registered on the builder itself.
+    // The modules' own `manage` calls in setup then become no-ops.
     tauri::Builder::default()
+        .manage(tray::TrayState::default())
+        .manage(tray::menu::MenuHandles::default())
+        .manage(hotkeys::HotkeyState::default())
+        .manage(capture::ToastGen::default())
+        .manage(deeplink::DeepLinks::default())
+        .manage(window::notch_window::NotchState::new())
         .plugin(deeplink::single_instance())
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
