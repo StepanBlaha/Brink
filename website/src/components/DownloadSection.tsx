@@ -70,7 +70,7 @@ export function DownloadSection() {
             <span className={`btn ${styles.soon}`} aria-disabled="true">Windows &middot; Coming soon</span>
           </>
         )}
-        <p className={styles.works}>Works with Notion &middot; Version {site.version}</p>
+        <p className={styles.works}>Works with Notion &middot; Version {os === "windows" && site.windowsAvailable ? site.windowsVersion : site.version}</p>
       </Reveal></Parallax>
     </section>
   );
