@@ -146,6 +146,7 @@ pub fn run() {
             commands::queue::queue_pending_count,
             window::notch_window::notch_configure,
             window::notch_window::notch_set_hit_rects,
+            window::notch_window::notch_log_phase,
             window::notch_window::notch_capture,
             window::notch_window::notch_request_focus,
             window::notch_window::notch_release_focus,

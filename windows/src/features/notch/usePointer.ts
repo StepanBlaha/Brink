@@ -5,7 +5,7 @@ import { inTauri, onEvent, type PointerPayload } from "./notchBridge";
  * Pointer position in window-local CSS px. In Tauri the window ignores the mouse outside the
  * shape, so Rust polls the cursor and sends `notch://pointer`; in a browser the DOM does it.
  */
-export function usePointer(onMove: (x: number, y: number) => void, onOutsideClick: () => void): void {
+export function usePointer(onMove: (x: number, y: number, inside?: boolean) => void, onOutsideClick: () => void): void {
   useEffect(() => {
     if (!inTauri()) {
       const move = (e: MouseEvent) => onMove(e.clientX, e.clientY);
@@ -18,7 +18,7 @@ export function usePointer(onMove: (x: number, y: number) => void, onOutsideClic
       };
     }
     const subs = [
-      onEvent<PointerPayload>("notch://pointer", (p) => onMove(p.x, p.y)),
+      onEvent<PointerPayload>("notch://pointer", (p) => onMove(p.x, p.y, p.inside)),
       onEvent<null>("notch://outside-click", onOutsideClick),
     ];
     return () => {

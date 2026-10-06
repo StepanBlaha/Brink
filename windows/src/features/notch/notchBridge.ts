@@ -32,7 +32,13 @@ export function sendHitRects(rects: Rect[], expanded: boolean): void {
   void invoke("notch_set_hit_rects", {
     rects: rects.map((r) => ({ x: r.x, y: r.y, w: r.width, h: r.height })),
     expanded,
+    scale: window.devicePixelRatio || 1,
   });
+}
+
+/** Phase change for the Rust log (scale, hit rects and cursor are added there). */
+export function logPhase(phase: string, reason: string): void {
+  if (inTauri()) void invoke("notch_log_phase", { phase, reason }).catch(() => undefined);
 }
 
 export const setCapture = (on: boolean): void => {

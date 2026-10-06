@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { PhaseMachine, type PhaseState, type Zones } from "./phaseMachine";
+import { zonesWithRust } from "./useNotchBindings";
 
 const away: Zones = { resting: false, strip: false, peek: false };
 const inResting: Zones = { resting: true, strip: false, peek: false };
@@ -195,5 +196,37 @@ describe("reminder peek", () => {
     m.selectPin("b");
     vi.advanceTimersByTime(4000);
     expect(m.state).toMatchObject({ phase: "expanded", selectedPinId: "b", peekPinId: null });
+  });
+});
+
+describe("hover with Rust's cursor verdict", () => {
+  it("logs the reason for each phase change", () => {
+    const log: string[] = [];
+    const mm = new PhaseMachine({ onChange: () => undefined, onPhase: (p, r) => log.push(`${p}:${r}`) });
+    mm.pointerMoved(inResting);
+    mm.selectPin("a");
+    mm.outsideClick();
+    mm.pointerMoved(inResting);
+    mm.pointerMoved(away);
+    vi.advanceTimersByTime(400);
+    mm.dispose();
+    expect(log).toEqual(["strip:hover-in", "expanded:click", "resting:outside-click", "strip:hover-in", "resting:hover-out"]);
+  });
+
+  it("keeps the strip open while Rust says the cursor is inside, even if the CSS zones disagree", () => {
+    m.pointerMoved(inResting);
+    m.pointerMoved(zonesWithRust(away, true, "strip"));
+    vi.advanceTimersByTime(1000);
+    expect(m.state.phase).toBe("strip");
+    m.pointerMoved(zonesWithRust(away, false, "strip"));
+    vi.advanceTimersByTime(400);
+    expect(m.state.phase).toBe("resting");
+  });
+
+  it("zonesWithRust only fills the zone of the current phase", () => {
+    expect(zonesWithRust(away, true, "resting")).toEqual({ resting: true, strip: false, peek: false });
+    expect(zonesWithRust(away, true, "strip")).toEqual({ resting: false, strip: true, peek: false });
+    expect(zonesWithRust(away, true, "expanded")).toEqual(away);
+    expect(zonesWithRust(away, undefined, "strip")).toEqual(away);
   });
 });

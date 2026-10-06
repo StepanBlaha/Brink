@@ -248,11 +248,27 @@ pub fn notch_configure(
     place(&app)
 }
 
+/// `scale` is the webview's devicePixelRatio (CSS px -> physical px); 0 when unknown.
 #[tauri::command]
-pub fn notch_set_hit_rects(state: State<'_, NotchState>, rects: Vec<HitRect>, expanded: bool) {
+pub fn notch_set_hit_rects(
+    state: State<'_, NotchState>,
+    rects: Vec<HitRect>,
+    expanded: bool,
+    scale: Option<f64>,
+) {
     let mut h = state.hit.lock().unwrap_or_else(|e| e.into_inner());
-    h.rects = rects;
-    h.expanded = expanded;
+    h.set_rects(rects, expanded, scale.unwrap_or(0.0), std::time::Instant::now());
+}
+
+/// Frontend phase change (resting / strip / expanded) with its reason, for the log.
+#[tauri::command]
+pub fn notch_log_phase(
+    app: AppHandle,
+    state: State<'_, NotchState>,
+    phase: String,
+    reason: String,
+) {
+    hit_test::log_phase(&app, LABEL, &state.hit, &phase, &reason);
 }
 
 /// A drag or resize is running: keep the mouse until it ends.

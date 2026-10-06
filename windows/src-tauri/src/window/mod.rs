@@ -1,3 +1,4 @@
+mod coords;
 pub mod hit_test;
 mod native;
 pub mod notch_window;

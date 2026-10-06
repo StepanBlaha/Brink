@@ -5,6 +5,7 @@ import { applyDebug } from "./debug";
 import {
   configureWindow,
   inTauri,
+  logPhase,
   nativeReduceMotion,
   onEvent,
   releaseFocus,
@@ -13,7 +14,7 @@ import {
 } from "./notchBridge";
 import type { Rect } from "./notchGeometry";
 import type { NotchLayout } from "./notchLayout";
-import { PhaseMachine, type Zones } from "./phaseMachine";
+import { PhaseMachine, type NotchPhase, type Zones } from "./phaseMachine";
 import { usePointer } from "./usePointer";
 
 interface Args {
@@ -28,6 +29,16 @@ interface Args {
 const isTextTarget = (t: EventTarget | null): boolean =>
   t instanceof HTMLElement && (t.matches("input, textarea") || t.isContentEditable);
 
+/**
+ * Rust decides click-through from the physical cursor and the pushed hit rects. When it says the
+ * cursor is inside them, the zone of the current phase holds even if CSS-px rounding or a rect that
+ * is still catching up with a morph disagrees; otherwise a hover would fold the strip it just opened.
+ */
+export function zonesWithRust(z: Zones, inside: boolean | undefined, phase: NotchPhase): Zones {
+  if (!inside || phase === "expanded") return z;
+  return phase === "resting" ? { ...z, resting: true } : { ...z, strip: true };
+}
+
 /** Wires the phase machine to the window: pointer, keys, focus, hit rects, placement, debug. */
 export function useNotchBindings({ layout, hitRects, zonesAt, firstPinId, overlay }: Args): PhaseMachine {
   const store = useNotchStore;
@@ -36,7 +47,11 @@ export function useNotchBindings({ layout, hitRects, zonesAt, firstPinId, overla
     overlayRef.current = overlay;
   });
   const [machine] = useState(
-    () => new PhaseMachine({ onChange: (s) => store.getState().setPhase(s), isBlocked: () => overlayRef.current?.isOpen() === true }),
+    () => new PhaseMachine({
+        onChange: (s) => store.getState().setPhase(s),
+        onPhase: logPhase,
+        isBlocked: () => overlayRef.current?.isOpen() === true,
+      }),
   );
   const zonesRef = useRef(zonesAt);
   zonesRef.current = zonesAt;
@@ -64,7 +79,11 @@ export function useNotchBindings({ layout, hitRects, zonesAt, firstPinId, overla
     if (o?.isOpen()) o.dismiss();
     else machine.outsideClick();
   }, [machine]);
-  usePointer((x, y) => machine.pointerMoved(zonesRef.current(x, y)), outside);
+  usePointer(
+    (x, y, inside) =>
+      machine.pointerMoved(zonesWithRust(zonesRef.current(x, y), inside, store.getState().phase.phase)),
+    outside,
+  );
 
   useEffect(() => {
     const key = (e: KeyboardEvent) => {

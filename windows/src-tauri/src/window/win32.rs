@@ -1,5 +1,6 @@
 //! Win32 fix-ups for the notch HWND (plan 3.a.2 to 3.a.5). Compiled on Windows only.
 
+use super::coords::{css_to_physical, pick_scale};
 use super::hit_test::SharedHit;
 use super::placement::{taskbar_overlaps, Rect};
 use std::ffi::c_void;
@@ -15,7 +16,7 @@ use windows::Win32::Graphics::Dwm::{
 };
 use windows::Win32::System::Threading::{AttachThreadInput, GetCurrentThreadId};
 use windows::Win32::UI::HiDpi::{
-    GetAwarenessFromDpiAwarenessContext, GetThreadDpiAwarenessContext,
+    GetAwarenessFromDpiAwarenessContext, GetDpiForWindow, GetThreadDpiAwarenessContext,
 };
 use windows::Win32::UI::Shell::{SHQueryUserNotificationState, QUNS_RUNNING_D3D_FULL_SCREEN};
 use windows::Win32::UI::WindowsAndMessaging::{
@@ -69,6 +70,13 @@ pub fn apply_styles(raw: isize) {
     }
     let awareness = unsafe { GetAwarenessFromDpiAwarenessContext(GetThreadDpiAwarenessContext()) };
     crate::logging::info(&format!("notch dpi awareness: {}", awareness.0));
+}
+
+/// Actual scale of the window's current monitor (GetDpiForWindow / 96); None if the call fails.
+pub fn dpi_scale(raw: isize) -> Option<f64> {
+    // SAFETY: read-only query on our own window.
+    let dpi = unsafe { GetDpiForWindow(hwnd_of(raw)) };
+    (dpi > 0).then(|| f64::from(dpi) / 96.0)
 }
 
 pub fn exstyle_bits(raw: isize) -> u32 {
@@ -190,19 +198,17 @@ pub fn spawn_extras(app: AppHandle, label: &'static str, hit: SharedHit) {
             if let (Some(bar), Ok(Some(mon)), Ok(pos)) =
                 (taskbar_rect(), win.current_monitor(), win.outer_position())
             {
-                let s = win.scale_factor().unwrap_or(1.0);
+                let reported = hit.lock().unwrap_or_else(|e| e.into_inner()).scale;
+                let tao = win.scale_factor().unwrap_or(1.0);
+                let s = pick_scale(reported, dpi_scale(raw), tao);
                 let shapes: Vec<Rect> = hit
                     .lock()
                     .unwrap_or_else(|e| e.into_inner())
                     .rects
                     .iter()
                     .map(|r| {
-                        Rect::new(
-                            pos.x + (r.x * s) as i32,
-                            pos.y + (r.y * s) as i32,
-                            (r.w * s) as i32,
-                            (r.h * s) as i32,
-                        )
+                        let p = css_to_physical(r, (pos.x, pos.y), s);
+                        Rect::new(p.x, p.y, p.w, p.h)
                     })
                     .collect();
                 let m = Rect::new(

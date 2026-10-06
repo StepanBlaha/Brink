@@ -24,6 +24,8 @@ export interface PhaseOptions {
   /** A context menu or popover is open: never fold to resting. */
   isBlocked?: () => boolean;
   hoverOutDelay?: number;
+  /** Phase changed: `reason` is hover-in, hover-out, click, outside-click, escape, layout, reminder, timer or debug. */
+  onPhase?: (phase: NotchPhase, reason: string) => void;
 }
 
 export const initialPhaseState: PhaseState = {
@@ -53,8 +55,12 @@ export class PhaseMachine {
 
   constructor(private readonly opts: PhaseOptions) {}
 
+  private why = "timer";
+
   private set(patch: Partial<PhaseState>): void {
+    const changed = patch.phase !== undefined && patch.phase !== this.state.phase;
     this.state = { ...this.state, ...patch };
+    if (changed) this.opts.onPhase?.(this.state.phase, this.why);
     this.opts.onChange(this.state);
   }
 
@@ -79,6 +85,7 @@ export class PhaseMachine {
     if (phase === "resting") {
       if (z.resting) {
         this.clear("collapseTimer");
+        this.why = "hover-in";
         this.setPhase("strip");
       }
     } else if (phase === "strip") {
@@ -92,6 +99,7 @@ export class PhaseMachine {
     this.collapseTimer = setTimeout(() => {
       this.collapseTimer = null;
       if (this.state.phase !== "strip" || this.opts.isBlocked?.()) return;
+      this.why = "hover-out";
       this.setPhase("resting");
     }, this.opts.hoverOutDelay ?? HOVER_OUT_DELAY_MS);
   }
@@ -99,6 +107,7 @@ export class PhaseMachine {
   /** Strip icon, peek card, hotkey, deep link: open `id`, or toggle when already shown. */
   selectPin(id: string): void {
     this.clearPeek();
+    this.why = "click";
     const s = this.state;
     if (s.phase === "expanded" && s.selectedPinId === id && !s.addFlow) {
       this.collapse(true);
@@ -109,6 +118,7 @@ export class PhaseMachine {
   }
 
   openAddFlow(): void {
+    this.why = "click";
     this.clearPeek();
     this.clear("collapseTimer");
     this.set({ phase: "expanded", selectedPinId: null, addFlow: true, peekPinId: null });
@@ -122,10 +132,12 @@ export class PhaseMachine {
   }
 
   outsideClick(): void {
+    this.why = "outside-click";
     this.collapse(false);
   }
 
   escape(): void {
+    this.why = "escape";
     this.collapse(false);
   }
 
@@ -135,6 +147,7 @@ export class PhaseMachine {
 
   /** Screen, edge or size change: expanded folds to resting. */
   layoutChanged(): void {
+    this.why = "layout";
     if (this.state.phase === "expanded") this.setPhase("resting");
   }
 
@@ -179,6 +192,7 @@ export class PhaseMachine {
   /** A reminder fired while running: unfold the strip with the peek card on that pin for 3 s. */
   reminderPeek(id: string): void {
     if (this.state.phase === "expanded") return;
+    this.why = "reminder";
     this.clearPeek();
     this.clear("collapseTimer");
     this.clear("reminderTimer");
@@ -189,6 +203,7 @@ export class PhaseMachine {
         this.reminderTimer = null;
         if (this.state.peekPinId === id) this.set({ peekPinId: null });
         const z = this.zones;
+        this.why = "reminder";
         if (this.state.phase === "strip" && !this.opts.isBlocked?.() && !z.strip && !z.peek) this.setPhase("resting");
       }, REMINDER_PEEK_MS);
     }, REMINDER_PEEK_LEAD_MS);
@@ -196,10 +211,12 @@ export class PhaseMachine {
 
   // Debug helpers: jump straight to a state (screenshots without moving the real mouse).
   forceResting(): void {
+    this.why = "debug";
     this.setPhase("resting");
   }
 
   forceStrip(): void {
+    this.why = "debug";
     if (this.state.phase === "expanded") this.set({ phase: "strip", selectedPinId: null, keepOpen: false, addFlow: false });
     else this.setPhase("strip");
   }
