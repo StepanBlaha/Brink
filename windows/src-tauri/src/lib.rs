@@ -44,6 +44,15 @@ async fn app_version() -> Result<AppVersion, error::AppError> {
 fn setup_app(app: &tauri::AppHandle) {
     let safe = startup::is_safe(&std::env::args().collect::<Vec<_>>());
     let step = |name: &str| logging::info(&format!("setup: {name}"));
+    // The frontend can invoke async commands while setup is still running, so every
+    // state those commands read must exist before any subsystem starts. The modules'
+    // own `manage` calls then become no-ops.
+    app.manage(tray::TrayState::default());
+    app.manage(tray::menu::MenuHandles::default());
+    app.manage(hotkeys::HotkeyState::default());
+    app.manage(capture::ToastGen::default());
+    app.manage(deeplink::DeepLinks::default());
+    app.manage(window::notch_window::NotchState::new());
     step("state");
     commands::setup(app);
     step("notify");

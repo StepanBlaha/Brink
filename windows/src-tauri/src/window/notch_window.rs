@@ -96,13 +96,28 @@ pub fn place(app: &AppHandle) -> Option<Placement> {
     Some(p)
 }
 
+impl NotchState {
+    pub fn new() -> Self {
+        Self {
+            hit: Arc::new(Mutex::new(HitState::default())),
+            config: Mutex::new(NotchConfig::default()),
+            placed: Mutex::new(None),
+        }
+    }
+}
+
+impl Default for NotchState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub fn setup(app: &AppHandle) {
-    let hit: SharedHit = Arc::new(Mutex::new(HitState::default()));
-    app.manage(NotchState {
-        hit: hit.clone(),
-        config: Mutex::new(NotchConfig::default()),
-        placed: Mutex::new(None),
-    });
+    // Usually managed early by `setup_app` so commands racing setup never miss it.
+    if app.try_state::<NotchState>().is_none() {
+        app.manage(NotchState::new());
+    }
+    let hit: SharedHit = app.state::<NotchState>().hit.clone();
     let Some(win) = app.get_webview_window(LABEL) else {
         return;
     };
