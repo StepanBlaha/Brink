@@ -83,3 +83,10 @@ export function resolveDisplay(p: DisplayPreference, screens: ScreenInfo[], mous
     }
   }
 }
+
+/** Primary display first (Windows: the one whose frame contains the origin), the rest in order. Rust uses the same order. */
+export function primaryFirst<T extends { frame: Rect }>(screens: T[]): T[] {
+  const i = screens.findIndex((s) => contains(s.frame, { x: 0, y: 0 }));
+  if (i <= 0) return screens;
+  return [screens[i] as T, ...screens.slice(0, i), ...screens.slice(i + 1)];
+}

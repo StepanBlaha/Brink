@@ -1,7 +1,7 @@
 //! Placement for the small overlay windows (capture, toast): centered horizontally on the work
 //! area of the monitor under the cursor, a fixed logical distance below its top edge.
 
-use super::placement::Rect;
+use super::placement::{primary_first, Rect};
 use tauri::{AppHandle, WebviewWindow};
 
 pub const CAPTURE_SIZE: (f64, f64) = (560.0, 150.0);
@@ -45,7 +45,7 @@ pub fn monitor_at_point(app: &AppHandle, pt: Option<(i32, i32)>) -> Option<(Rect
         .collect();
     let idx = pt
         .and_then(|p| monitor_at(p, &frames))
-        .or(if frames.is_empty() { None } else { Some(0) })?;
+        .or_else(|| primary_first(&frames).first().copied())?;
     let m = &monitors[idx];
     let wa = m.work_area();
     Some((

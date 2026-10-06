@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { availableMonitors, cursorPosition } from "@tauri-apps/api/window";
-import { parseDisplayPreference, resolveDisplay, type ScreenInfo } from "../../domain/store/displayPreference";
+import { parseDisplayPreference, primaryFirst, resolveDisplay, type ScreenInfo } from "../../domain/store/displayPreference";
 import { useNotchStore } from "../../state/notchStore";
 import { useSettingsStore } from "../../state/settingsStore";
 import { inTauri } from "./notchBridge";
@@ -11,14 +11,16 @@ const DISPLAY_POLL_MS = 1500;
 /** Debug query params (`?edge=left`) still win over settings, for screenshots. */
 const overridden = (key: string): boolean => new URLSearchParams(window.location.search).has(key);
 
-/** The monitors Rust lists, in the same order as `available_monitors`. */
+/** The monitors in Rust's notch order: primary first, then `available_monitors` order. */
 export async function listScreens(): Promise<ScreenInfo[]> {
   if (!inTauri()) return [];
   const list = await availableMonitors();
-  return list.map((m) => ({
-    name: m.name ?? "",
-    frame: { x: m.position.x, y: m.position.y, width: m.size.width, height: m.size.height },
-  }));
+  return primaryFirst(
+    list.map((m) => ({
+      name: m.name ?? "",
+      frame: { x: m.position.x, y: m.position.y, width: m.size.width, height: m.size.height },
+    })),
+  );
 }
 
 /** Applies edge, size, pill, outline and display from settings to the notch window, live. */

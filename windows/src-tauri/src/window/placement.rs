@@ -121,6 +121,38 @@ pub fn taskbar_overlaps(taskbar: Rect, monitor: Rect, shapes: &[Rect]) -> bool {
         .any(|r| r.x < x1 && r.right() > x0 && r.y < y1 && r.bottom() > y0)
 }
 
+/// True when `r` overlaps at least one monitor frame (physical px).
+pub fn intersects_any(r: Rect, monitors: &[Rect]) -> bool {
+    r.w > 0
+        && r.h > 0
+        && monitors
+            .iter()
+            .any(|m| r.x < m.right() && r.right() > m.x && r.y < m.bottom() && r.bottom() > m.y)
+}
+
+/// Index of the monitor to use: `want` when in range, else `primary`, else the first.
+/// `want` indexes the list with the primary monitor moved to the front (see `primary_first`).
+pub fn choose_index(want: Option<usize>, len: usize) -> Option<usize> {
+    if len == 0 {
+        return None;
+    }
+    Some(want.filter(|&i| i < len).unwrap_or(0))
+}
+
+/// Order that puts the primary monitor (the one whose frame contains (0,0)) first and keeps the
+/// rest in enumeration order. The frontend applies the same order to its monitor list.
+pub fn primary_first(frames: &[Rect]) -> Vec<usize> {
+    let p = frames
+        .iter()
+        .position(|r| 0 >= r.x && 0 < r.right() && 0 >= r.y && 0 < r.bottom());
+    let mut order: Vec<usize> = (0..frames.len()).collect();
+    if let Some(p) = p {
+        order.remove(p);
+        order.insert(0, p);
+    }
+    order
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -223,5 +255,99 @@ mod tests {
             MON,
             &[Rect::new(1700, 100, 100, 150)]
         ));
+    }
+
+    // Real report: primary 2560x1440 at (0,0) with a 48 px taskbar, plus a portrait monitor to
+    // its left with a negative origin.
+    const PRI: Rect = Rect {
+        x: 0,
+        y: 0,
+        w: 2560,
+        h: 1440,
+    };
+    const PRI_WORK: Rect = Rect {
+        x: 0,
+        y: 0,
+        w: 2560,
+        h: 1392,
+    };
+    const SEC: Rect = Rect {
+        x: -1440,
+        y: -603,
+        w: 1440,
+        h: 2560,
+    };
+    const SEC_WORK: Rect = Rect {
+        x: -1440,
+        y: -603,
+        w: 1440,
+        h: 2512,
+    };
+
+    #[test]
+    fn two_monitor_layout_every_edge_and_display() {
+        let cases = [
+            (Edge::Right, PRI, PRI_WORK, Rect::new(1660, 0, 900, 1392)),
+            (Edge::Left, PRI, PRI_WORK, Rect::new(0, 0, 900, 1392)),
+            (Edge::Top, PRI, PRI_WORK, Rect::new(770, 0, 1020, 1392)),
+            (Edge::Right, SEC, SEC_WORK, Rect::new(-900, -603, 900, 2512)),
+            (Edge::Left, SEC, SEC_WORK, Rect::new(-1440, -603, 900, 2512)),
+            (Edge::Top, SEC, SEC_WORK, Rect::new(-1230, -603, 1020, 2512)),
+        ];
+        for (edge, mon, work, want) in cases {
+            let p = compute(edge, mon, work, 1.0, 5, 1.0);
+            assert_eq!(p.frame, want, "{edge:?} on {mon:?}");
+            assert!(intersects_any(p.frame, &[PRI, SEC]));
+            // Fully inside its own monitor.
+            assert!(p.frame.x >= mon.x && p.frame.right() <= mon.right());
+            assert!(p.frame.y >= mon.y && p.frame.bottom() <= mon.bottom());
+        }
+    }
+
+    #[test]
+    fn mixed_scale_keeps_frames_inside_each_monitor() {
+        // Portrait monitor at 150 %: 2160x3840 physical.
+        let sec = Rect::new(-2160, -900, 2160, 3840);
+        let p = compute(Edge::Right, sec, sec, 1.5, 5, 1.0);
+        assert_eq!(p.frame, Rect::new(-1350, -900, 1350, 3840));
+        let p = compute(Edge::Top, PRI, PRI_WORK, 1.25, 5, 1.0);
+        assert!(p.frame.x >= 0 && p.frame.right() <= 2560);
+    }
+
+    #[test]
+    fn primary_is_the_monitor_at_origin_whatever_the_order() {
+        assert_eq!(primary_first(&[PRI, SEC]), vec![0, 1]);
+        assert_eq!(primary_first(&[SEC, PRI]), vec![1, 0]);
+        assert_eq!(primary_first(&[SEC]), vec![0]);
+        assert!(primary_first(&[]).is_empty());
+    }
+
+    #[test]
+    fn choose_index_falls_back_to_primary_slot() {
+        assert_eq!(choose_index(None, 2), Some(0));
+        assert_eq!(choose_index(Some(1), 2), Some(1));
+        assert_eq!(choose_index(Some(5), 2), Some(0));
+        assert_eq!(choose_index(Some(0), 0), None);
+    }
+
+    #[test]
+    fn cursor_choice_with_negative_coordinates() {
+        use super::super::overlay::monitor_at;
+        let m = [PRI, SEC];
+        assert_eq!(monitor_at((100, 100), &m), Some(0));
+        assert_eq!(monitor_at((-700, -600), &m), Some(1));
+        assert_eq!(monitor_at((-1, 1900), &m), Some(1));
+        assert_eq!(monitor_at((-1441, 0), &m), Some(1));
+        assert_eq!(monitor_at((2559, 1439), &m), Some(0));
+    }
+
+    #[test]
+    fn offscreen_frames_are_detected() {
+        let m = [PRI, SEC];
+        assert!(!intersects_any(Rect::new(5000, 0, 900, 1000), &m));
+        assert!(!intersects_any(Rect::new(-3000, -3000, 900, 900), &m));
+        assert!(!intersects_any(Rect::new(0, 0, 0, 0), &m));
+        assert!(intersects_any(Rect::new(-100, -100, 200, 200), &m));
+        assert!(!intersects_any(Rect::new(0, 0, 10, 10), &[]));
     }
 }

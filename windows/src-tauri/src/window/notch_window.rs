@@ -2,7 +2,9 @@
 //! Other platforms use Tauri's cross-platform APIs so the notch also runs on a Mac for development.
 
 use super::hit_test::{self, HitRect, HitState, SharedHit};
-use super::placement::{compute, Edge, Placement, Rect};
+use super::placement::{
+    choose_index, compute, intersects_any, primary_first, Edge, Placement, Rect,
+};
 use serde::Deserialize;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
@@ -43,20 +45,26 @@ fn rect_of(p: &tauri::PhysicalPosition<i32>, s: &tauri::PhysicalSize<u32>) -> Re
     Rect::new(p.x, p.y, s.width as i32, s.height as i32)
 }
 
-/// Monitor frame, work area and scale for the configured monitor (primary fallback).
-fn pick_monitor(app: &AppHandle, idx: Option<usize>) -> Option<(Rect, Rect, f64)> {
-    let list = app.available_monitors().ok()?;
-    let primary = app.primary_monitor().ok().flatten();
-    let m = idx
-        .and_then(|i| list.get(i).cloned())
-        .or(primary)
-        .or_else(|| list.first().cloned())?;
+/// Monitor list with the primary one first; the same order the frontend uses for indices.
+fn ordered_monitors(app: &AppHandle) -> Vec<tauri::Monitor> {
+    let list = app.available_monitors().unwrap_or_default();
+    let frames: Vec<Rect> = list.iter().map(|m| rect_of(m.position(), m.size())).collect();
+    primary_first(&frames)
+        .into_iter()
+        .map(|i| list[i].clone())
+        .collect()
+}
+
+type Screen = (String, Rect, Rect, f64);
+
+fn screen_of(m: &tauri::Monitor) -> Screen {
     let wa = m.work_area();
-    Some((
+    (
+        m.name().cloned().unwrap_or_default(),
         rect_of(m.position(), m.size()),
         rect_of(&wa.position, &wa.size),
         m.scale_factor(),
-    ))
+    )
 }
 
 /// Everything that should trigger a re-place when it changes.
@@ -65,35 +73,92 @@ fn signature(app: &AppHandle) -> Vec<(Rect, Rect, u64)> {
         .unwrap_or_default()
         .iter()
         .map(|m| {
-            let wa = m.work_area();
-            (
-                rect_of(m.position(), m.size()),
-                rect_of(&wa.position, &wa.size),
-                m.scale_factor().to_bits(),
-            )
+            let (_, f, w, s) = screen_of(m);
+            (f, w, s.to_bits())
         })
         .collect()
+}
+
+fn log_placement(screens: &[Screen], idx: usize, cfg: &NotchConfig, p: &Placement, vis: bool) {
+    for (i, (name, f, w, s)) in screens.iter().enumerate() {
+        crate::logging::info(&format!(
+            "notch monitor {i}: name={name} rect={},{} {}x{} work={},{} {}x{} scale={s}",
+            f.x, f.y, f.w, f.h, w.x, w.y, w.w, w.h
+        ));
+    }
+    let r = p.frame;
+    crate::logging::info(&format!(
+        "notch placed: monitor={idx} (cfg {:?}) edge={:?} frame={},{} {}x{} scale={} visible={vis}",
+        cfg.monitor, p.edge, r.x, r.y, r.w, r.h, p.scale
+    ));
 }
 
 /// Size and position the HWND once per placement (never during an animation).
 pub fn place(app: &AppHandle) -> Option<Placement> {
     let st = app.state::<NotchState>();
     let cfg = *st.config.lock().unwrap_or_else(|e| e.into_inner());
-    let (frame, work, scale) = pick_monitor(app, cfg.monitor)?;
-    let p = compute(cfg.edge, frame, work, scale, cfg.pin_count, cfg.size_scale);
+    let monitors = ordered_monitors(app);
+    let screens: Vec<Screen> = monitors.iter().map(screen_of).collect();
+    let idx = choose_index(cfg.monitor, screens.len())?;
+    let (_, frame, work, scale) = screens[idx].clone();
+    let mut p = compute(cfg.edge, frame, work, scale, cfg.pin_count, cfg.size_scale);
+    let frames: Vec<Rect> = screens.iter().map(|s| s.1).collect();
+    let mut shown = idx;
+    if !intersects_any(p.frame, &frames) {
+        let (_, f, w, s) = screens[0].clone();
+        crate::logging::warn(&format!(
+            "notch frame {:?} is outside every monitor; falling back to the primary monitor's right edge",
+            p.frame
+        ));
+        p = compute(Edge::Right, f, w, s, cfg.pin_count, cfg.size_scale);
+        shown = 0;
+    }
     let win = app.get_webview_window(LABEL)?;
     let changed = *st.placed.lock().unwrap_or_else(|e| e.into_inner()) != Some(p);
     if changed {
-        let pos = tauri::PhysicalPosition::new(p.frame.x, p.frame.y);
-        let size = tauri::PhysicalSize::new(p.frame.w as u32, p.frame.h as u32);
-        // Position, size, position again: moving across monitors with different DPI can rescale.
-        let _ = win.set_position(pos);
-        let _ = win.set_size(size);
-        let _ = win.set_position(pos);
+        apply_frame(&win, p.frame);
         *st.placed.lock().unwrap_or_else(|e| e.into_inner()) = Some(p);
+        log_placement(&screens, shown, &cfg, &p, win.is_visible().unwrap_or(false));
         let _ = app.emit_to(LABEL, "placement://changed", p);
     }
     Some(p)
+}
+
+/// Position, size, position again: moving across monitors with different DPI can rescale.
+fn apply_frame(win: &tauri::WebviewWindow, r: Rect) {
+    let pos = tauri::PhysicalPosition::new(r.x, r.y);
+    let size = tauri::PhysicalSize::new(r.w.max(1) as u32, r.h.max(1) as u32);
+    let _ = win.set_position(pos);
+    let _ = win.set_size(size);
+    let _ = win.set_position(pos);
+}
+
+/// WM_DPICHANGED (window crossed onto another DPI) can leave tao with a rescaled rect. When the
+/// real outer rect differs from the placement, re-apply it (a few times, then give up and log).
+fn verify(app: &AppHandle, tries: &mut u32) {
+    let st = app.state::<NotchState>();
+    let Some(want) = st.placed.lock().unwrap_or_else(|e| e.into_inner()).map(|p| p.frame) else {
+        return;
+    };
+    let Some(win) = app.get_webview_window(LABEL) else {
+        return;
+    };
+    let (Ok(pos), Ok(size)) = (win.outer_position(), win.outer_size()) else {
+        return;
+    };
+    let got = rect_of(&pos, &size);
+    if got == want {
+        *tries = 0;
+        return;
+    }
+    if *tries < 5 {
+        *tries += 1;
+        crate::logging::info(&format!(
+            "notch frame drifted: want {},{} {}x{} got {},{} {}x{}; re-applying ({tries}/5)",
+            want.x, want.y, want.w, want.h, got.x, got.y, got.w, got.h
+        ));
+        apply_frame(&win, want);
+    }
 }
 
 impl NotchState {
@@ -134,6 +199,10 @@ pub fn setup(app: &AppHandle) {
     }
     #[cfg(not(target_os = "windows"))]
     let _ = win.show();
+    crate::logging::info(&format!(
+        "notch window shown (visible={})",
+        win.is_visible().unwrap_or(false)
+    ));
     hit_test::spawn(app.clone(), LABEL, hit.clone());
     #[cfg(target_os = "windows")]
     super::win32::spawn_extras(app.clone(), LABEL, hit);
@@ -144,12 +213,18 @@ pub fn setup(app: &AppHandle) {
 fn spawn_watcher(app: AppHandle) {
     std::thread::spawn(move || {
         let mut last = signature(&app);
+        let (mut tries, mut ticks) = (0u32, 0u32);
         loop {
             std::thread::sleep(Duration::from_millis(100));
             let now = signature(&app);
             if now != last {
                 last = now;
+                tries = 0;
                 place(&app);
+            }
+            ticks = ticks.wrapping_add(1);
+            if ticks % 5 == 0 {
+                verify(&app, &mut tries);
             }
         }
     });

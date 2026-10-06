@@ -21,6 +21,9 @@ pub async fn settings_set(
         .unwrap()
         .set(&partial)
         .map_err(invalid)?;
+    if partial.get("onboardingCompleted") == Some(&Value::Bool(true)) {
+        crate::logging::info("onboarding completed");
+    }
     emit(&app, "settings://changed", v.clone());
     crate::hotkeys::on_settings_changed(&app, &v);
     crate::tray::on_settings_changed(&app, &v);

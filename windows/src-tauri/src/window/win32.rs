@@ -214,6 +214,7 @@ pub fn spawn_extras(app: AppHandle, label: &'static str, hit: SharedHit) {
                 let now = taskbar_overlaps(bar, m, &shapes);
                 if now != overlap {
                     overlap = now;
+                    crate::logging::info(&format!("notch taskbar overlap: {now}"));
                     let _ = app.emit_to(label, "notch://taskbar-overlap", now);
                 }
             }
@@ -224,6 +225,7 @@ pub fn spawn_extras(app: AppHandle, label: &'static str, hit: SharedHit) {
                 let now = matches!(state, Ok(s) if s == QUNS_RUNNING_D3D_FULL_SCREEN);
                 if now != full {
                     full = now;
+                    crate::logging::info(&format!("notch hidden by full screen app: {now}"));
                     let _ = app.emit_to(label, "notch://fullscreen", now);
                 }
             }

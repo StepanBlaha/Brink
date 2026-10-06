@@ -4,6 +4,7 @@ use crate::store::pins::{Pin, PinGroup, PinStore};
 use tauri::{AppHandle, State};
 
 fn pins_changed(app: &AppHandle, s: &PinStore) {
+    crate::logging::info(&format!("pins changed: count={}", s.pins().len()));
     emit(app, "pins://changed", s.pins().to_vec());
 }
 

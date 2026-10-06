@@ -94,6 +94,10 @@ impl Logger {
         self.log("INFO", msg);
     }
 
+    pub fn warn(&self, msg: &str) {
+        self.log("WARN", msg);
+    }
+
     pub fn error(&self, msg: &str) {
         self.log("ERROR", msg);
     }
@@ -112,6 +116,12 @@ pub fn global() -> Option<&'static Logger> {
 pub fn info(msg: &str) {
     if let Some(l) = global() {
         l.info(msg);
+    }
+}
+
+pub fn warn(msg: &str) {
+    if let Some(l) = global() {
+        l.warn(msg);
     }
 }
 
