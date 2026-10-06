@@ -140,6 +140,10 @@ struct NotesPinPickerView: View {
             Image(systemName: "folder").font(.system(size: 12)).foregroundStyle(Theme.Color.secondaryText)
             Text(folder.name).font(Theme.Font.body).foregroundStyle(Theme.Color.text).lineLimit(1)
             Text("\(folder.noteCount)").font(Theme.Font.caption).foregroundStyle(Theme.Color.tertiaryText)
+            // Every account has a "Notes" folder; say which one this is.
+            if folders.filter({ $0.name == folder.name }).count > 1 {
+                Text(folder.account).font(Theme.Font.caption).foregroundStyle(Theme.Color.tertiaryText).lineLimit(1)
+            }
             Spacer(minLength: 8)
             if pinnedIDs.contains(folder.id) {
                 Text("Pinned").font(Theme.Font.caption).foregroundStyle(Theme.Color.tertiaryText)

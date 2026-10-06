@@ -95,7 +95,11 @@ public enum NotesHTML {
             }
             let depth = min(max(block.depth, 0), open.count)
             closeLists(to: depth + 1)
-            if open.count == depth + 1, open[depth] != list { closeLists(to: depth) }
+            if open.count == depth + 1, open[depth] != list {
+                closeLists(to: depth)
+                // Notes merges back-to-back top-level lists into one (numbers turn into bullets).
+                if depth == 0 { out += "<div><br></div>" }
+            }
             if open.count == depth + 1 {
                 if liOpen { out += "</li>" }
             } else {
@@ -133,12 +137,15 @@ public enum NotesHTML {
 
     static func inline(_ spans: [RichTextSpan]) -> String {
         SpanRuns.normalize(spans).map { span in
-            var text = escape(span.text).replacingOccurrences(of: "\n", with: "<br>")
+            // Notes turns `<a>` into plain underlined text (and the note then reads as
+            // read-only), so a link is written as its address instead.
+            var shown = span.text
+            if let link = span.link, !shown.contains(link.absoluteString) { shown += " (\(link.absoluteString))" }
+            var text = escape(shown).replacingOccurrences(of: "\n", with: "<br>")
             if span.code { text = "<tt>\(text)</tt>" }
             if span.strikethrough { text = "<strike>\(text)</strike>" }
             if span.italic { text = "<i>\(text)</i>" }
             if span.bold { text = "<b>\(text)</b>" }
-            if let link = span.link { text = "<a href=\"\(escape(link.absoluteString, attribute: true))\">\(text)</a>" }
             return text
         }.joined()
     }
@@ -243,11 +250,28 @@ public enum NotesHTML {
         return (name, attrs, selfClosing || voids.contains(name))
     }
 
+    /// `&amp`/`&lt`/`&gt`/`&quot` at `index`, with or without the closing `;`.
+    private static func legacyEntity(in s: String, at index: String.Index) -> (String, String.Index)? {
+        let rest = s[s.index(after: index)...]
+        for (name, value) in [("amp", "&"), ("lt", "<"), ("gt", ">"), ("quot", "\"")] where rest.hasPrefix(name) {
+            var end = s.index(index, offsetBy: name.count + 1)
+            if end < s.endIndex, s[end] == ";" { end = s.index(after: end) }
+            return (value, end)
+        }
+        return nil
+    }
+
     static func decodeEntities(_ s: String) -> String {
         guard s.contains("&") else { return s }
         var out = ""
         var i = s.startIndex
         while i < s.endIndex {
+            // Notes writes `&amp`, `&lt`, `&gt`, `&quot` without the semicolon.
+            if s[i] == "&", let (value, end) = legacyEntity(in: s, at: i) {
+                out += value
+                i = end
+                continue
+            }
             if s[i] == "&", let semi = s[i...].prefix(10).firstIndex(of: ";") {
                 let name = String(s[s.index(after: i)..<semi])
                 var replacement: String?

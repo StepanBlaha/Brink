@@ -25,6 +25,8 @@ struct OSAScriptRunner: AppleScriptRunning {
                     // -1743: Automation denied. -1744 would need consent (never prompted here).
                     if number == -1743 || number == -1744 {
                         continuation.resume(throwing: NotesError.permissionDenied)
+                    } else if number == -1712 {
+                        continuation.resume(throwing: NotesError.scriptFailed("Notes took too long to answer. Try again in a moment."))
                     } else if message.contains("NOT_FOUND") {
                         continuation.resume(throwing: NotesError.notFound)
                     } else {

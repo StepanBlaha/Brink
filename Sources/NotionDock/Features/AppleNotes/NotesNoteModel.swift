@@ -59,7 +59,7 @@ final class NotesNoteModel {
     // MARK: - Loading
 
     func load(force: Bool = false) async {
-        guard !isLoading else { return }
+        guard force || !isLoading else { return }
         isLoading = true
         defer { isLoading = false }
         do {
@@ -158,7 +158,14 @@ final class NotesNoteModel {
                 }
             }
             try await provider.setBody(noteId: noteId, html: NotesHTML.render(blocks))
-            knownBlocks = NotesHTML.parse(NotesHTML.render(blocks)).blocks
+            // Notes rewrites what it's given (headings become sized spans, lists are re-nested,
+            // …), so remember its version: comparing against our own render would flag a
+            // conflict on every following save.
+            if let saved = try? await provider.note(id: noteId).html {
+                knownBlocks = NotesHTML.parse(saved).blocks
+            } else {
+                knownBlocks = NotesHTML.parse(NotesHTML.render(blocks)).blocks
+            }
             hasConflict = false
             if document.editGeneration == generation {
                 dirty = false
@@ -179,8 +186,6 @@ final class NotesNoteModel {
     func useNotesVersion() {
         dirty = false
         hasConflict = false
-        document.load([], preserveSelection: false)
-        knownBlocks = []
         Task { await load(force: true) }
     }
 

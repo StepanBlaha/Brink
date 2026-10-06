@@ -67,14 +67,13 @@ final class NotesHTMLTests: XCTestCase {
         XCTAssertTrue(spans.contains { $0.text == "mono" && $0.code })
         XCTAssertTrue(spans.contains { $0.text == "link" && $0.link?.absoluteString == "https://example.com/?a=1&b=2" })
         XCTAssertTrue(note.blocks[0].plainText.hasSuffix("& <done>"))
-        roundTrips(html)
     }
 
     func testListsNestedAndNumbered() {
-        let html = "<ul><li>one<ul><li>one-a</li><li>one-b</li></ul></li><li>two</li></ul><ol><li>first</li><li>second</li></ol><div>after</div>"
+        let html = "<ul><li>one<ul><li>one-a</li><li>one-b</li></ul></li><li>two</li></ul><div><br></div><ol><li>first</li><li>second</li></ol><div>after</div>"
         let note = NotesHTML.parse(html)
-        XCTAssertEqual(note.blocks.map(\.kind), [.bulleted, .bulleted, .bulleted, .bulleted, .numbered, .numbered, .paragraph])
-        XCTAssertEqual(note.blocks.map(\.depth), [0, 1, 1, 0, 0, 0, 0])
+        XCTAssertEqual(note.blocks.map(\.kind), [.bulleted, .bulleted, .bulleted, .bulleted, .paragraph, .numbered, .numbered, .paragraph])
+        XCTAssertEqual(note.blocks.map(\.depth), [0, 1, 1, 0, 0, 0, 0, 0])
         XCTAssertEqual(NotesHTML.render(note.blocks), html)
         roundTrips(html)
     }
@@ -163,6 +162,22 @@ final class AppleNotesServiceTests: XCTestCase {
         do { _ = try await AppleNotesService(runner: runner).folders(); XCTFail() } catch { XCTAssertEqual(error as? NotesError, .permissionDenied) }
         runner.failure = NSError(domain: "x", code: 1, userInfo: [NSLocalizedDescriptionKey: "Error: NOT_FOUND"])
         do { _ = try await AppleNotesService(runner: runner).note(id: "z"); XCTFail() } catch { XCTAssertEqual(error as? NotesError, .notFound) }
+    }
+
+    func testSearchKeepsNewestMatchesAndSkipsTrash() async throws {
+        let runner = FakeScriptRunner()
+        runner.replies = [("_contains", #"[{"id":"a","title":"a","modified":"2026-01-01T10:00:00Z"},{"id":"b","title":"b","modified":"2026-03-01T10:00:00Z"},{"id":"c","title":"c","modified":"2026-02-01T10:00:00Z"}]"#)]
+        let found = try await AppleNotesService(runner: runner).searchNotes(query: "x", limit: 2)
+        XCTAssertEqual(found.map(\.id), ["b", "c"], "newest first, then limited")
+        let script = try XCTUnwrap(runner.scripts.first)
+        XCTAssertTrue(script.contains("isTrash(f)"), "notes in Recently Deleted must not be offered")
+        XCTAssertTrue(script.contains("Nedávno smazané"), "trash folder is localized")
+    }
+
+    func testOpeningANoteChecksItIsNotDeleted() async throws {
+        let runner = FakeScriptRunner()
+        _ = try? await AppleNotesService(runner: runner).note(id: "n1")
+        XCTAssertTrue(try XCTUnwrap(runner.scripts.first).contains("inTrash(n)"))
     }
 }
 

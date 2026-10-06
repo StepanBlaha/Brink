@@ -18,11 +18,15 @@ public struct AppleNotesService: NotesProviding {
       for (const acc of N.accounts()) for (const f of acc.folders()) if (f.id() === id) return f;
       throw new Error('NOT_FOUND');
     }
+    const TRASH = ['Recently Deleted', 'Nedávno smazané', 'Nedávno odstránené', 'Zuletzt gelöscht', 'Supprimés récemment', 'Eliminados recientemente', 'Eliminati di recente', 'Ostatnio usunięte', 'Onlangs verwijderd', 'Apagados recentemente', 'Excluídos Recentemente'];
+    function isTrash(f) { return TRASH.indexOf(f.name()) >= 0; }
+    function inTrash(n) { try { return isTrash(n.container()); } catch (e) { return false; } }
     function findNote(id) {
-      try { const n = N.notes.byId(id); n.id(); return n; } catch (e) {}
-      const r = N.notes.whose({id: id})();
-      if (r.length) return r[0];
-      throw new Error('NOT_FOUND');
+      let n = null;
+      try { n = N.notes.byId(id); n.id(); } catch (e) { n = null; }
+      if (!n) { const r = N.notes.whose({id: id})(); if (r.length) n = r[0]; }
+      if (!n || inTrash(n)) throw new Error('NOT_FOUND');
+      return n;
     }
     function iso(d) { return d ? d.toISOString() : null; }
     function info(n) { return {id: n.id(), title: n.name(), modified: iso(n.modificationDate()), created: iso(n.creationDate())}; }
@@ -46,7 +50,7 @@ public struct AppleNotesService: NotesProviding {
         let out = try await call(args: [:], body: """
         result = [];
         for (const acc of N.accounts()) for (const f of acc.folders()) {
-          if (f.name() === 'Recently Deleted') continue;
+          if (isTrash(f)) continue;
           result.push({id: f.id(), name: f.name(), account: acc.name(), noteCount: f.notes.name().length});
         }
         """)
@@ -59,10 +63,13 @@ public struct AppleNotesService: NotesProviding {
     }
 
     public func searchNotes(query: String, limit: Int) async throws -> [NotesNoteInfo] {
-        let out = try await call(args: ["q": query, "limit": limit], body: """
-        result = list(N.notes.whose({name: {_contains: A.q}})).slice(0, A.limit);
+        let out = try await call(args: ["q": query], body: """
+        const trashed = new Set();
+        for (const acc of N.accounts()) for (const f of acc.folders()) if (isTrash(f)) f.notes.id().forEach(i => trashed.add(i));
+        result = list(N.notes.whose({name: {_contains: A.q}})).filter(n => !trashed.has(n.id));
         """)
-        return try decode([NotesNoteInfo].self, out).sorted(by: Self.newestFirst)
+        // Newest first, then cut: the script returns every match.
+        return Array(try decode([NotesNoteInfo].self, out).sorted(by: Self.newestFirst).prefix(limit))
     }
 
     public func note(id: String) async throws -> NotesNoteContent {

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.11.2 — 2026-10-06
+
+### Fixed
+- Apple Notes: titles and headings keep their style when you edit a note in Brink. Before, the first line of a note turned into plain bold text after the first save.
+- Apple Notes: "&", "<", ">" and quotes show up correctly instead of as "&amp" or "&lt".
+- Apple Notes: editing a note no longer reports "Changed in Notes while you were editing" on every second save.
+- Apple Notes: monospaced text keeps its style, and a numbered list right after a bulleted list stays numbered.
+- Apple Notes: links added by quick capture are written as plain addresses, so the note stays editable in Brink instead of turning read-only.
+- Apple Notes: search and pinned notes no longer show notes from Recently Deleted, in any language of macOS.
+- Apple Notes: folders with the same name in different accounts now show which account they belong to, and "Use Notes' version" no longer leaves an empty editor if a refresh is running.
+- Apple Notes: a slow answer from Notes now says so instead of showing a raw error.
+
 ## 0.11.1 — 2026-10-05
 
 ### Fixed

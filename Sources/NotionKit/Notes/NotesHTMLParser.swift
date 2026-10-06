@@ -12,6 +12,7 @@ extension NotesHTML {
 
         private var bold = 0, italic = 0, strike = 0, code = 0
         private var links: [URL?] = []
+        private var fonts: [Bool] = []          // true = monospaced <font face>
         private var lists: [Bool] = []          // true = ordered
         private var liOpen: [Bool] = []
         private var skipDepth = 0                 // inside <head>/<style>/…
@@ -79,8 +80,12 @@ extension NotesHTML {
             case "tt", "code": code += 1
             case "a":
                 links.append(attrs["href"].flatMap { URL(string: $0) })
+            case "font":
+                let face = (attrs["face"] ?? "").lowercased()
+                fonts.append(["courier", "menlo", "monaco", "mono"].contains { face.contains($0) })
             case "span":
                 let style = (attrs["style"] ?? "").lowercased()
+                openHeadingIfSized(style)
                 if style.contains("color") || style.contains("background") || style.contains("text-decoration") {
                     unsupported.append(.formatting("colored or underlined text"))
                 }
@@ -115,8 +120,17 @@ extension NotesHTML {
             case "s", "strike", "del": strike = max(0, strike - 1)
             case "tt", "code": code = max(0, code - 1)
             case "a": if !links.isEmpty { links.removeLast() }
+            case "font": if !fonts.isEmpty { fonts.removeLast() }
             default: break
             }
+        }
+
+        /// Notes has no heading tags: its Title is a 24px bold span, its Heading an 18px one.
+        private mutating func openHeadingIfSized(_ style: String) {
+            guard spans.isEmpty, kind == .paragraph, lists.isEmpty,
+                  let range = style.range(of: "font-size:"),
+                  let size = Double(style[range.upperBound...].drop(while: { $0 == " " }).prefix(while: { $0.isNumber || $0 == "." })) else { return }
+            if size >= 24 { kind = .heading1 } else if size >= 18 { kind = .heading2 }
         }
 
         private mutating func restoreContainerKind() {
@@ -139,7 +153,7 @@ extension NotesHTML {
             guard !text.isEmpty else { return }
             if spans.isEmpty, text.trimmingCharacters(in: .whitespaces).isEmpty { return }
             let link = links.last ?? nil
-            spans.append(RichTextSpan(text: text, bold: bold > 0, italic: italic > 0, strikethrough: strike > 0, code: code > 0, link: link))
+            spans.append(RichTextSpan(text: text, bold: bold > 0, italic: italic > 0, strikethrough: strike > 0, code: code > 0 || fonts.contains(true), link: link))
         }
 
         // MARK: Blocks
@@ -155,6 +169,10 @@ extension NotesHTML {
             while var last = normalized.last, last.text.hasSuffix(" ") {
                 last.text.removeLast()
                 if last.text.isEmpty { normalized.removeLast() } else { normalized[normalized.count - 1] = last }
+            }
+            // Notes bolds its headings; the heading style already says so.
+            if kind == .heading1 || kind == .heading2 {
+                normalized = SpanRuns.normalize(normalized.map { var s = $0; s.bold = false; return s })
             }
             let hasContent = !normalized.isEmpty
             if hasContent || force {
