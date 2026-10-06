@@ -48,7 +48,10 @@ fn rect_of(p: &tauri::PhysicalPosition<i32>, s: &tauri::PhysicalSize<u32>) -> Re
 /// Monitor list with the primary one first; the same order the frontend uses for indices.
 fn ordered_monitors(app: &AppHandle) -> Vec<tauri::Monitor> {
     let list = app.available_monitors().unwrap_or_default();
-    let frames: Vec<Rect> = list.iter().map(|m| rect_of(m.position(), m.size())).collect();
+    let frames: Vec<Rect> = list
+        .iter()
+        .map(|m| rect_of(m.position(), m.size()))
+        .collect();
     primary_first(&frames)
         .into_iter()
         .map(|i| list[i].clone())
@@ -137,7 +140,12 @@ fn apply_frame(win: &tauri::WebviewWindow, r: Rect) {
 /// real outer rect differs from the placement, re-apply it (a few times, then give up and log).
 fn verify(app: &AppHandle, tries: &mut u32) {
     let st = app.state::<NotchState>();
-    let Some(want) = st.placed.lock().unwrap_or_else(|e| e.into_inner()).map(|p| p.frame) else {
+    let Some(want) = st
+        .placed
+        .lock()
+        .unwrap_or_else(|e| e.into_inner())
+        .map(|p| p.frame)
+    else {
         return;
     };
     let Some(win) = app.get_webview_window(LABEL) else {
