@@ -122,6 +122,7 @@ Brink is a free, open-source macOS app that adds a quiet notch to your screen ed
 
 Users can already install with:
 ```bash
+brew trust stepanblaha/tap   # newer Homebrew asks this once for third-party taps
 brew install --cask stepanblaha/tap/brink
 ```
 Tap: https://github.com/StepanBlaha/homebrew-tap. After each release, `scripts/release.sh` prints the new version and sha256 to put into `Casks/brink.rb` there.

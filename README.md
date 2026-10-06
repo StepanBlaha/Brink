@@ -36,7 +36,7 @@
 
 **You need:** macOS 14 Sonoma or later, and a Notion account.
 
-1. Download **Brink-x.y.z.zip** from [Releases](https://github.com/StepanBlaha/Brink/releases/latest), unzip it and move **Brink.app** to Applications. Or use Homebrew: `brew install --cask stepanblaha/tap/brink`
+1. Download **Brink-x.y.z.zip** from [Releases](https://github.com/StepanBlaha/Brink/releases/latest), unzip it and move **Brink.app** to Applications. Or use Homebrew: `brew install --cask stepanblaha/tap/brink`. Newer Homebrew asks you to trust the tap once first: `brew trust stepanblaha/tap`
 2. The first time, **right-click Brink → Open → Open**. The app isn't notarized yet, so macOS asks once.
 3. Follow the welcome steps:
    1. Create an **internal integration** at [notion.so/profile/integrations](https://www.notion.so/profile/integrations) and paste its token into Brink.
