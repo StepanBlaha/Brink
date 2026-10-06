@@ -257,7 +257,12 @@ pub fn notch_set_hit_rects(
     scale: Option<f64>,
 ) {
     let mut h = state.hit.lock().unwrap_or_else(|e| e.into_inner());
-    h.set_rects(rects, expanded, scale.unwrap_or(0.0), std::time::Instant::now());
+    h.set_rects(
+        rects,
+        expanded,
+        scale.unwrap_or(0.0),
+        std::time::Instant::now(),
+    );
 }
 
 /// Frontend phase change (resting / strip / expanded) with its reason, for the log.

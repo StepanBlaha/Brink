@@ -2,10 +2,10 @@
 //! cursor is over one of the hit rects the frontend sends. A poll thread decides (the OS cannot
 //! hit-test a transparent WebView per pixel) and forwards pointer and outside-click events.
 
+use super::coords::{css_to_physical, cursor_to_css, pick_scale};
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
-use super::coords::{css_to_physical, cursor_to_css, pick_scale};
 use tauri::{AppHandle, Emitter, Manager};
 
 /// Window-local logical rect (top-left origin).
@@ -194,7 +194,12 @@ pub fn spawn(app: AppHandle, label: &'static str, state: SharedHit) {
             let (inside, expanded, near, rev) = {
                 let st = state.lock().unwrap_or_else(|e| e.into_inner());
                 let inside = st.is_inside(x, y, Instant::now());
-                (inside, st.expanded, distance(&st.rects, x, y) < 200.0, st.rev)
+                (
+                    inside,
+                    st.expanded,
+                    distance(&st.rects, x, y) < 200.0,
+                    st.rev,
+                )
             };
             if rev != last_rev {
                 last_rev = rev;
