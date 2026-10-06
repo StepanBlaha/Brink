@@ -103,8 +103,8 @@ Repo: https://github.com/StepanBlaha/Brink
 
 | Site | What to enter |
 |---|---|
-| **AlternativeTo** (alternativeto.net → "Add app") | **Name:** Brink. **Description:** below. **Platforms:** Mac. **License:** Free, Open Source. **Tags:** notion, productivity, menu-bar, notch, todo. Then mark it as an alternative to: Notion (desktop), NotchNook, Boring Notch, Notion widgets. |
-| **MacUpdate** (macupdate.com/developers) | Developer submission: version 0.10.0, free, the download URL (GitHub latest release), screenshots, description. |
+| **AlternativeTo** (alternativeto.net → "Add app") | **Name:** Brink. **Description:** below. **Platforms:** Mac, Windows (Apple Notes is Mac only). **License:** Free, Open Source. **Tags:** notion, productivity, menu-bar, notch, todo. Then mark it as an alternative to: Notion (desktop), NotchNook, Boring Notch, Notion widgets. |
+| **MacUpdate** (macupdate.com/developers) | Developer submission: version 0.11.2, free, the download URL (GitHub latest release), screenshots, description. |
 | **Softpedia Mac** (softpedia.com → Submit software) | The same details. |
 | **SaaSHub** (saashub.com → Submit) | Name, site, the short description, category "Productivity". |
 | **Indie Hackers** (indiehackers.com → Products) | Add the product, then write a short launch post. |

@@ -6,6 +6,7 @@
 <p align="center">
   <a href="https://github.com/StepanBlaha/Brink/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/StepanBlaha/Brink?label=download&color=0A84FF"></a>
   <img alt="macOS 14+" src="https://img.shields.io/badge/macOS-14%2B-black?logo=apple">
+  <img alt="Windows 10/11" src="https://img.shields.io/badge/Windows-10%2F11-black?logo=windows">
   <img alt="Free" src="https://img.shields.io/badge/price-free-2ea44f">
   <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-555"></a>
   <a href="https://github.com/StepanBlaha/Brink/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/StepanBlaha/Brink/total?color=555"></a>
@@ -21,7 +22,8 @@
 
 - **The notch.** A black pill rests on the edge of your screen: left, right, or top next to the hardware notch. Hover it and it unfolds into a strip of your pinned pages. Click an icon and it expands into a panel.
 - **A Notion-style editor.** Type Markdown and it turns into real blocks as you go: to-dos you can tick, headings, lists, quotes, toggles, callouts, code and dividers. There's also a slash menu, ⌘F, drag-to-reorder and pasted images.
-- **Tasks.** Pin a database with saved filters and sorts. Snooze tasks, set dates, and see badges and a live progress pill.
+- **Tasks.** Pin a database with saved filters and sorts. Snooze tasks, set dates, and see badges and a live progress pill. Open any task as a page.
+- **Apple Notes (Mac only).** Pin folders and notes from Apple Notes next to your Notion pages.
 - **Capture from anywhere.** ⌥⇧Space opens quick capture, which understands dates in English and Czech ("friday 5pm", "zítra"). ⌥⌘V appends the clipboard, and "Send to Brink" works from any Share menu.
 - **Glance without opening.** Hover a pin to see its next items and tick them in place. There's also a menu-bar list and a desktop widget with checkboxes.
 - **Make it yours.** Choose the edge, display, pill style, size, accent color, hotkeys, groups, pin icons and sounds.
@@ -34,10 +36,19 @@
 
 ## Install
 
-**You need:** macOS 14 Sonoma or later, and a Notion account.
+**You need:** macOS 14 Sonoma or later, or Windows 10 (22H2) or Windows 11 (x64 or ARM64), and a Notion account.
+
+**Mac**
 
 1. Download **Brink-x.y.z.zip** from [Releases](https://github.com/StepanBlaha/Brink/releases/latest), unzip it and move **Brink.app** to Applications. Or use Homebrew: `brew install --cask stepanblaha/tap/brink`. Newer Homebrew asks you to trust the tap once first: `brew trust stepanblaha/tap`
 2. The first time, **right-click Brink → Open → Open**. The app isn't notarized yet, so macOS asks once.
+
+**Windows**
+
+Download **Brink-Setup-x.y.z-x64.exe** (or **-arm64.exe** on ARM) from the [Windows releases](https://github.com/StepanBlaha/Brink/releases) (tags start with `win-v`). It installs per user. The installer is unsigned, so SmartScreen may warn: click **More info → Run anyway**.
+
+**Then**
+
 3. Follow the welcome steps:
    1. Create an **internal integration** at [notion.so/profile/integrations](https://www.notion.so/profile/integrations) and paste its token into Brink.
    2. In Notion, share each page you want with the integration: page `•••` → **Connections**.

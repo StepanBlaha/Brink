@@ -1,13 +1,13 @@
 # Brink launch kit
 
 **Current facts** (keep posts consistent with these):
-- **What it is:** a quiet notch on the edge of your Mac's screen that keeps your Notion pages and tasks one hover away.
+- **What it is:** a quiet notch on the edge of your Mac's screen that keeps your Notion pages and tasks one hover away, on Mac and Windows.
 - **Price and license:** free, open source (MIT).
-- **Requirements:** macOS 14+, and it works with Notion through your own integration token.
-- **Features:** hover peek with ticking in place, a Notion-style editor (Markdown turns into blocks as you type), a Today view, due reminders, quick capture (⌥⇧Space, dates in English and Czech), a menu-bar list, a desktop widget, and "Send to Brink" in the Share menu.
+- **Requirements:** macOS 14+ (Mac 0.11.2) or Windows 10 (22H2) / 11, x64 and ARM64 (Windows 0.11.1), and it works with Notion through your own integration token.
+- **Features:** hover peek with ticking in place, a Notion-style editor (Markdown turns into blocks as you type), a Today view, due reminders, quick capture (⌥⇧Space, dates in English and Czech), a menu-bar list, a desktop widget, "Send to Brink" in the Share menu, tasks that open as a page, and Apple Notes (Mac only).
 - **Privacy:** no account, no analytics, no tracking. The token is kept in the Keychain.
-- **Links:** site https://brinknotch.site · repo https://github.com/StepanBlaha/Brink · download https://github.com/StepanBlaha/Brink/releases/latest · Homebrew `brew install --cask stepanblaha/tap/brink`
-- **Not notarized yet:** first launch needs right-click → Open. Say it up front.
+- **Links:** site https://brinknotch.site · repo https://github.com/StepanBlaha/Brink · download https://github.com/StepanBlaha/Brink/releases/latest · Homebrew `brew trust stepanblaha/tap` once on newer Homebrew, then `brew install --cask stepanblaha/tap/brink`. No winget yet.
+- **Not notarized / not signed yet:** on Mac first launch needs right-click → Open. On Windows SmartScreen shows "More info → Run anyway". Say it up front.
 - **Always include:** "Brink is an independent app, not affiliated with Notion."
 
 **Media:**
@@ -61,14 +61,14 @@ I kept opening Notion 30 or 40 times a day just to check one task list, tick som
 
 It's native Swift, free and MIT open source. There's no account and no tracking: your token stays in the Keychain and Brink only talks to Notion.
 
-Honest note: it isn't notarized yet, so the first time you open it, right-click → Open.
+Honest note: it isn't notarized or signed yet. On Mac, right-click → Open the first time. On Windows, SmartScreen: More info → Run anyway.
 
 I'd love to hear what you'd pin first and what's missing.
 
 (Brink is an independent app, not affiliated with Notion.)
 ```
 
-**That day:** reply to every comment within an hour. Thank people, and answer questions concretely. If someone reports a bug, say "fixing it today" and ship 0.10.x.
+**That day:** reply to every comment within an hour. Thank people, and answer questions concretely. If someone reports a bug, say "fixing it today" and ship 0.11.x.
 
 ---
 
@@ -97,7 +97,7 @@ Some technical bits that were fun:
 - Writes go through a persisted queue with rate limiting (the Notion API allows about 3 req/s) and retries, so offline edits aren't lost.
 - There's a widget and a Share extension, which share data through an App Group; the token never leaves the main app.
 
-It's free and MIT licensed. It isn't notarized yet (right-click → Open the first time). Feedback on the sync approach is very welcome.
+It's free and MIT licensed. It isn't notarized or signed yet (Mac: right-click → Open the first time; Windows: SmartScreen, More info → Run anyway). Feedback on the sync approach is very welcome.
 
 Not affiliated with Notion.
 ```
@@ -130,10 +130,10 @@ It's a small black notch on your screen edge (left, right, or top next to the ha
 • Today view and due reminders, menu-bar list, desktop widget, Share extension
 • lots of options: edge, display, pill style, size, accent, hotkeys, groups
 
-Native Swift, macOS 14+, free and MIT open source, no tracking.
-Download: https://brinknotch.site (or brew install --cask stepanblaha/tap/brink)
+Native Swift on Mac, plus Windows 10/11, free and MIT open source, no tracking.
+Download: https://brinknotch.site (or brew install --cask stepanblaha/tap/brink, after `brew trust stepanblaha/tap`)
 
-It's not notarized yet, so right-click → Open the first time.
+It's not notarized yet, so on Mac right-click → Open the first time. On Windows, SmartScreen: More info → Run anyway.
 Not affiliated with Notion. Happy to hear feedback.
 ```
 
@@ -192,6 +192,6 @@ Free + open source → brinknotch.site
 
 ## After launch
 
-- **Within 48 h:** fix the top reported issues, ship 0.10.x, and post "thanks, fixed X and Y" in each thread.
+- **Within 48 h:** fix the top reported issues, ship 0.11.x, and post "thanks, fixed X and Y" in each thread.
 - **Metrics:** GitHub release downloads, stars and issues, and your Product Hunt rank. Brink has no analytics.
 - **Directories:** submit to the lists in `marketing/LISTINGS.md` over the following weeks.

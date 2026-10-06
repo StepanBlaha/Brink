@@ -32,7 +32,7 @@ Everything for getting Brink out there, in one place: the strategy, the channels
 
 **Always:**
 - The non-affiliation line: "Brink is an independent app, not affiliated with Notion." At least in bios, descriptions and long posts.
-- Be honest about first launch: "Not notarized yet, right-click → Open the first time."
+- Be honest about first launch: "Not notarized yet, right-click → Open the first time (Windows: SmartScreen, More info → Run anyway)."
 - The link: **brinknotch.site**.
 - **Voice:** calm and short. No hype words, no "revolutionary", no exclamation marks.
 
@@ -76,7 +76,7 @@ Everything for getting Brink out there, in one place: the strategy, the channels
 |---|---|---|
 | **Tue** | 09:01 **Product Hunt** goes live. Post the maker comment. IG story sequence (§5.1). | 14:00–16:00 **Show HN**. X thread (§7.1). LinkedIn post, in Czech (§7.3). Reply to everything. |
 | **Wed** | Reply to comments, fix bugs. | **r/macapps** post. TikTok/Reel #1 (§6.1). |
-| **Thu** | Ship **0.10.x** with the first fixes. | **r/Notion** (or its weekly promo thread). IG story: "thank you + what's fixed". |
+| **Thu** | Ship **0.11.x** with the first fixes. | **r/Notion** (or its weekly promo thread). IG story: "thank you + what's fixed". |
 | **Fri** | Directory forms: AlternativeTo, MacUpdate. | Reel #2 (§6.2). |
 | **Sat–Sun** | Rest, and reply to comments. | Collect feedback into GitHub issues. |
 
@@ -90,7 +90,7 @@ Everything for getting Brink out there, in one place: the strategy, the channels
 
 ### Weeks 3–4: keep it alive
 - **Content:** 2 short videos a week. Rotate: feature demos, "Notion setup + Brink", behind the scenes of building it.
-- **Product:** a release with a short "what's new" post, e.g. 0.11 (notarized, if you've paid for it).
+- **Product:** a release with a short "what's new" post, e.g. 0.12 (notarized, if you've paid for it).
 - **Community:** reply to every GitHub issue within 24 h. Tag easy ones `good first issue`.
 - **Newsletter or blog** (optional): "How I built a notch app in X days", which HN and Reddit tend to like.
 
@@ -102,13 +102,13 @@ Everything for getting Brink out there, in one place: the strategy, the channels
 **EN:**
 ```
 Brink: your Notion pages and tasks, one hover away on your Mac 🖤
-Free · open source · macOS
+Free · open source · Mac + Windows
 ↓ brinknotch.site
 ```
 **CZ:**
 ```
 Brink: tvoje Notion stránky a úkoly na jeden hover na Macu 🖤
-Zdarma · open source · macOS
+Zdarma · open source · Mac + Windows
 ↓ brinknotch.site
 ```
 **Profile picture:** `branding/icon-1024.png`. **Link:** https://brinknotch.site
@@ -140,7 +140,7 @@ The assets are `marketing/social/story-01.png` … `story-06.png`, plus `story-v
 
 **Follow-up stories during the week:**
 - **Day 2:** a screenshot of the Product Hunt page or first comments. "Thank you 🖤 Top feedback so far: …"
-- **Day 3:** "Fixed in 0.10.x: …", with a short screen recording.
+- **Day 3:** "Fixed in 0.11.x: …", with a short screen recording.
 - **Day 5:** "Behind the scenes": a VS Code/Xcode screenshot plus "the notch is one SwiftUI shape that morphs".
 - **Weekly:** reshare anyone who posts about Brink, and answer the question-box replies in stories.
 
@@ -187,7 +187,7 @@ The Mac app I built so I'd stop opening Notion 40x a day 👉
 4. Quick capture from any app
 5. Today view + reminders
 
-Free, open source (MIT), macOS 14+. brinknotch.site
+Free, open source (MIT), macOS 14+ and Windows 10/11. brinknotch.site
 ```
 
 ---
@@ -250,7 +250,7 @@ github.com/StepanBlaha/Brink
 
 ### 7.2 Mastodon (mastodon.social or macOS instances)
 ```
-I made Brink, a free and open-source macOS app: a notch on your screen edge for your Notion pages and tasks. Hover to peek and tick, click for a Notion-style editor, ⌥⇧Space to capture.
+I made Brink, a free and open-source Mac and Windows app: a notch on your screen edge for your Notion pages and tasks. Hover to peek and tick, click for a Notion-style editor, ⌥⇧Space to capture.
 
 Native Swift, MIT, no tracking. brinknotch.site
 
@@ -311,7 +311,7 @@ Hi, I made Brink, a small Mac app that puts your Notion pages and tasks in a not
 
 Could you install it completely on your own, without my help?
 1. Download it at https://brinknotch.site
-2. The first time, right-click → Open (it's not notarized yet)
+2. The first time, right-click → Open (it's not notarized yet). Windows: SmartScreen, More info → Run anyway
 3. Follow the welcome steps and pin one Notion page
 
 Then tell me: where you got stuck, what you liked most, what's missing, and whether you'd keep using it.
@@ -383,9 +383,9 @@ stepa15.b@gmail.com
 |---|---|
 | "Is this official Notion?" | "No, it's an independent app. It uses Notion's public API with your own integration." |
 | "Why not just use the Notion app?" | "Totally fair. Brink is for the quick stuff: tick, add, peek, without switching apps. For deep work I still open Notion." |
-| "It says unidentified developer" | "Sorry about that, it's not notarized yet. Right-click → Open once and it's fine after that. Notarization is next." |
+| "It says unidentified developer" | "Sorry about that, it's not notarized yet. Right-click → Open once and it's fine after that. On Windows it's SmartScreen: More info → Run anyway. Notarization is next." |
 | "Is my data safe?" | "Brink talks only to Notion. The token stays in your Keychain, and there's no server, account or analytics. The code is open, so you can check." |
-| "Windows / iPhone version?" | "Mac only for now. Would you use an iPhone quick-capture app? Collecting interest." |
+| "Windows / iPhone version?" | "Windows 10/11 is out now (Releases page, unsigned, so SmartScreen: More info → Run anyway). Apple Notes is Mac only. iPhone: would you use a quick-capture app? Collecting interest." |
 | "Feature X please" | "Great idea, I added it here: [GitHub issue link]. Follow it for updates." |
 | A bug report | "Thanks, that's a bug. Tracking it here [link], and a fix should ship this week." Then actually ship it. |
 | Harsh criticism | "Fair point, thanks for being direct. I'll look at [specific part]." Stay calm, never argue. |

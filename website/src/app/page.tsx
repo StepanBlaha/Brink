@@ -12,10 +12,10 @@ import { Faq } from "@/components/Faq";
 import { DownloadSection } from "@/components/DownloadSection";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Brink: a menu bar and notch app for your Notion pages on Mac",
+  title: "Brink: a menu bar and notch app for your Notion pages on Mac and Windows",
   absoluteTitle: true,
   description:
-    "Brink is a black notch on your Mac's screen edge that keeps your Notion pages and tasks one hover away. Quick capture, a Notion-style editor, widgets and badges. macOS 14+.",
+    "Brink is a black notch on your Mac or Windows screen edge that keeps your Notion pages and tasks one hover away. Quick capture, a Notion-style editor, widgets and badges. macOS 14+ and Windows 10/11.",
   path: "",
   ogTitle: `Brink: ${site.tagline}`,
   ogDescription: site.shortDescription,

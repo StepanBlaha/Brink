@@ -17,8 +17,8 @@ export const faq: FaqItem[] = [
   },
   {
     question: "What do I need to run it?",
-    answer: "A Mac running macOS 14 or later and a Notion account. Click Connect to Notion and pick the pages Brink may use. If you prefer, you can paste an internal integration token instead.",
-    content: <>A Mac running macOS 14 or later and a Notion account. Click Connect to Notion and pick the pages Brink may use. If you prefer, you can paste an internal integration token instead.</>,
+    answer: "A Mac running macOS 14 or later (or a PC running Windows 10 22H2 or Windows 11) and a Notion account. Click Connect to Notion and pick the pages Brink may use. If you prefer, you can paste an internal integration token instead.",
+    content: <>A Mac running macOS 14 or later (or a PC running Windows 10 22H2 or Windows 11) and a Notion account. Click Connect to Notion and pick the pages Brink may use. If you prefer, you can paste an internal integration token instead.</>,
   },
   {
     question: "How does connecting to Notion work?",
@@ -26,7 +26,7 @@ export const faq: FaqItem[] = [
     content: <>Connect to Notion opens Notion&rsquo;s own consent screen in your browser. You choose exactly which pages and databases Brink can see, then click Allow. Notion needs a secret to finish sign-in that can&rsquo;t safely ship inside an app, so a tiny relay run by the developer swaps Notion&rsquo;s one-time code for your access token. It stores and logs nothing and never sees your pages. The token is saved in your Mac&rsquo;s Keychain. To add pages later, connect again and update your selection. Advanced users can paste an internal integration token instead, which skips the relay.</>,
   },
   {
-    question: "How does Apple Notes access work?",
+    question: "How does Apple Notes access work? (Mac only)",
     answer: "Apple Notes access is local only. Brink uses macOS Automation to talk to the Notes app on your Mac, after you click Allow on the system prompt, and only touches the folders and notes you pin. Nothing leaves your Mac except through your own iCloud, which is how Notes itself syncs to your iPhone. You can revoke it any time in System Settings → Privacy & Security → Automation.",
     content: <>Apple Notes access is local only. Brink uses macOS Automation to talk to the Notes app on your Mac, after you click Allow on the system prompt, and only touches the folders and notes you pin. Nothing leaves your Mac except through your own iCloud, which is how Notes itself syncs to your iPhone. You can revoke it any time in System Settings → Privacy &amp; Security → Automation.</>,
   },
@@ -47,8 +47,8 @@ export const faq: FaqItem[] = [
   },
   {
     question: "Does Brink work on Windows?",
-    answer: "Coming soon. A Windows 10 (22H2) and Windows 11 version for x64 and ARM64 is built and in testing. It will be free, with the same notch, hotkeys and Notion editing. Watch GitHub Releases for the launch.",
-    content: <>Coming soon. A Windows 10 (22H2) and Windows 11 version for x64 and ARM64 is built and in testing. It will be free, with the same notch, hotkeys and Notion editing. Watch <a href={site.releasesUrl}>GitHub Releases</a> for the launch.</>,
+    answer: "Yes. Brink for Windows 10 (22H2) and Windows 11 runs on x64 and ARM64. It is free, with the same notch, hotkeys and Notion editing. The installer is unsigned, so SmartScreen may warn: choose More info, then Run anyway. Apple Notes is Mac only. Download it from GitHub Releases.",
+    content: <>Yes. Brink for Windows 10 (22H2) and Windows 11 runs on x64 and ARM64. It is free, with the same notch, hotkeys and Notion editing. The installer is unsigned, so SmartScreen may warn: choose More info, then Run anyway. Apple Notes is Mac only. Download it from <a href={site.releasesUrl}>GitHub Releases</a>.</>,
   },
   {
     question: "Does it work on external displays and notched MacBooks?",

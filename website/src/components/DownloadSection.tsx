@@ -58,7 +58,8 @@ export function DownloadSection() {
             </p>
             <MagneticLink className="btn" href={site.windowsX64Url}>Download for Windows &middot; x64</MagneticLink>
             <p className={styles.works}>
-              <a href={site.windowsArm64Url}>ARM64 installer</a> &middot; or run <code>{site.wingetCommand}</code>
+              <a href={site.windowsArm64Url}>ARM64 installer</a>
+              {site.wingetAvailable && <> &middot; or run <code>{site.wingetCommand}</code></>}
             </p>
           </>
         ) : (

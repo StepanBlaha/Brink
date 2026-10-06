@@ -9,7 +9,7 @@ export function Facts() {
       <dl className={styles.facts}>
         <dt>Name</dt><dd>Brink</dd>
         <dt>Category</dt><dd>Productivity</dd>
-        <dt>Platform</dt><dd>macOS 14 or later</dd>
+        <dt>Platform</dt><dd>macOS 14 or later; Windows 10 (22H2) or Windows 11</dd>
         <dt>Version</dt><dd>{site.version}</dd>
         <dt>Maker</dt><dd>{site.author}</dd>
         <dt>Requires</dt><dd>A Notion internal integration</dd>

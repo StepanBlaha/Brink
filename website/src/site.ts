@@ -8,28 +8,30 @@ export const site = {
   /** Path prefix the site is served under. Empty at the root; "/Brink" on GitHub project Pages. */
   basePath: process.env.NEXT_PUBLIC_BASE_PATH ?? "",
   contactEmail: "stepa15.b@gmail.com",
-  /** GitHub URLs live only here. The repo is private for now, so releases/issues 404 for visitors until it goes public. */
+  /** GitHub URLs live only here. The repo is public. */
   repoUrl: REPO_URL,
   releasesUrl: `${REPO_URL}/releases`,
   issuesUrl: `${REPO_URL}/issues`,
   downloadUrl: `${REPO_URL}/releases/latest`,
   /**
-   * Flip to true at the Windows launch (see windows/RELEASING.md). While false the
+   * Windows launched with win-v0.11.1 (see windows/RELEASING.md). While false the
    * Windows tab shows "Coming soon" and no download links are exposed.
    */
-  windowsAvailable: false,
+  windowsAvailable: true,
   /** Windows release tags are `win-v<version>`; the version below must match the published release. */
-  windowsVersion: "0.10.0",
-  windowsX64Url: `${REPO_URL}/releases/download/win-v0.10.0/Brink-Setup-0.10.0-x64.exe`,
-  windowsArm64Url: `${REPO_URL}/releases/download/win-v0.10.0/Brink-Setup-0.10.0-arm64.exe`,
+  windowsVersion: "0.11.1",
+  windowsX64Url: `${REPO_URL}/releases/download/win-v0.11.1/Brink-Setup-0.11.1-x64.exe`,
+  windowsArm64Url: `${REPO_URL}/releases/download/win-v0.11.1/Brink-Setup-0.11.1-arm64.exe`,
+  /** Flip to true once the winget package is merged; hides the winget command until then. */
+  wingetAvailable: false,
   wingetCommand: "winget install StepanBlaha.Brink",
   price: "Free",
-  version: "0.9.0",
+  version: "0.11.2",
   author: "Stepan Blaha",
   year: 2026,
   tagline: "Your pages, on the edge.",
   shortDescription:
-    "A black notch on your Mac's screen edge that keeps your Notion pages and tasks one hover away.",
+    "A black notch on your Mac or Windows screen edge that keeps your Notion pages and tasks one hover away.",
   disclaimer:
     "Brink is an independent app and is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc.",
   trademark: "“Notion” is a trademark of Notion Labs, Inc.",

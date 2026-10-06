@@ -20,7 +20,7 @@ const softwareApplication = {
   name: site.name,
   operatingSystem: site.windowsAvailable ? "macOS 14+, Windows 10, Windows 11" : "macOS 14+",
   applicationCategory: "ProductivityApplication",
-  description: "A notch on the Mac screen edge that keeps your Notion pages and tasks one hover away.",
+  description: "A notch on the Mac or Windows screen edge that keeps your Notion pages and tasks one hover away.",
   url: absoluteUrl(),
   image: absoluteUrl("assets/icon-512.png"),
   offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: site.price },

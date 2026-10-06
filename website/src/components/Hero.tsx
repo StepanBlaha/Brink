@@ -24,7 +24,7 @@ export function Hero() {
             <MagneticLink className="btn" href={site.downloadUrl}>Download for Mac &middot; {site.price}</MagneticLink>
             <a className="btn ghost" href="#features">See how it works</a>
           </div>
-          <p className={`intro ${styles.works}`} style={d(0.25)}>Works with Notion &middot; macOS 14+</p>
+          <p className={`intro ${styles.works}`} style={d(0.25)}>Works with Notion &middot; macOS 14+ &middot; Windows 10/11</p>
         </div>
         <div className="intro" style={d(0.15)}>
           <NotchDemo />

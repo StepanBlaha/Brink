@@ -19,11 +19,11 @@ Front-end dev in Prague · React & TypeScript · founder of Labz · building Bri
 ```
 **Option B**, more personal:
 ```
-I build fast, precise interfaces with React & TS. Founder of Labz. Now shipping Brink: your Notion tasks in your Mac's notch. Prague 🇨🇿
+I build fast, precise interfaces with React & TS. Founder of Labz. Now shipping Brink: your Notion tasks in your Mac or Windows notch. Prague 🇨🇿
 ```
 **Option C**, short:
 ```
-Front-end developer · founder @Labz · making Brink, a free open-source Mac app for Notion · Prague
+Front-end developer · founder @Labz · making Brink, a free open-source Mac and Windows app for Notion · Prague
 ```
 
 Other profile fields:
@@ -61,7 +61,7 @@ It's called Brink: a quiet notch on the edge of your screen that keeps your Noti
 6/ Going from React to Swift/AppKit was the fun part. The notch is one SwiftUI shape that morphs pill → strip → panel with a spring. Getting it to feel "liquid" took more tries than I'd like to admit.
 ```
 ```
-7/ No account, no tracking, MIT licensed. Your Notion token stays in the Keychain.
+7/ No account, no tracking, MIT licensed. Your Notion token stays in the Keychain. Windows 10/11 version is out too (Apple Notes is Mac only).
 
 → brinknotch.site
 → github.com/StepanBlaha/Brink
@@ -168,7 +168,7 @@ What building it taught me:
 → The hard part wasn't the UI, it was sync: making every line in the editor map to exactly one Notion block, so nothing gets lost.
 → Details are the product. The "liquid" notch animation alone took dozens of iterations.
 
-It's free and open source (MIT), with no account and no tracking.
+It's free and open source (MIT), with no account and no tracking. There's a Windows version too.
 👉 brinknotch.site
 
 I'd love feedback, especially from people who use Notion every day 🙏
