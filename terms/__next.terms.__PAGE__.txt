@@ -1,0 +1,64 @@
+1:"$Sreact.fragment"
+2:I[22016,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],""]
+4:I[97367,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"OutletBoundary"]
+5:"$Sreact.suspense"
+9:I[97367,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"ViewportBoundary"]
+a:I[97367,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"MetadataBoundary"]
+:HL["/_next/static/chunks/0iy8u8pqcjx7n.css","style"]
+3:T73a,<p><em>Last updated: 2026-09-29</em></p>
+<ol>
+<li><strong>The software.</strong> Brink is provided by Stepan Blaha (&quot;we&quot;) for use on your own Mac. By using it you agree to these terms.</li>
+<li><strong>Your Notion account.</strong> Brink works through a Notion integration that you create and control. You are responsible for which pages you share with it, and for following <a rel="noopener" href="https://www.notion.com/terms">Notion&#39;s Terms of Service</a> and <a rel="noopener" href="https://www.notion.so/notion/Developer-Terms-ba4131408d0844e08330da2cbb225c20">Developer Terms</a>.</li>
+<li><strong>Your content.</strong> Your pages stay yours. Brink edits them only when you act (typing, checking a box, pasting, reordering). Deleted blocks go to Notion&#39;s trash, where you can restore them. Brink asks before deleting large parts of a page.</li>
+<li><strong>No warranty.</strong> Brink is provided &quot;as is&quot;, without warranty of any kind. Sync conflicts, API changes or bugs can cause edits to be lost or duplicated. Keep important content backed up; Notion offers page history and export.</li>
+<li><strong>Limitation of liability.</strong> To the extent permitted by law, we are not liable for any indirect, incidental or consequential damages, or for loss of data, arising from your use of Brink.</li>
+<li><strong>Trademarks.</strong> Brink is an independent app and is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc. &quot;Notion&quot; is a trademark of Notion Labs, Inc.</li>
+<li><strong>Changes.</strong> These terms may change with new versions. Continuing to use the app means you accept the updated terms.</li>
+<li><strong>Governing law.</strong> These terms are governed by the laws of the Czech Republic, without limiting any mandatory consumer rights you have where you live.</li>
+</ol>
+8:X
+20:X
+20:C
+0:{"buildId":"zRn1CF5IbhkAqqWlF0VCR","data":[{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"wrap","children":["$","article",null,{"className":"Prose-module__CL27nW__prose ","children":[[["$","script",null,{"type":"application/ld+json","dangerouslySetInnerHTML":{"__html":"{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https://brinknotch.site/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Terms of Use\",\"item\":\"https://brinknotch.site/terms/\"}]}"}}],["$","nav",null,{"aria-label":"Breadcrumb","className":"Prose-module__CL27nW__crumbs","children":["$","ol",null,{"children":[["$","li",null,{"children":["$","$L2",null,{"href":"/","children":"Home"}]}],["$","li",null,{"aria-current":"page","children":"Terms of Use"}]]}]}]],["$","h1",null,{"children":"Terms of Use"}],["$","div",null,{"dangerouslySetInnerHTML":{"__html":"$3"}}]]}]}],[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/0iy8u8pqcjx7n.css","precedence":"next"}]],["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]]}],"isPartial":"$@7","staleTime":"$8","varyParams":null},{"rsc":["$","$1","h",{"children":[null,["$","$L9",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","2",{"name":"theme-color","content":"#000000"}],["$","meta","3",{"name":"color-scheme","content":"dark"}]]}],["$","div",null,{"hidden":true,"children":["$","$La",null,{"children":["$","$5",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Terms of Use | Brink"}],["$","meta","1",{"name":"description","content":"The terms of use for Brink, an independent Mac app that works with Notion."}],["$","meta","2",{"name":"application-name","content":"Brink"}],["$","meta","3",{"name":"author","content":"Stepan Blaha"}],["$","link","4",{"rel":"manifest","href":"/manifest.webmanifest"}],"$Lb","$Lc","$Ld","$Le","$Lf","$L10","$L11","$L12","$L13","$L14","$L15","$L16","$L17","$L18","$L19","$L1a","$L1b","$L1c"]}]}]}],null]}],"isPartial":"$@1d","staleTime":"$8","varyParams":null},{"rsc":"$L1e","isPartial":"$@1f","staleTime":"$8","varyParams":"$20"},{"rsc":"$L21","isPartial":"$@22","staleTime":"$8","varyParams":null}],"isUpgradeableISRFallback":false,"a":"$@23","rootVaryParams":null,"needsRuntimeRequest":"$@24"}
+25:I[27201,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"IconMark"]
+26:I[39756,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"default"]
+27:I[37457,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"default"]
+29:I[21055,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"MotionRoot"]
+2a:I[20032,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"SmoothScroll"]
+2b:I[46083,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"ScrollProgress"]
+2c:I[24381,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"HeaderShell"]
+2d:I[85437,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"Image"]
+2e:I[36934,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"NavLinks"]
+2f:I[26370,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js"],"MobileMenu"]
+30:I[16868,["/_next/static/chunks/1kvb2lx2u79-2.js","/_next/static/chunks/2zey3nkodk13f.js","/_next/static/chunks/375xqxvq_995w.js","/_next/static/chunks/2go9790k9yc48.js"],"default"]
+:HL["/_next/static/chunks/2depriywirgx2.css","style"]
+6:null
+b:["$","link","5",{"rel":"canonical","href":"https://brinknotch.site/terms/"}]
+c:["$","meta","6",{"property":"og:title","content":"Terms of Use"}]
+d:["$","meta","7",{"property":"og:description","content":"The terms of use for Brink, an independent Mac app that works with Notion."}]
+e:["$","meta","8",{"property":"og:url","content":"https://brinknotch.site/terms/"}]
+f:["$","meta","9",{"property":"og:site_name","content":"Brink"}]
+10:["$","meta","10",{"property":"og:image","content":"https://brinknotch.site/assets/og.png"}]
+11:["$","meta","11",{"property":"og:image:width","content":"1200"}]
+12:["$","meta","12",{"property":"og:image:height","content":"630"}]
+13:["$","meta","13",{"property":"og:image:alt","content":"Brink: a notch on the screen edge showing a to-do list"}]
+14:["$","meta","14",{"property":"og:type","content":"website"}]
+15:["$","meta","15",{"name":"twitter:card","content":"summary_large_image"}]
+16:["$","meta","16",{"name":"twitter:title","content":"Terms of Use"}]
+17:["$","meta","17",{"name":"twitter:description","content":"The terms of use for Brink, an independent Mac app that works with Notion."}]
+18:["$","meta","18",{"name":"twitter:image","content":"https://brinknotch.site/assets/og.png"}]
+19:["$","link","19",{"rel":"icon","href":"/favicon.ico","sizes":"any"}]
+1a:["$","link","20",{"rel":"icon","href":"/assets/favicon-32.png","type":"image/png","sizes":"32x32"}]
+1b:["$","link","21",{"rel":"apple-touch-icon","href":"/assets/apple-touch-icon.png"}]
+1c:["$","$L25","22",{}]
+1e:["$","$1","c",{"children":[null,["$","$L26",null,{"parallelRouterKey":"children","template":["$","$L27",null,{}]}]]}]
+28:["$","style",null,{"children":"[data-reveal]{opacity:1!important;transform:none!important}"}]
+21:["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/2depriywirgx2.css","precedence":"next"}],["$","script","script-0",{"src":"/_next/static/chunks/1kvb2lx2u79-2.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/2zey3nkodk13f.js","async":true}],["$","script","script-2",{"src":"/_next/static/chunks/375xqxvq_995w.js","async":true}]],["$","html",null,{"lang":"en","children":["$","body",null,{"children":[["$","noscript",null,{"children":"$28"}],["$","$L29",null,{"children":["$","$L2a",null,{"children":[["$","a",null,{"className":"SkipLink-module__Ir2r-G__skip","href":"#main","children":"Skip to content"}],[["$","$L2b",null,{}],["$","$L2c",null,{"children":["$","div",null,{"className":"wrap Header-module__hBw1pG__inner","children":[["$","$L2",null,{"className":"Brand-module__kb3XQa__brand","href":"/","children":[["$","$L2d",null,{"src":"/assets/icon-256.png","alt":"","width":28,"height":28,"unoptimized":true}],"Brink"]}],["$","div",null,{"className":"Header-module__hBw1pG__right","children":[["$","$L2e",null,{}],["$","$L2f",null,{}]]}]]}]}]],["$","main",null,{"id":"main","children":["$","$L26",null,{"parallelRouterKey":"children","template":["$","$L30",null,{"children":["$","$L27",null,{}]}],"templateStyles":[],"templateScripts":[["$","script","script-0",{"src":"/_next/static/chunks/2go9790k9yc48.js","async":true}]],"notFound":[["$","div",null,{"className":"wrap","children":["$","article",null,{"className":"Prose-module__CL27nW__prose ","children":["$undefined",["$","h1",null,{"children":"Page not found"}],["$","p",null,{"children":["That page is not on the edge. Try the ",["$","$L2",null,{"href":"/","children":"home page"}],"."]}]]}]}],[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/0iy8u8pqcjx7n.css","precedence":"next"}]]]}]}],["$","footer",null,{"className":"Footer-module__S6Hkya__foot","children":["$","div",null,{"className":"wrap","children":[["$","div",null,{"className":"Footer-module__S6Hkya__cols","children":[["$","$L2",null,{"className":"Brand-module__kb3XQa__brand","href":"/","children":[["$","$L2d",null,{"src":"/assets/icon-256.png","alt":"","width":28,"height":28,"unoptimized":true}],"Brink"]}],["$","nav",null,{"className":"Footer-module__S6Hkya__links","aria-label":"Footer","children":[["$","$L2",null,{"href":"/privacy/","children":"Privacy"}],["$","$L2",null,{"href":"/terms/","children":"Terms"}],["$","$L2",null,{"href":"/acknowledgements/","children":"Acknowledgements"}],["$","$L2",null,{"href":"/press/","children":"Press kit"}],["$","a",null,{"href":"mailto:stepa15.b@gmail.com","children":"stepa15.b@gmail.com"}],["$","a",null,{"href":"https://github.com/StepanBlaha/Brink","rel":"noopener","children":"GitHub"}]]}]]}],["$","p",null,{"className":"Footer-module__S6Hkya__disclaimer","children":["Brink is an independent app and is not affiliated with, endorsed by, or sponsored by Notion Labs, Inc."," ","“Notion” is a trademark of Notion Labs, Inc."]}],["$","p",null,{"className":"small","children":["© ","2026"," ","Stepan Blaha"]}]]}]}]]}]}]]}]}]]}]
+8:300
+24:true
+8:C
+23:0
+1d:"$undefined"
+1f:"$undefined"
+22:"$undefined"
+7:"$undefined"
